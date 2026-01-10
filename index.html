@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <title>ViralPop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Lien pour transformer le site en application installable -->
   <link rel="manifest" href="manifest.json">
 
+  <!-- Styles -->
   <style>
     body {
       margin: 0;
@@ -16,28 +15,23 @@
       color: #ffffff;
       text-align: center;
     }
-
     header {
       padding: 40px 20px;
     }
-
     h1 {
       font-size: 2.8em;
       margin-bottom: 10px;
     }
-
     p {
       font-size: 1.1em;
       opacity: 0.9;
     }
-
     .card {
       background: rgba(0,0,0,0.25);
       margin: 20px;
       padding: 25px;
       border-radius: 15px;
     }
-
     button {
       background: #ffffff;
       color: #000000;
@@ -47,12 +41,28 @@
       font-size: 1em;
       cursor: pointer;
       margin-top: 20px;
+      margin-right: 5px;
     }
-
+    #chartContainer {
+      width: 90%;
+      max-width: 600px;
+      margin: 30px auto;
+      background: rgba(0,0,0,0.25);
+      padding: 20px;
+      border-radius: 15px;
+    }
+    #gaugeContainer {
+      width: 200px;
+      height: 200px;
+      margin: 30px auto;
+    }
     footer {
       margin-top: 40px;
       font-size: 0.9em;
       opacity: 0.7;
+    }
+    input[type="file"] {
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -64,17 +74,47 @@
 
   <div class="card">
     <h2>🚀 Plateforme en construction</h2>
-    <p>
-      ViralPop est en cours de développement.  
-      Reste connecté pour découvrir les tendances, le contenu viral et les opportunités à venir.
-    </p>
-    <button onclick="alert('ViralPop arrive très bientôt 🚀')">
-      Rejoindre le mouvement
-    </button>
+    <p>Reste connecté pour découvrir les tendances et le contenu viral.</p>
+    <button onclick="joinAlert()">Rejoindre le mouvement</button>
+  </div>
+
+  <!-- Publier contenu -->
+  <div class="card">
+    <h2>📤 Publie ton contenu</h2>
+    <input type="file" id="fileInput" accept="image/*,video/*">
+    <button onclick="publishContent()">Publier</button>
+  </div>
+
+  <!-- Progression utilisateur -->
+  <div class="card">
+    <h2>📊 Ta progression</h2>
+    <div id="progress"></div>
+  </div>
+
+  <!-- Partage réseaux sociaux -->
+  <div class="card">
+    <h2>🔗 Partager</h2>
+    <button onclick="shareSocial('whatsapp')">WhatsApp</button>
+    <button onclick="shareSocial('facebook')">Facebook</button>
+    <button onclick="shareSocial('twitter')">Twitter</button>
+  </div>
+
+  <!-- Graphique popularité -->
+  <div id="chartContainer">
+    <canvas id="popularityChart"></canvas>
+  </div>
+
+  <!-- Jauge -->
+  <div id="gaugeContainer">
+    <canvas id="popularityGauge"></canvas>
   </div>
 
   <footer>
     © 2026 – ViralPop | Créé par LALLA-BIGELI Bob-Pasteur
   </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/app.js"></script>
 </body>
   </html>
