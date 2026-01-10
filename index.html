@@ -7,174 +7,163 @@
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#9333ea">
+  <meta name="theme-color" content="#6a0dad">
 
-  <!-- AdSense Global Script (remplacer ca-pub-XXXXXXXXXX par ton ID réel) -->
-  <script data-ad-client="ca-pub-XXXXXXXXXXXXXXX" async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597"
+     crossorigin="anonymous"></script>
 
-  <!-- Chart.js pour courbe popularité -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <!-- Styles -->
   <style>
-    body {font-family: Arial; margin:0; background:#f3f4f6; transition:0.3s;}
-    header {display:flex; align-items:center; justify-content:space-between; padding:10px 15px; background:#3b82f6; color:white; font-size:22px; font-weight:bold;}
-    header img {height:40px;}
-    nav {display:flex; justify-content:center; background:#9333ea;}
-    nav button {flex:1; padding:12px; border:none; background:none; color:white; font-size:16px; cursor:pointer; transition:0.3s;}
-    nav button:hover {background:#7e22ce;}
-    main {padding:15px; max-width:600px; margin:auto;}
-    .module {background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:15px; position:relative; overflow:hidden;}
-    .module h2 {margin-top:0;}
-    .idea, .post {margin-top:10px; padding:10px; background:#e0e7ff; border-radius:8px; opacity:0; transform:translateY(-10px); animation:slideDown 0.5s forwards;}
-    @keyframes slideDown {to{opacity:1; transform:translateY(0);}}
-    #popChart {max-width:100%; margin-top:15px;}
-    .button-share {margin-top:8px; padding:8px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer;}
-    .badge {display:inline-block; padding:5px 8px; margin:3px; background:#facc15; border-radius:8px; font-size:12px; font-weight:bold; color:#1e1e1e; opacity:0; animation:badgeAppear 0.6s forwards;}
-    @keyframes badgeAppear {to{opacity:1; transform:scale(1);}}
-    .ad-placeholder {background:#cbd5e1; text-align:center; padding:10px; margin-top:10px; border-radius:8px; color:#1e293b;}
-    #popGauge {width:100%; height:25px; background:#e0e7ff; border-radius:12px; overflow:hidden; margin-top:10px;}
-    #popFill {height:100%; width:0%; background:#3b82f6; transition:width 0.5s;}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #1c0b2b; /* violet sombre */
+      color: #f0f0f0;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(90deg, #4b0082, #6a0dad);
+      padding: 15px 0;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #2a0d3f;
+      padding: 10px 0;
+    }
+    nav button {
+      background: #6a0dad;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    nav button:hover {
+      background: #8b00ff;
+    }
+    main {
+      padding: 20px;
+      max-width: 700px;
+      margin: auto;
+    }
+    .module {
+      background: #2a0d3f;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .module h2 {
+      margin-top: 0;
+      color: #ffdd00;
+    }
+    .idea, .post {
+      margin-top: 10px;
+      padding: 10px;
+      background: #3b0e5c;
+      border-radius: 8px;
+    }
+    button.interact {
+      margin: 5px 5px 0 0;
+      background: #6a0dad;
+      color: #fff;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button.interact:hover {
+      background: #8b00ff;
+    }
+    canvas {
+      background: #1c0b2b;
+      width: 100%;
+      height: 150px;
+      border-radius: 10px;
+    }
+    .ad-box {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
 
 <header>
-  <img src="icons/icon-192.png" alt="Viral+ Logo"> Viral+
+  <img src="icons/icon-192.png" alt="Viral+ Logo">
+  Viral+
 </header>
 
 <nav>
-  <button onclick="showSection('home')">Home</button>
-  <button onclick="showSection('wonder47')">Wonder47</button>
-  <button onclick="showSection('publish')">Publier</button>
-  <button onclick="showSection('profile')">Profil</button>
+  <button onclick="showModule('wonder47')">Home</button>
+  <button onclick="showModule('miniCourse')">Mini-cours</button>
+  <button onclick="showModule('popularity')">Popularité</button>
 </nav>
 
 <main>
-  <!-- Home -->
-  <div class="module" id="home">
-    <h2>📢 Fil d'actualité / Tendances</h2>
-    <div id="feed">
-      <div class="post">Bienvenue sur Viral+ ! Commence à publier pour augmenter ta popularité.</div>
-    </div>
-    <div class="ad-placeholder">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXX"
-           data-ad-slot="1234567890"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
-  </div>
-
   <!-- Wonder47 -->
-  <div class="module" id="wonder47" style="display:none;">
+  <div class="module" id="wonder47">
     <h2>💡 Wonder47 - Idée virale</h2>
     <div class="idea" id="ideaText">Clique pour obtenir une idée virale !</div>
-    <button onclick="generateIdea()">Nouvelle idée</button>
-    <div class="ad-placeholder">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXX"
-           data-ad-slot="1234567891"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
+    <button class="interact" onclick="generateIdea()">Nouvelle idée</button>
   </div>
 
-  <!-- Publier -->
-  <div class="module" id="publish" style="display:none;">
-    <h2>📝 Publier</h2>
-    <textarea id="postInput" placeholder="Écris quelque chose..." rows="3" style="width:100%; padding:8px;"></textarea>
-    <input type="file" id="postImage">
-    <button onclick="publishPost()">Publier</button>
-    <button class="button-share" onclick="shareApp()">Partager Viral+</button>
-    <div class="ad-placeholder">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXX"
-           data-ad-slot="1234567892"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
+  <!-- Mini-cours -->
+  <div class="module" id="miniCourse" style="display:none">
+    <h2>📚 Mini-cours</h2>
+    <div class="idea" id="courseText">Clique pour voir un mini-cours.</div>
+    <button class="interact" onclick="generateCourse()">Voir un mini-cours</button>
   </div>
 
-  <!-- Profil -->
-  <div class="module" id="profile" style="display:none;">
-    <h2>👤 Profil</h2>
-    <div id="popText">Ton niveau de popularité : 0</div>
-    <div id="popGauge"><div id="popFill"></div></div>
-    <canvas id="popChart"></canvas>
-    <div id="badges"></div>
-    <div class="ad-placeholder">
-      <ins class="adsbygoogle"
-           style="display:block"
-           data-ad-client="ca-pub-XXXXXXXXXXXXXXX"
-           data-ad-slot="1234567893"
-           data-ad-format="auto"
-           data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </div>
+  <!-- Popularité -->
+  <div class="module" id="popularity" style="display:none">
+    <h2>📈 Popularité</h2>
+    <canvas id="popGraph"></canvas>
+    <div class="idea" id="popText">Ton niveau de popularité : 0</div>
+    <button class="interact" onclick="increasePop()">Augmenter Popularité</button>
+    <button class="interact" onclick="likePost()">J'aime</button>
+    <button class="interact" onclick="dislikePost()">Je n'aime pas</button>
+    <button class="interact" onclick="commentPost()">Commenter</button>
+    <button class="interact" onclick="sharePost()">Partager</button>
+  </div>
+
+  <!-- Pub AdSense -->
+  <div class="ad-box">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-8210705555437597"
+         data-ad-slot="1234567890"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
   </div>
 </main>
 
+<!-- JS -->
 <script>
-  // --- Navigation ---
-  function showSection(section){
-    ['home','wonder47','publish','profile'].forEach(s=>document.getElementById(s).style.display='none');
-    document.getElementById(section).style.display='block';
+  // Modules
+  function showModule(id) {
+    ['wonder47','miniCourse','popularity'].forEach(m => {
+      document.getElementById(m).style.display = (m===id ? 'block':'none');
+    });
   }
 
-  // --- Compteur de visiteurs ---
-  let visitors = localStorage.getItem('viralPlusVisitors') || 0;
-  visitors = Number(visitors) + 1;
-  localStorage.setItem('viralPlusVisitors', visitors);
-
-  function updateVisitorCount() {
-    const homeDiv = document.getElementById('home');
-    const profileDiv = document.getElementById('profile');
-
-    let visitorHome = document.getElementById('visitorCountHome');
-    if(!visitorHome){
-      visitorHome = document.createElement('div');
-      visitorHome.id = 'visitorCountHome';
-      visitorHome.style.marginTop = '10px';
-      visitorHome.style.fontWeight = 'bold';
-      homeDiv.appendChild(visitorHome);
-    }
-    visitorHome.innerText = `👥 Visiteurs totaux : ${visitors}`;
-
-    let visitorProfile = document.getElementById('visitorCountProfile');
-    if(!visitorProfile){
-      visitorProfile = document.createElement('div');
-      visitorProfile.id = 'visitorCountProfile';
-      visitorProfile.style.marginTop = '10px';
-      visitorProfile.style.fontWeight = 'bold';
-      profileDiv.appendChild(visitorProfile);
-    }
-    visitorProfile.innerText = `👥 Visiteurs totaux : ${visitors}`;
-  }
-
-  // --- Notifications push ---
-  function showNotification(message){
-    if(Notification.permission === "granted"){
-      new Notification("Viral+", {body: message, icon: "icons/icon-192.png"});
-    } else if(Notification.permission !== "denied"){
-      Notification.requestPermission().then(permission=>{
-        if(permission === "granted"){
-          new Notification("Viral+", {body: message, icon: "icons/icon-192.png"});
-        }
-      });
-    }
-  }
-  function notifyBadge(badge){
-    showNotification(`🎉 Nouveau badge débloqué : ${badge} !`);
-  }
-
-  // --- Wonder47 ---
+  // Idées virales
   const ideas = [
     "Créer un challenge TikTok avec une danse originale !",
     "Faire une vidéo drôle avec ton animal de compagnie.",
@@ -182,101 +171,81 @@
     "Poster un meme sur un sujet d'actualité.",
     "Organiser un mini-concours avec ton audience."
   ];
-  function generateIdea(){
-    const idea = ideas[Math.floor(Math.random()*ideas.length)];
-    const ideaDiv = document.getElementById("ideaText");
-    ideaDiv.innerText = idea;
-    ideaDiv.style.animation = 'none';
-    void ideaDiv.offsetWidth;
-    ideaDiv.style.animation = 'slideDown 0.5s forwards';
-    increasePop(3);
+
+  function generateIdea() {
+    document.getElementById("ideaText").innerText = ideas[Math.floor(Math.random()*ideas.length)];
   }
 
-  // --- Popularité ---
+  // Mini-cours
+  const courses = [
+    "Comment créer du contenu viral facilement.",
+    "Astuce pour gagner plus d'abonnés rapidement.",
+    "Techniques simples pour éditer tes vidéos.",
+    "Secrets pour rendre tes publications plus visibles.",
+    "Comment collaborer avec d'autres créateurs."
+  ];
+
+  function generateCourse() {
+    document.getElementById("courseText").innerText = courses[Math.floor(Math.random()*courses.length)];
+  }
+
+  // Popularité
   let popularity = 0;
-  const popHistory = [];
-  const badgesUnlocked = [];
-  const ctx = document.getElementById('popChart').getContext('2d');
-  const popChart = new Chart(ctx, {
-    type:'line',
-    data:{labels:[], datasets:[{label:'Popularité', data:[], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.2)', fill:true, tension:0.4}]},
-    options:{responsive:true, scales:{y:{beginAtZero:true}}}
-  });
+  let likes = 0;
+  let dislikes = 0;
+  const popData = [];
 
-  function updateGauge(){
-    const fill = document.getElementById('popFill');
-    const percent = Math.min(popularity,100);
-    fill.style.width = percent + '%';
-    fill.style.background = percent>70?'#ef4444': percent>40?'#facc15':'#3b82f6';
+  function increasePop() {
+    const value = Math.floor(Math.random()*10)+1;
+    popularity += value;
+    popData.push(popularity);
+    if(popData.length>20) popData.shift();
+    updateGraph();
+    document.getElementById("popText").innerText = `Ton niveau de popularité : ${popularity}`;
   }
 
-  function increasePop(value){
-    const incr = value || Math.floor(Math.random()*10)+1;
-    popularity += incr;
-    document.getElementById('popText').innerText=`Ton niveau de popularité : ${popularity}`;
-    updateGauge();
-    popHistory.push(popularity);
-    popChart.data.labels.push(popHistory.length);
-    popChart.data.datasets[0].data.push(popularity);
-    popChart.update();
-    checkBadges();
+  function likePost() {
+    likes++;
+    increasePop();
   }
 
-  // --- Publier ---
-  function publishPost(){
-    const feed=document.getElementById('feed');
-    const text=document.getElementById('postInput').value;
-    const fileInput=document.getElementById('postImage');
-    let postHTML=`<div class="post">${text}</div>`;
-    if(fileInput.files.length>0){
-      const reader=new FileReader();
-      reader.onload=function(e){
-        const imgHTML=`<img src="${e.target.result}" style="max-width:100%; margin-top:5px;">`;
-        feed.innerHTML=imgHTML+postHTML+feed.innerHTML;
-      }
-      reader.readAsDataURL(fileInput.files[0]);
-    } else {
-      feed.innerHTML=postHTML+feed.innerHTML;
+  function dislikePost() {
+    dislikes++;
+    popularity = Math.max(0, popularity-1);
+    increasePop();
+  }
+
+  function commentPost() {
+    const comment = prompt("Écris ton commentaire :");
+    if(comment) alert("Commentaire publié : " + comment);
+  }
+
+  function sharePost() {
+    const link = "https://kodybigeli-cyber.github.io/";
+    alert("Lien copié pour partager : " + link);
+    navigator.clipboard.writeText(link);
+  }
+
+  // Graphique dynamique
+  const canvas = document.getElementById('popGraph');
+  const ctx = canvas.getContext('2d');
+
+  function updateGraph() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.beginPath();
+    ctx.strokeStyle = "#ffdd00";
+    ctx.lineWidth = 2;
+    for(let i=0;i<popData.length;i++){
+      const x = i*(canvas.width/20);
+      const y = canvas.height - popData[i]*10;
+      if(i===0) ctx.moveTo(x,y);
+      else ctx.lineTo(x,y);
     }
-    document.getElementById('postInput').value='';
-    fileInput.value='';
-    increasePop(5);
+    ctx.stroke();
   }
 
-  // --- Partage ---
-  function shareApp(){
-    if(navigator.share){
-      navigator.share({
-        title:'Viral+',
-        text:'Découvre Viral+, crée et partage tes idées !',
-        url:window.location.href
-      });
-    } else {
-      alert("Copie ce lien pour partager : "+window.location.href);
-    }
-    increasePop(2);
-  }
-
-  // --- Badges ---
-  function checkBadges(){
-    const badgesDiv=document.getElementById('badges');
-    const newBadges=[];
-    if(popularity>=50 && !badgesUnlocked.includes('Influenceur')) newBadges.push('Influenceur');
-    if(popHistory.length>=5 && !badgesUnlocked.includes('Top Créateur')) newBadges.push('Top Créateur');
-    if(popularity>=100 && !badgesUnlocked.includes('Viral+ Master')) newBadges.push('Viral+ Master');
-    newBadges.forEach(b=>{
-      badgesUnlocked.push(b);
-      const span=document.createElement('span');
-      span.className='badge';
-      span.innerText=b;
-      badgesDiv.appendChild(span);
-      notifyBadge(b);
-    });
-  }
-
-  // --- Initialisation ---
-  updateVisitorCount();
-  increasePop(0);
+  // Initialisation AdSense
+  (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
 </body>
