@@ -2,119 +2,132 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>ViralPop</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ViralPop</title>
+  
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#9333ea">
 
-  <!-- Styles -->
+  <!-- Styles simples -->
   <style>
     body {
+      font-family: Arial, sans-serif;
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #3b82f6, #9333ea);
-      color: #ffffff;
-      text-align: center;
+      padding: 0;
+      background-color: #f3f4f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     header {
-      padding: 40px 20px;
+      width: 100%;
+      background-color: #3b82f6;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 24px;
+      font-weight: bold;
     }
-    h1 {
-      font-size: 2.8em;
-      margin-bottom: 10px;
-    }
-    p {
-      font-size: 1.1em;
-      opacity: 0.9;
-    }
-    .card {
-      background: rgba(0,0,0,0.25);
-      margin: 20px;
-      padding: 25px;
-      border-radius: 15px;
+    main {
+      padding: 20px;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
     button {
-      background: #ffffff;
-      color: #000000;
+      background-color: #9333ea;
+      color: white;
       border: none;
-      padding: 15px 25px;
-      border-radius: 30px;
-      font-size: 1em;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 18px;
       cursor: pointer;
-      margin-top: 20px;
-      margin-right: 5px;
+      transition: background-color 0.3s;
     }
-    #chartContainer {
-      width: 90%;
-      max-width: 600px;
-      margin: 30px auto;
-      background: rgba(0,0,0,0.25);
-      padding: 20px;
-      border-radius: 15px;
+    button:hover {
+      background-color: #7e22ce;
     }
-    #gaugeContainer {
-      width: 200px;
-      height: 200px;
-      margin: 30px auto;
+    .module {
+      background-color: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    footer {
-      margin-top: 40px;
-      font-size: 0.9em;
-      opacity: 0.7;
+    .module h2 {
+      margin-top: 0;
     }
-    input[type="file"] {
+    .idea {
       margin-top: 10px;
+      padding: 10px;
+      background-color: #e0e7ff;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🔥 ViralPop</h1>
-    <p>Le buzz commence ici</p>
-  </header>
 
-  <div class="card">
-    <h2>🚀 Plateforme en construction</h2>
-    <p>Reste connecté pour découvrir les tendances et le contenu viral.</p>
-    <button onclick="joinAlert()">Rejoindre le mouvement</button>
+<header>ViralPop 🚀</header>
+
+<main>
+  <div class="module" id="wonder47">
+    <h2>💡 Wonder47 - Idée virale</h2>
+    <div class="idea" id="ideaText">Clique pour obtenir une idée virale !</div>
+    <button onclick="generateIdea()">Nouvelle idée</button>
   </div>
 
-  <!-- Publier contenu -->
-  <div class="card">
-    <h2>📤 Publie ton contenu</h2>
-    <input type="file" id="fileInput" accept="image/*,video/*">
-    <button onclick="publishContent()">Publier</button>
+  <div class="module" id="miniCourse">
+    <h2>📚 Mini-cours</h2>
+    <div class="idea" id="courseText">Clique pour voir un mini-cours.</div>
+    <button onclick="generateCourse()">Voir un mini-cours</button>
   </div>
 
-  <!-- Progression utilisateur -->
-  <div class="card">
-    <h2>📊 Ta progression</h2>
-    <div id="progress"></div>
+  <div class="module" id="popularity">
+    <h2>📈 Popularité</h2>
+    <div class="idea" id="popText">Ton niveau de popularité : 0</div>
+    <button onclick="increasePop()">Augmenter Popularité</button>
   </div>
+</main>
 
-  <!-- Partage réseaux sociaux -->
-  <div class="card">
-    <h2>🔗 Partager</h2>
-    <button onclick="shareSocial('whatsapp')">WhatsApp</button>
-    <button onclick="shareSocial('facebook')">Facebook</button>
-    <button onclick="shareSocial('twitter')">Twitter</button>
-  </div>
+<!-- JavaScript -->
+<script>
+  // Liste d'idées virales
+  const ideas = [
+    "Créer un challenge TikTok avec une danse originale !",
+    "Faire une vidéo drôle avec ton animal de compagnie.",
+    "Partager un tutoriel rapide et utile.",
+    "Poster un meme sur un sujet d'actualité.",
+    "Organiser un mini-concours avec ton audience."
+  ];
 
-  <!-- Graphique popularité -->
-  <div id="chartContainer">
-    <canvas id="popularityChart"></canvas>
-  </div>
+  // Liste de mini-cours
+  const courses = [
+    "Comment créer du contenu viral facilement.",
+    "Astuce pour gagner plus d'abonnés rapidement.",
+    "Techniques simples pour éditer tes vidéos.",
+    "Secrets pour rendre tes publications plus visibles.",
+    "Comment collaborer avec d'autres créateurs."
+  ];
 
-  <!-- Jauge -->
-  <div id="gaugeContainer">
-    <canvas id="popularityGauge"></canvas>
-  </div>
+  let popularity = 0;
 
-  <footer>
-    © 2026 – ViralPop | Créé par LALLA-BIGELI Bob-Pasteur
-  </footer>
+  function generateIdea() {
+    const idea = ideas[Math.floor(Math.random() * ideas.length)];
+    document.getElementById("ideaText").innerText = idea;
+  }
 
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="js/app.js"></script>
+  function generateCourse() {
+    const course = courses[Math.floor(Math.random() * courses.length)];
+    document.getElementById("courseText").innerText = course;
+  }
+
+  function increasePop() {
+    popularity += Math.floor(Math.random() * 10) + 1;
+    document.getElementById("popText").innerText = `Ton niveau de popularité : ${popularity}`;
+  }
+</script>
+
 </body>
   </html>
