@@ -3,97 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ViralPop</title>
-  
+  <title>Viral+</title>
+
   <!-- PWA -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#9333ea">
 
-  <!-- Styles simples -->
+  <!-- Chart.js pour graphiques -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    header {
-      width: 100%;
-      background-color: #3b82f6;
-      color: white;
-      text-align: center;
-      padding: 15px 0;
-      font-size: 24px;
-      font-weight: bold;
-    }
-    main {
-      padding: 20px;
-      width: 100%;
-      max-width: 500px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    button {
-      background-color: #9333ea;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #7e22ce;
-    }
-    .module {
-      background-color: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .module h2 {
-      margin-top: 0;
-    }
-    .idea {
-      margin-top: 10px;
-      padding: 10px;
-      background-color: #e0e7ff;
-      border-radius: 8px;
-    }
+    body {font-family: Arial; margin:0; background:#f3f4f6; transition:0.3s;}
+    header {display:flex; align-items:center; justify-content:space-between; padding:10px 15px; background:#3b82f6; color:white; font-size:22px; font-weight:bold;}
+    header img {height:40px;}
+    nav {display:flex; justify-content:center; background:#9333ea;}
+    nav button {flex:1; padding:12px; border:none; background:none; color:white; font-size:16px; cursor:pointer; transition:0.3s;}
+    nav button:hover {background:#7e22ce;}
+    main {padding:15px; max-width:600px; margin:auto;}
+    .module {background:white; padding:15px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); margin-bottom:15px; position:relative; overflow:hidden;}
+    .module h2 {margin-top:0;}
+    .idea, .post {margin-top:10px; padding:10px; background:#e0e7ff; border-radius:8px; opacity:0; transform:translateY(-10px); animation:slideDown 0.5s forwards;}
+    @keyframes slideDown {to{opacity:1; transform:translateY(0);}}
+    #popChart {max-width:100%; margin-top:15px;}
+    .button-share {margin-top:8px; padding:8px; background:#3b82f6; color:white; border:none; border-radius:8px; cursor:pointer;}
+    .badge {display:inline-block; padding:5px 8px; margin:3px; background:#facc15; border-radius:8px; font-size:12px; font-weight:bold; color:#1e1e1e; opacity:0; animation:badgeAppear 0.6s forwards;}
+    @keyframes badgeAppear {to{opacity:1; transform:scale(1);}}
+    .ad-placeholder {background:#cbd5e1; text-align:center; padding:10px; margin-top:10px; border-radius:8px; color:#1e293b;}
+    #popGauge {width:100%; height:25px; background:#e0e7ff; border-radius:12px; overflow:hidden; margin-top:10px;}
+    #popFill {height:100%; width:0%; background:#3b82f6; transition:width 0.5s;}
   </style>
 </head>
 <body>
 
-<header>ViralPop 🚀</header>
+<header>
+  <img src="icons/icon-192.png" alt="Viral+ Logo"> Viral+
+</header>
+
+<nav>
+  <button onclick="showSection('home')">Home</button>
+  <button onclick="showSection('wonder47')">Wonder47</button>
+  <button onclick="showSection('publish')">Publier</button>
+  <button onclick="showSection('profile')">Profil</button>
+</nav>
 
 <main>
-  <div class="module" id="wonder47">
+  <!-- Home -->
+  <div class="module" id="home">
+    <h2>📢 Fil d'actualité / Tendances</h2>
+    <div id="feed">
+      <div class="post">Bienvenue sur Viral+ ! Commence à publier pour augmenter ta popularité.</div>
+    </div>
+    <div class="ad-placeholder">📢 Publicité ici</div>
+  </div>
+
+  <!-- Wonder47 -->
+  <div class="module" id="wonder47" style="display:none;">
     <h2>💡 Wonder47 - Idée virale</h2>
     <div class="idea" id="ideaText">Clique pour obtenir une idée virale !</div>
     <button onclick="generateIdea()">Nouvelle idée</button>
+    <div class="ad-placeholder">📢 Publicité ici</div>
   </div>
 
-  <div class="module" id="miniCourse">
-    <h2>📚 Mini-cours</h2>
-    <div class="idea" id="courseText">Clique pour voir un mini-cours.</div>
-    <button onclick="generateCourse()">Voir un mini-cours</button>
+  <!-- Publier -->
+  <div class="module" id="publish" style="display:none;">
+    <h2>📝 Publier</h2>
+    <textarea id="postInput" placeholder="Écris quelque chose..." rows="3" style="width:100%; padding:8px;"></textarea>
+    <input type="file" id="postImage">
+    <button onclick="publishPost()">Publier</button>
+    <button class="button-share" onclick="shareApp()">Partager Viral+</button>
+    <div class="ad-placeholder">📢 Publicité ici</div>
   </div>
 
-  <div class="module" id="popularity">
-    <h2>📈 Popularité</h2>
-    <div class="idea" id="popText">Ton niveau de popularité : 0</div>
-    <button onclick="increasePop()">Augmenter Popularité</button>
+  <!-- Profil -->
+  <div class="module" id="profile" style="display:none;">
+    <h2>👤 Profil</h2>
+    <div id="popText">Ton niveau de popularité : 0</div>
+    <div id="popGauge"><div id="popFill"></div></div>
+    <canvas id="popChart"></canvas>
+    <div id="badges"></div>
+    <div class="ad-placeholder">📢 Publicité ici</div>
   </div>
 </main>
 
-<!-- JavaScript -->
 <script>
-  // Liste d'idées virales
+  // Navigation
+  function showSection(section){
+    ['home','wonder47','publish','profile'].forEach(s=>document.getElementById(s).style.display='none');
+    document.getElementById(section).style.display='block';
+  }
+
+  // Wonder47
   const ideas = [
     "Créer un challenge TikTok avec une danse originale !",
     "Faire une vidéo drôle avec ton animal de compagnie.",
@@ -101,32 +100,100 @@
     "Poster un meme sur un sujet d'actualité.",
     "Organiser un mini-concours avec ton audience."
   ];
+  function generateIdea(){
+    const idea = ideas[Math.floor(Math.random()*ideas.length)];
+    const ideaDiv = document.getElementById("ideaText");
+    ideaDiv.innerText = idea;
+    ideaDiv.style.animation = 'none';
+    void ideaDiv.offsetWidth; // restart animation
+    ideaDiv.style.animation = 'slideDown 0.5s forwards';
+    increasePop(3);
+  }
 
-  // Liste de mini-cours
-  const courses = [
-    "Comment créer du contenu viral facilement.",
-    "Astuce pour gagner plus d'abonnés rapidement.",
-    "Techniques simples pour éditer tes vidéos.",
-    "Secrets pour rendre tes publications plus visibles.",
-    "Comment collaborer avec d'autres créateurs."
-  ];
-
+  // Popularité
   let popularity = 0;
+  const popHistory = [];
+  const badgesUnlocked = [];
 
-  function generateIdea() {
-    const idea = ideas[Math.floor(Math.random() * ideas.length)];
-    document.getElementById("ideaText").innerText = idea;
+  const ctx = document.getElementById('popChart').getContext('2d');
+  const popChart = new Chart(ctx, {
+    type:'line',
+    data:{labels:[], datasets:[{label:'Popularité', data:[], borderColor:'#3b82f6', backgroundColor:'rgba(59,130,246,0.2)', fill:true, tension:0.4}]},
+    options:{responsive:true, scales:{y:{beginAtZero:true}}}
+  });
+
+  function updateGauge(){
+    const fill = document.getElementById('popFill');
+    const percent = Math.min(popularity,100);
+    fill.style.width = percent + '%';
+    fill.style.background = percent>70?'#ef4444': percent>40?'#facc15':'#3b82f6';
   }
 
-  function generateCourse() {
-    const course = courses[Math.floor(Math.random() * courses.length)];
-    document.getElementById("courseText").innerText = course;
+  function increasePop(value){
+    const incr = value || Math.floor(Math.random()*10)+1;
+    popularity += incr;
+    document.getElementById('popText').innerText=`Ton niveau de popularité : ${popularity}`;
+    updateGauge();
+    popHistory.push(popularity);
+    popChart.data.labels.push(popHistory.length);
+    popChart.data.datasets[0].data.push(popularity);
+    popChart.update();
+    checkBadges();
   }
 
-  function increasePop() {
-    popularity += Math.floor(Math.random() * 10) + 1;
-    document.getElementById("popText").innerText = `Ton niveau de popularité : ${popularity}`;
+  // Publier
+  function publishPost(){
+    const feed=document.getElementById('feed');
+    const text=document.getElementById('postInput').value;
+    const fileInput=document.getElementById('postImage');
+    let postHTML=`<div class="post">${text}</div>`;
+    if(fileInput.files.length>0){
+      const reader=new FileReader();
+      reader.onload=function(e){
+        const imgHTML=`<img src="${e.target.result}" style="max-width:100%; margin-top:5px;">`;
+        feed.innerHTML=imgHTML+postHTML+feed.innerHTML;
+      }
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      feed.innerHTML=postHTML+feed.innerHTML;
+    }
+    document.getElementById('postInput').value='';
+    fileInput.value='';
+    increasePop(5);
   }
+
+  // Partage
+  function shareApp(){
+    if(navigator.share){
+      navigator.share({
+        title:'Viral+',
+        text:'Découvre Viral+, crée et partage tes idées !',
+        url:window.location.href
+      });
+    } else {
+      alert("Copie ce lien pour partager : "+window.location.href);
+    }
+    increasePop(2);
+  }
+
+  // Badges
+  function checkBadges(){
+    const badgesDiv=document.getElementById('badges');
+    const newBadges=[];
+    if(popularity>=50 && !badgesUnlocked.includes('Influenceur')) newBadges.push('Influenceur');
+    if(popHistory.length>=5 && !badgesUnlocked.includes('Top Créateur')) newBadges.push('Top Créateur');
+    if(popularity>=100 && !badgesUnlocked.includes('Viral+ Master')) newBadges.push('Viral+ Master');
+    newBadges.forEach(b=>{
+      badgesUnlocked.push(b);
+      const span=document.createElement('span');
+      span.className='badge';
+      span.innerText=b;
+      badgesDiv.appendChild(span);
+    });
+  }
+
+  // Initialisation
+  increasePop(0);
 </script>
 
 </body>
