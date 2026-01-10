@@ -5,247 +5,303 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viral+</title>
 
-<!-- PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#6a0dad">
+<meta name="theme-color" content="#7c3aed">
 
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597"
 crossorigin="anonymous"></script>
 
 <style>
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#1c0b2b; color:#f0f0f0; }
-header { display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(90deg, #4b0082, #6a0dad); padding:15px 0; font-size:24px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.3);}
-header img { width:40px; height:40px; border-radius:8px; }
-nav { display:flex; justify-content:space-around; background:#2a0d3f; padding:10px 0; }
-nav button { background:#6a0dad; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; }
-nav button:hover { background:#8b00ff; }
-main { padding:20px; max-width:700px; margin:auto; }
-.module { background:#2a0d3f; padding:15px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,0.5);}
-.module h2 { margin-top:0; color:#ffdd00; }
-.post, .idea { margin-top:10px; padding:10px; background:#3b0e5c; border-radius:8px; }
-button.interact { margin:5px 5px 0 0; background:#6a0dad; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;}
-button.interact:hover { background:#8b00ff; }
-canvas { background:#1c0b2b; width:100%; height:150px; border-radius:10px; }
-.ad-box { margin:20px 0; display:flex; justify-content:center; }
-input[type=text], input[type=file], textarea { width:100%; margin:5px 0; border-radius:6px; padding:8px; border:none; }
-textarea { resize:none; }
-.comment { background:#4a1471; margin-top:5px; padding:5px; border-radius:6px; font-size:14px; }
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#2b145c;
+color:#fff;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:10;
+background:linear-gradient(90deg,#7c3aed,#3bf0ff);
+padding:15px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+box-shadow:0 4px 15px rgba(0,0,0,.4);
+}
+
+nav{
+display:flex;
+justify-content:space-around;
+background:#351a6f;
+padding:10px;
+}
+
+nav button{
+background:#7c3aed;
+border:none;
+color:white;
+padding:10px 14px;
+border-radius:20px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+nav button:hover{
+background:#3bf0ff;
+color:#000;
+}
+
+main{
+max-width:600px;
+margin:auto;
+padding:15px;
+}
+
+.module{
+background:#3a1c7a;
+border-radius:16px;
+padding:15px;
+margin-bottom:20px;
+box-shadow:0 0 15px rgba(59,240,255,.15);
+}
+
+.post{
+background:#47208f;
+border-radius:14px;
+padding:12px;
+margin-bottom:15px;
+animation:fadeIn .4s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:none}
+}
+
+.post img,video{
+width:100%;
+border-radius:10px;
+margin-top:8px;
+}
+
+.actions button{
+margin:5px 5px 0 0;
+background:#7c3aed;
+border:none;
+padding:6px 10px;
+border-radius:12px;
+color:white;
+cursor:pointer;
+}
+
+.comment{
+background:#5b2fb3;
+padding:6px;
+border-radius:8px;
+margin-top:5px;
+font-size:14px;
+}
+
+/* PILE ÉLECTRIQUE */
+.battery{
+width:100%;
+height:40px;
+border:3px solid #3bf0ff;
+border-radius:10px;
+position:relative;
+overflow:hidden;
+margin-top:10px;
+}
+
+.energy{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#3bf0ff,#00fff2);
+box-shadow:0 0 20px #3bf0ff;
+animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+0%{opacity:.7}
+50%{opacity:1}
+100%{opacity:.7}
+}
+
+.spark{
+position:absolute;
+width:100%;
+height:100%;
+background:radial-gradient(circle,#fff 10%,transparent 60%);
+opacity:.15;
+animation:spark 0.5s infinite;
+}
+
+@keyframes spark{
+from{transform:translateX(-20px)}
+to{transform:translateX(20px)}
+}
+
+/* Graph */
+canvas{
+width:100%;
+height:150px;
+background:#2b145c;
+border-radius:10px;
+margin-top:10px;
+}
+
+textarea,input{
+width:100%;
+padding:8px;
+border-radius:10px;
+border:none;
+margin-top:5px;
+}
+
+.ad{
+margin:20px 0;
+}
 </style>
 </head>
+
 <body>
 
-<header>
-<img src="icons/icon-192.png" alt="Viral+ Logo">Viral+
-</header>
+<header>⚡ Viral+</header>
 
-<main>
-<!-- Login / pseudo -->
-<div class="module" id="loginModule">
-<h2>👤 Connecte-toi</h2>
-<input type="text" id="usernameInput" placeholder="Entre ton pseudo">
-<button class="interact" onclick="login()">Valider</button>
-</div>
-
-<!-- Main content -->
-<div id="mainContent" style="display:none;">
 <nav>
-<button onclick="showModule('wonder47')">Home</button>
-<button onclick="showModule('miniCourse')">Mini-cours</button>
-<button onclick="showModule('popularity')">Popularité</button>
-<button onclick="showModule('publishModule')">Publier</button>
+<button onclick="show('home')">Home</button>
+<button onclick="show('publish')">Publier</button>
+<button onclick="show('pop')">Popularité</button>
 </nav>
 
-<!-- Wonder47 -->
-<div class="module" id="wonder47">
-<h2>💡 Wonder47 - Idée virale</h2>
-<div class="idea" id="ideaText">Clique pour obtenir une idée virale !</div>
-<button class="interact" onclick="generateIdea()">Nouvelle idée</button>
+<main>
+
+<!-- HOME -->
+<div id="home" class="module"></div>
+
+<!-- PUBLIER -->
+<div id="publish" class="module" style="display:none">
+<textarea id="text" placeholder="Exprime-toi…"></textarea>
+<input type="file" id="media" accept="image/*,video/*">
+<button onclick="publish()">Publier</button>
 </div>
 
-<!-- Mini-cours -->
-<div class="module" id="miniCourse" style="display:none">
-<h2>📚 Mini-cours</h2>
-<div class="idea" id="courseText">Clique pour voir un mini-cours.</div>
-<button class="interact" onclick="generateCourse()">Voir un mini-cours</button>
+<!-- POPULARITÉ -->
+<div id="pop" class="module" style="display:none">
+<h3>Énergie de popularité</h3>
+<div class="battery">
+<div class="energy" id="energy"></div>
+<div class="spark"></div>
+</div>
+<canvas id="graph"></canvas>
 </div>
 
-<!-- Popularité -->
-<div class="module" id="popularity" style="display:none">
-<h2>📈 Popularité</h2>
-<canvas id="popGraph"></canvas>
-<div class="idea" id="popText">Ton niveau de popularité : 0</div>
-<button class="interact" onclick="increasePop()">Augmenter Popularité</button>
-<button class="interact" onclick="likePost()">J'aime</button>
-<button class="interact" onclick="dislikePost()">Je n'aime pas</button>
-</div>
-
-<!-- Publier -->
-<div class="module" id="publishModule" style="display:none">
-<h2>📝 Publier</h2>
-<textarea id="postText" placeholder="Écris ton texte ici..." rows="3"></textarea>
-<input type="file" id="postMedia" accept="image/*,video/*">
-<button class="interact" onclick="publishPost()">Publier</button>
-<div id="feed"></div>
-</div>
-
-<!-- Pub AdSense -->
-<div class="ad-box">
+<div class="ad">
 <ins class="adsbygoogle"
 style="display:block"
 data-ad-client="ca-pub-8210705555437597"
-data-ad-slot="1234567890"
 data-ad-format="auto"
 data-full-width-responsive="true"></ins>
 </div>
-</div>
+
 </main>
 
 <script>
-// ---------- Login ----------
-function login() {
-const username = document.getElementById('usernameInput').value.trim();
-if(username===''){alert('Entre ton pseudo !'); return;}
-localStorage.setItem('vpUsername',username);
-document.getElementById('loginModule').style.display='none';
-document.getElementById('mainContent').style.display='block';
-loadUserData();
-loadFeed();
+let feed=JSON.parse(localStorage.getItem("vpFeed")||"[]");
+let pop=Number(localStorage.getItem("vpPop")||0);
+let history=[...Array(20).keys()].map(()=>pop);
+
+function save(){
+localStorage.setItem("vpFeed",JSON.stringify(feed));
+localStorage.setItem("vpPop",pop);
 }
 
-// ---------- Modules ----------
-function showModule(id){
-['wonder47','miniCourse','popularity','publishModule'].forEach(m=>{
-document.getElementById(m).style.display=(m===id?'block':'none');
+function show(id){
+["home","publish","pop"].forEach(x=>{
+document.getElementById(x).style.display=(x==id?"block":"none");
 });
 }
 
-// ---------- Wonder47 ----------
-const ideas=[
-"Créer un challenge TikTok avec une danse originale !",
-"Faire une vidéo drôle avec ton animal de compagnie.",
-"Partager un tutoriel rapide et utile.",
-"Poster un meme sur un sujet d'actualité.",
-"Organiser un mini-concours avec ton audience."
-];
-function generateIdea(){
-document.getElementById("ideaText").innerText=ideas[Math.floor(Math.random()*ideas.length)];
+function publish(){
+let t=document.getElementById("text").value;
+let f=document.getElementById("media").files[0];
+if(!t)return;
+let r=new FileReader();
+r.onload=()=>{
+feed.unshift({t,media:r.result,likes:0,com:[]});
+save();render();
+};
+if(f)r.readAsDataURL(f); else r.onload();
+document.getElementById("text").value="";
 }
 
-// ---------- Mini-cours ----------
-const courses=[
-"Comment créer du contenu viral facilement.",
-"Astuce pour gagner plus d'abonnés rapidement.",
-"Techniques simples pour éditer tes vidéos.",
-"Secrets pour rendre tes publications plus visibles.",
-"Comment collaborer avec d'autres créateurs."
-];
-function generateCourse(){
-document.getElementById("courseText").innerText=courses[Math.floor(Math.random()*courses.length)];
+function render(){
+let h=document.getElementById("home");
+h.innerHTML="";
+feed.forEach((p,i)=>{
+let d=document.createElement("div");
+d.className="post";
+d.innerHTML=`<b>Utilisateur</b><br>${p.t}`;
+if(p.media){
+if(p.media.startsWith("data:video"))d.innerHTML+=`<video src="${p.media}" controls></video>`;
+else d.innerHTML+=`<img src="${p.media}">`;
 }
-
-// ---------- Popularité ----------
-let popularity=0;
-let likes=0;
-let dislikes=0;
-const popData=[];
-const canvas=document.getElementById('popGraph');
-const ctx=canvas.getContext('2d');
-
-function increasePop(){
-popularity+=Math.floor(Math.random()*10)+1;
-saveUserData();
-popData.push(popularity);
-if(popData.length>20) popData.shift();
-updateGraph();
-document.getElementById("popText").innerText=`Ton niveau de popularité : ${popularity}`;
-}
-
-function likePost(){ likes++; increasePop(); saveUserData(); }
-function dislikePost(){ dislikes++; popularity=Math.max(0,popularity-1); increasePop(); saveUserData(); }
-
-function updateGraph(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-ctx.beginPath();
-ctx.strokeStyle="#ffdd00";
-ctx.lineWidth=2;
-for(let i=0;i<popData.length;i++){
-const x=i*(canvas.width/20);
-const y=canvas.height-popData[i]*10;
-if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-}
-ctx.stroke();
-}
-
-function saveUserData(){
-const username=localStorage.getItem('vpUsername');
-localStorage.setItem(username+'_pop',popularity);
-localStorage.setItem(username+'_likes',likes);
-localStorage.setItem(username+'_dislikes',dislikes);
-}
-
-// ---------- Publications ----------
-function publishPost(){
-const username=localStorage.getItem('vpUsername');
-const text=document.getElementById('postText').value.trim();
-const file=document.getElementById('postMedia').files[0];
-if(text===''){alert('Écris un texte !'); return;}
-const reader=new FileReader();
-reader.onload=function(e){
-const mediaData=e.target.result;
-const post={user:username,text:text,media:mediaData,likes:0,dislikes:0,comments:[]};
-let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]');
-feed.unshift(post);
-localStorage.setItem('vpFeed',JSON.stringify(feed));
-document.getElementById('postText').value='';
-document.getElementById('postMedia').value='';
-loadFeed();
-}
-if(file){reader.readAsDataURL(file);} else {reader.onload({target:{result:null}});}
-}
-
-function loadFeed(){
-const feedDiv=document.getElementById('feed');
-feedDiv.innerHTML='';
-let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]');
-feed.forEach((post,index)=>{
-let html=`<div class="post"><b>${post.user}</b>: ${post.text}`;
-if(post.media){ if(post.media.startsWith('data:video')){html+=`<video src="${post.media}" controls style="max-width:100%;margin-top:5px;"></video>`;}
-else{html+=`<img src="${post.media}" style="max-width:100%;margin-top:5px;">`;}
-}
-html+=`<div style="margin-top:5px;">
-<button class="interact" onclick="likeFeed(${index})">J'aime (${post.likes})</button>
-<button class="interact" onclick="dislikeFeed(${index})">Je n'aime pas (${post.dislikes})</button>
-<button class="interact" onclick="commentFeed(${index})">Commenter</button>
+d.innerHTML+=`
+<div class="actions">
+<button onclick="like(${i})">👍 ${p.likes}</button>
+<button onclick="share()">🔗 Partager</button>
+<button onclick="comment(${i})">💬</button>
 </div>`;
-if(post.comments.length>0){post.comments.forEach(c=>{html+=`<div class="comment">${c.user}: ${c.text}</div>`;});}
-html+='</div>';
-feedDiv.innerHTML+=html;
+p.com.forEach(c=>d.innerHTML+=`<div class="comment">${c}</div>`);
+h.appendChild(d);
 });
 }
 
-function likeFeed(index){ let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]'); feed[index].likes++; localStorage.setItem('vpFeed',JSON.stringify(feed)); loadFeed(); }
-function dislikeFeed(index){ let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]'); feed[index].dislikes++; localStorage.setItem('vpFeed',JSON.stringify(feed)); loadFeed(); }
-function commentFeed(index){ const text=prompt("Écris ton commentaire :"); if(!text) return; const username=localStorage.getItem('vpUsername'); let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]'); feed[index].comments.push({user:username,text:text}); localStorage.setItem('vpFeed',JSON.stringify(feed)); loadFeed(); }
-
-// ---------- Initialisation ----------
-function loadUserData(){
-const username=localStorage.getItem('vpUsername');
-if(!username) return;
-if(!localStorage.getItem(username+'_pop')) localStorage.setItem(username+'_pop','0');
-if(!localStorage.getItem(username+'_likes')) localStorage.setItem(username+'_likes','0');
-if(!localStorage.getItem(username+'_dislikes')) localStorage.setItem(username+'_dislikes','0');
-popularity=parseInt(localStorage.getItem(username+'_pop'));
-likes=parseInt(localStorage.getItem(username+'_likes'));
-dislikes=parseInt(localStorage.getItem(username+'_dislikes'));
-popData.push(popularity);
-updateGraph();
-document.getElementById("popText").innerText=`Ton niveau de popularité : ${popularity}`;
-loadFeed();
+function like(i){
+feed[i].likes++;
+pop+=2;
+history.push(pop);history.shift();
+save();render();draw();
 }
 
-// Initialisation AdSense
-(adsbygoogle = window.adsbygoogle || []).push({});
+function comment(i){
+let c=prompt("Commentaire");
+if(c){feed[i].com.push(c);save();render();}
+}
+
+function share(){
+let url=location.href;
+window.open(`https://wa.me/?text=${encodeURIComponent(url)}`);
+}
+
+function draw(){
+let e=document.getElementById("energy");
+e.style.width=Math.min(pop,100)+"%";
+
+let c=document.getElementById("graph");
+let x=c.getContext("2d");
+x.clearRect(0,0,c.width,c.height);
+x.strokeStyle="#3bf0ff";
+x.beginPath();
+history.forEach((v,i)=>{
+let px=i*(c.width/20);
+let py=c.height-(v*1.2);
+i?x.lineTo(px,py):x.moveTo(px,py);
+});
+x.stroke();
+}
+
+setInterval(()=>{
+if(pop>0)pop--;
+history.push(pop);history.shift();
+save();draw();
+},2000);
+
+render();draw();
+(adsbygoogle=window.adsbygoogle||[]).push({});
 </script>
 
 </body>
