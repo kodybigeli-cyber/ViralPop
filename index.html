@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#9333ea">
 
-  <!-- Chart.js pour graphiques -->
+  <!-- Chart.js pour courbe popularité -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
@@ -86,13 +86,59 @@
 </main>
 
 <script>
-  // Navigation
+  // --- Navigation ---
   function showSection(section){
     ['home','wonder47','publish','profile'].forEach(s=>document.getElementById(s).style.display='none');
     document.getElementById(section).style.display='block';
   }
 
-  // Wonder47
+  // --- Compteur de visiteurs ---
+  let visitors = localStorage.getItem('viralPlusVisitors') || 0;
+  visitors = Number(visitors) + 1;
+  localStorage.setItem('viralPlusVisitors', visitors);
+
+  function updateVisitorCount() {
+    const homeDiv = document.getElementById('home');
+    const profileDiv = document.getElementById('profile');
+
+    let visitorHome = document.getElementById('visitorCountHome');
+    if(!visitorHome){
+      visitorHome = document.createElement('div');
+      visitorHome.id = 'visitorCountHome';
+      visitorHome.style.marginTop = '10px';
+      visitorHome.style.fontWeight = 'bold';
+      homeDiv.appendChild(visitorHome);
+    }
+    visitorHome.innerText = `👥 Visiteurs totaux : ${visitors}`;
+
+    let visitorProfile = document.getElementById('visitorCountProfile');
+    if(!visitorProfile){
+      visitorProfile = document.createElement('div');
+      visitorProfile.id = 'visitorCountProfile';
+      visitorProfile.style.marginTop = '10px';
+      visitorProfile.style.fontWeight = 'bold';
+      profileDiv.appendChild(visitorProfile);
+    }
+    visitorProfile.innerText = `👥 Visiteurs totaux : ${visitors}`;
+  }
+
+  // --- Notifications push ---
+  function showNotification(message){
+    if(Notification.permission === "granted"){
+      new Notification("Viral+", {body: message, icon: "icons/icon-192.png"});
+    } else if(Notification.permission !== "denied"){
+      Notification.requestPermission().then(permission=>{
+        if(permission === "granted"){
+          new Notification("Viral+", {body: message, icon: "icons/icon-192.png"});
+        }
+      });
+    }
+  }
+  function notifyBadge(badge){
+    showNotification(`🎉 Nouveau badge débloqué : ${badge} !`);
+  }
+
+  // --- Wonder47 ---
   const ideas = [
     "Créer un challenge TikTok avec une danse originale !",
     "Faire une vidéo drôle avec ton animal de compagnie.",
@@ -105,16 +151,15 @@
     const ideaDiv = document.getElementById("ideaText");
     ideaDiv.innerText = idea;
     ideaDiv.style.animation = 'none';
-    void ideaDiv.offsetWidth; // restart animation
+    void ideaDiv.offsetWidth;
     ideaDiv.style.animation = 'slideDown 0.5s forwards';
     increasePop(3);
   }
 
-  // Popularité
+  // --- Popularité ---
   let popularity = 0;
   const popHistory = [];
   const badgesUnlocked = [];
-
   const ctx = document.getElementById('popChart').getContext('2d');
   const popChart = new Chart(ctx, {
     type:'line',
@@ -141,7 +186,7 @@
     checkBadges();
   }
 
-  // Publier
+  // --- Publier ---
   function publishPost(){
     const feed=document.getElementById('feed');
     const text=document.getElementById('postInput').value;
@@ -162,7 +207,7 @@
     increasePop(5);
   }
 
-  // Partage
+  // --- Partage ---
   function shareApp(){
     if(navigator.share){
       navigator.share({
@@ -176,7 +221,7 @@
     increasePop(2);
   }
 
-  // Badges
+  // --- Badges ---
   function checkBadges(){
     const badgesDiv=document.getElementById('badges');
     const newBadges=[];
@@ -189,10 +234,12 @@
       span.className='badge';
       span.innerText=b;
       badgesDiv.appendChild(span);
+      notifyBadge(b);
     });
   }
 
-  // Initialisation
+  // --- Initialisation ---
+  updateVisitorCount();
   increasePop(0);
 </script>
 
