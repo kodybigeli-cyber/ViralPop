@@ -1,252 +1,252 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viral+</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viral+</title>
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6a0dad">
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6a0dad">
 
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597"
-     crossorigin="anonymous"></script>
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597"
+crossorigin="anonymous"></script>
 
-  <!-- Styles -->
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #1c0b2b; /* violet sombre */
-      color: #f0f0f0;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: linear-gradient(90deg, #4b0082, #6a0dad);
-      padding: 15px 0;
-      font-size: 24px;
-      font-weight: bold;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-    header img {
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-    }
-    nav {
-      display: flex;
-      justify-content: space-around;
-      background: #2a0d3f;
-      padding: 10px 0;
-    }
-    nav button {
-      background: #6a0dad;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    nav button:hover {
-      background: #8b00ff;
-    }
-    main {
-      padding: 20px;
-      max-width: 700px;
-      margin: auto;
-    }
-    .module {
-      background: #2a0d3f;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-    }
-    .module h2 {
-      margin-top: 0;
-      color: #ffdd00;
-    }
-    .idea, .post {
-      margin-top: 10px;
-      padding: 10px;
-      background: #3b0e5c;
-      border-radius: 8px;
-    }
-    button.interact {
-      margin: 5px 5px 0 0;
-      background: #6a0dad;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button.interact:hover {
-      background: #8b00ff;
-    }
-    canvas {
-      background: #1c0b2b;
-      width: 100%;
-      height: 150px;
-      border-radius: 10px;
-    }
-    .ad-box {
-      margin: 20px 0;
-      display: flex;
-      justify-content: center;
-    }
-  </style>
+<style>
+body { font-family: Arial, sans-serif; margin:0; padding:0; background:#1c0b2b; color:#f0f0f0; }
+header { display:flex; align-items:center; justify-content:center; gap:10px; background:linear-gradient(90deg, #4b0082, #6a0dad); padding:15px 0; font-size:24px; font-weight:bold; box-shadow:0 4px 10px rgba(0,0,0,0.3);}
+header img { width:40px; height:40px; border-radius:8px; }
+nav { display:flex; justify-content:space-around; background:#2a0d3f; padding:10px 0; }
+nav button { background:#6a0dad; color:#fff; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; }
+nav button:hover { background:#8b00ff; }
+main { padding:20px; max-width:700px; margin:auto; }
+.module { background:#2a0d3f; padding:15px; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 6px rgba(0,0,0,0.5);}
+.module h2 { margin-top:0; color:#ffdd00; }
+.post, .idea { margin-top:10px; padding:10px; background:#3b0e5c; border-radius:8px; }
+button.interact { margin:5px 5px 0 0; background:#6a0dad; color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer;}
+button.interact:hover { background:#8b00ff; }
+canvas { background:#1c0b2b; width:100%; height:150px; border-radius:10px; }
+.ad-box { margin:20px 0; display:flex; justify-content:center; }
+input[type=text], input[type=file], textarea { width:100%; margin:5px 0; border-radius:6px; padding:8px; border:none; }
+textarea { resize:none; }
+.comment { background:#4a1471; margin-top:5px; padding:5px; border-radius:6px; font-size:14px; }
+</style>
 </head>
 <body>
 
 <header>
-  <img src="icons/icon-192.png" alt="Viral+ Logo">
-  Viral+
+<img src="icons/icon-192.png" alt="Viral+ Logo">Viral+
 </header>
 
+<main>
+<!-- Login / pseudo -->
+<div class="module" id="loginModule">
+<h2>👤 Connecte-toi</h2>
+<input type="text" id="usernameInput" placeholder="Entre ton pseudo">
+<button class="interact" onclick="login()">Valider</button>
+</div>
+
+<!-- Main content -->
+<div id="mainContent" style="display:none;">
 <nav>
-  <button onclick="showModule('wonder47')">Home</button>
-  <button onclick="showModule('miniCourse')">Mini-cours</button>
-  <button onclick="showModule('popularity')">Popularité</button>
+<button onclick="showModule('wonder47')">Home</button>
+<button onclick="showModule('miniCourse')">Mini-cours</button>
+<button onclick="showModule('popularity')">Popularité</button>
+<button onclick="showModule('publishModule')">Publier</button>
 </nav>
 
-<main>
-  <!-- Wonder47 -->
-  <div class="module" id="wonder47">
-    <h2>💡 Wonder47 - Idée virale</h2>
-    <div class="idea" id="ideaText">Clique pour obtenir une idée virale !</div>
-    <button class="interact" onclick="generateIdea()">Nouvelle idée</button>
-  </div>
+<!-- Wonder47 -->
+<div class="module" id="wonder47">
+<h2>💡 Wonder47 - Idée virale</h2>
+<div class="idea" id="ideaText">Clique pour obtenir une idée virale !</div>
+<button class="interact" onclick="generateIdea()">Nouvelle idée</button>
+</div>
 
-  <!-- Mini-cours -->
-  <div class="module" id="miniCourse" style="display:none">
-    <h2>📚 Mini-cours</h2>
-    <div class="idea" id="courseText">Clique pour voir un mini-cours.</div>
-    <button class="interact" onclick="generateCourse()">Voir un mini-cours</button>
-  </div>
+<!-- Mini-cours -->
+<div class="module" id="miniCourse" style="display:none">
+<h2>📚 Mini-cours</h2>
+<div class="idea" id="courseText">Clique pour voir un mini-cours.</div>
+<button class="interact" onclick="generateCourse()">Voir un mini-cours</button>
+</div>
 
-  <!-- Popularité -->
-  <div class="module" id="popularity" style="display:none">
-    <h2>📈 Popularité</h2>
-    <canvas id="popGraph"></canvas>
-    <div class="idea" id="popText">Ton niveau de popularité : 0</div>
-    <button class="interact" onclick="increasePop()">Augmenter Popularité</button>
-    <button class="interact" onclick="likePost()">J'aime</button>
-    <button class="interact" onclick="dislikePost()">Je n'aime pas</button>
-    <button class="interact" onclick="commentPost()">Commenter</button>
-    <button class="interact" onclick="sharePost()">Partager</button>
-  </div>
+<!-- Popularité -->
+<div class="module" id="popularity" style="display:none">
+<h2>📈 Popularité</h2>
+<canvas id="popGraph"></canvas>
+<div class="idea" id="popText">Ton niveau de popularité : 0</div>
+<button class="interact" onclick="increasePop()">Augmenter Popularité</button>
+<button class="interact" onclick="likePost()">J'aime</button>
+<button class="interact" onclick="dislikePost()">Je n'aime pas</button>
+</div>
 
-  <!-- Pub AdSense -->
-  <div class="ad-box">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-8210705555437597"
-         data-ad-slot="1234567890"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-  </div>
+<!-- Publier -->
+<div class="module" id="publishModule" style="display:none">
+<h2>📝 Publier</h2>
+<textarea id="postText" placeholder="Écris ton texte ici..." rows="3"></textarea>
+<input type="file" id="postMedia" accept="image/*,video/*">
+<button class="interact" onclick="publishPost()">Publier</button>
+<div id="feed"></div>
+</div>
+
+<!-- Pub AdSense -->
+<div class="ad-box">
+<ins class="adsbygoogle"
+style="display:block"
+data-ad-client="ca-pub-8210705555437597"
+data-ad-slot="1234567890"
+data-ad-format="auto"
+data-full-width-responsive="true"></ins>
+</div>
+</div>
 </main>
 
-<!-- JS -->
 <script>
-  // Modules
-  function showModule(id) {
-    ['wonder47','miniCourse','popularity'].forEach(m => {
-      document.getElementById(m).style.display = (m===id ? 'block':'none');
-    });
-  }
+// ---------- Login ----------
+function login() {
+const username = document.getElementById('usernameInput').value.trim();
+if(username===''){alert('Entre ton pseudo !'); return;}
+localStorage.setItem('vpUsername',username);
+document.getElementById('loginModule').style.display='none';
+document.getElementById('mainContent').style.display='block';
+loadUserData();
+loadFeed();
+}
 
-  // Idées virales
-  const ideas = [
-    "Créer un challenge TikTok avec une danse originale !",
-    "Faire une vidéo drôle avec ton animal de compagnie.",
-    "Partager un tutoriel rapide et utile.",
-    "Poster un meme sur un sujet d'actualité.",
-    "Organiser un mini-concours avec ton audience."
-  ];
+// ---------- Modules ----------
+function showModule(id){
+['wonder47','miniCourse','popularity','publishModule'].forEach(m=>{
+document.getElementById(m).style.display=(m===id?'block':'none');
+});
+}
 
-  function generateIdea() {
-    document.getElementById("ideaText").innerText = ideas[Math.floor(Math.random()*ideas.length)];
-  }
+// ---------- Wonder47 ----------
+const ideas=[
+"Créer un challenge TikTok avec une danse originale !",
+"Faire une vidéo drôle avec ton animal de compagnie.",
+"Partager un tutoriel rapide et utile.",
+"Poster un meme sur un sujet d'actualité.",
+"Organiser un mini-concours avec ton audience."
+];
+function generateIdea(){
+document.getElementById("ideaText").innerText=ideas[Math.floor(Math.random()*ideas.length)];
+}
 
-  // Mini-cours
-  const courses = [
-    "Comment créer du contenu viral facilement.",
-    "Astuce pour gagner plus d'abonnés rapidement.",
-    "Techniques simples pour éditer tes vidéos.",
-    "Secrets pour rendre tes publications plus visibles.",
-    "Comment collaborer avec d'autres créateurs."
-  ];
+// ---------- Mini-cours ----------
+const courses=[
+"Comment créer du contenu viral facilement.",
+"Astuce pour gagner plus d'abonnés rapidement.",
+"Techniques simples pour éditer tes vidéos.",
+"Secrets pour rendre tes publications plus visibles.",
+"Comment collaborer avec d'autres créateurs."
+];
+function generateCourse(){
+document.getElementById("courseText").innerText=courses[Math.floor(Math.random()*courses.length)];
+}
 
-  function generateCourse() {
-    document.getElementById("courseText").innerText = courses[Math.floor(Math.random()*courses.length)];
-  }
+// ---------- Popularité ----------
+let popularity=0;
+let likes=0;
+let dislikes=0;
+const popData=[];
+const canvas=document.getElementById('popGraph');
+const ctx=canvas.getContext('2d');
 
-  // Popularité
-  let popularity = 0;
-  let likes = 0;
-  let dislikes = 0;
-  const popData = [];
+function increasePop(){
+popularity+=Math.floor(Math.random()*10)+1;
+saveUserData();
+popData.push(popularity);
+if(popData.length>20) popData.shift();
+updateGraph();
+document.getElementById("popText").innerText=`Ton niveau de popularité : ${popularity}`;
+}
 
-  function increasePop() {
-    const value = Math.floor(Math.random()*10)+1;
-    popularity += value;
-    popData.push(popularity);
-    if(popData.length>20) popData.shift();
-    updateGraph();
-    document.getElementById("popText").innerText = `Ton niveau de popularité : ${popularity}`;
-  }
+function likePost(){ likes++; increasePop(); saveUserData(); }
+function dislikePost(){ dislikes++; popularity=Math.max(0,popularity-1); increasePop(); saveUserData(); }
 
-  function likePost() {
-    likes++;
-    increasePop();
-  }
+function updateGraph(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.beginPath();
+ctx.strokeStyle="#ffdd00";
+ctx.lineWidth=2;
+for(let i=0;i<popData.length;i++){
+const x=i*(canvas.width/20);
+const y=canvas.height-popData[i]*10;
+if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+}
+ctx.stroke();
+}
 
-  function dislikePost() {
-    dislikes++;
-    popularity = Math.max(0, popularity-1);
-    increasePop();
-  }
+function saveUserData(){
+const username=localStorage.getItem('vpUsername');
+localStorage.setItem(username+'_pop',popularity);
+localStorage.setItem(username+'_likes',likes);
+localStorage.setItem(username+'_dislikes',dislikes);
+}
 
-  function commentPost() {
-    const comment = prompt("Écris ton commentaire :");
-    if(comment) alert("Commentaire publié : " + comment);
-  }
+// ---------- Publications ----------
+function publishPost(){
+const username=localStorage.getItem('vpUsername');
+const text=document.getElementById('postText').value.trim();
+const file=document.getElementById('postMedia').files[0];
+if(text===''){alert('Écris un texte !'); return;}
+const reader=new FileReader();
+reader.onload=function(e){
+const mediaData=e.target.result;
+const post={user:username,text:text,media:mediaData,likes:0,dislikes:0,comments:[]};
+let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]');
+feed.unshift(post);
+localStorage.setItem('vpFeed',JSON.stringify(feed));
+document.getElementById('postText').value='';
+document.getElementById('postMedia').value='';
+loadFeed();
+}
+if(file){reader.readAsDataURL(file);} else {reader.onload({target:{result:null}});}
+}
 
-  function sharePost() {
-    const link = "https://kodybigeli-cyber.github.io/";
-    alert("Lien copié pour partager : " + link);
-    navigator.clipboard.writeText(link);
-  }
+function loadFeed(){
+const feedDiv=document.getElementById('feed');
+feedDiv.innerHTML='';
+let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]');
+feed.forEach((post,index)=>{
+let html=`<div class="post"><b>${post.user}</b>: ${post.text}`;
+if(post.media){ if(post.media.startsWith('data:video')){html+=`<video src="${post.media}" controls style="max-width:100%;margin-top:5px;"></video>`;}
+else{html+=`<img src="${post.media}" style="max-width:100%;margin-top:5px;">`;}
+}
+html+=`<div style="margin-top:5px;">
+<button class="interact" onclick="likeFeed(${index})">J'aime (${post.likes})</button>
+<button class="interact" onclick="dislikeFeed(${index})">Je n'aime pas (${post.dislikes})</button>
+<button class="interact" onclick="commentFeed(${index})">Commenter</button>
+</div>`;
+if(post.comments.length>0){post.comments.forEach(c=>{html+=`<div class="comment">${c.user}: ${c.text}</div>`;});}
+html+='</div>';
+feedDiv.innerHTML+=html;
+});
+}
 
-  // Graphique dynamique
-  const canvas = document.getElementById('popGraph');
-  const ctx = canvas.getContext('2d');
+function likeFeed(index){ let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]'); feed[index].likes++; localStorage.setItem('vpFeed',JSON.stringify(feed)); loadFeed(); }
+function dislikeFeed(index){ let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]'); feed[index].dislikes++; localStorage.setItem('vpFeed',JSON.stringify(feed)); loadFeed(); }
+function commentFeed(index){ const text=prompt("Écris ton commentaire :"); if(!text) return; const username=localStorage.getItem('vpUsername'); let feed=JSON.parse(localStorage.getItem('vpFeed')||'[]'); feed[index].comments.push({user:username,text:text}); localStorage.setItem('vpFeed',JSON.stringify(feed)); loadFeed(); }
 
-  function updateGraph() {
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    ctx.beginPath();
-    ctx.strokeStyle = "#ffdd00";
-    ctx.lineWidth = 2;
-    for(let i=0;i<popData.length;i++){
-      const x = i*(canvas.width/20);
-      const y = canvas.height - popData[i]*10;
-      if(i===0) ctx.moveTo(x,y);
-      else ctx.lineTo(x,y);
-    }
-    ctx.stroke();
-  }
+// ---------- Initialisation ----------
+function loadUserData(){
+const username=localStorage.getItem('vpUsername');
+if(!username) return;
+if(!localStorage.getItem(username+'_pop')) localStorage.setItem(username+'_pop','0');
+if(!localStorage.getItem(username+'_likes')) localStorage.setItem(username+'_likes','0');
+if(!localStorage.getItem(username+'_dislikes')) localStorage.setItem(username+'_dislikes','0');
+popularity=parseInt(localStorage.getItem(username+'_pop'));
+likes=parseInt(localStorage.getItem(username+'_likes'));
+dislikes=parseInt(localStorage.getItem(username+'_dislikes'));
+popData.push(popularity);
+updateGraph();
+document.getElementById("popText").innerText=`Ton niveau de popularité : ${popularity}`;
+loadFeed();
+}
 
-  // Initialisation AdSense
-  (adsbygoogle = window.adsbygoogle || []).push({});
+// Initialisation AdSense
+(adsbygoogle = window.adsbygoogle || []).push({});
 </script>
 
 </body>
-  </html>
+</html>
