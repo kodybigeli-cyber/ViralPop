@@ -1,6 +1,6 @@
 {
-  "name": "ViralPop",
-  "short_name": "ViralPop",
+  "name": "Viral+",
+  "short_name": "Viral+",
   "description": "Plateforme pour le buzz, tendances et contenu viral. Partage ton contenu et suis ta progression !",
   "start_url": "./index.html",
   "display": "standalone",
