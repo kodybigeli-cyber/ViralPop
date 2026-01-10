@@ -1,10 +1,12 @@
 {
   "name": "ViralPop",
   "short_name": "ViralPop",
-  "start_url": "/index.html",
+  "description": "ViralPop est une plateforme web orientée buzz, tendances et contenu viral, conçue pour une audience mobile.",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#3b82f6",
   "theme_color": "#9333ea",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icon-192.png",
