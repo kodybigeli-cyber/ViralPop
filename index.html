@@ -5,19 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viral+</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7c3aed">
+<!-- AdSense META -->
+<meta name="google-adsense-account" content="ca-pub-8210705555437597">
 
-<!-- Google AdSense -->
+<!-- AdSense SCRIPT -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597"
 crossorigin="anonymous"></script>
 
 <style>
 body{
 margin:0;
-font-family:Arial,sans-serif;
-background:#2b145c;
-color:#fff;
+font-family:system-ui,Arial;
+background:#24104f;
+color:white;
+overflow-x:hidden;
 }
 
 header{
@@ -25,140 +26,104 @@ position:sticky;
 top:0;
 z-index:10;
 background:linear-gradient(90deg,#7c3aed,#3bf0ff);
-padding:15px;
+padding:14px;
 text-align:center;
 font-size:24px;
-font-weight:bold;
-box-shadow:0 4px 15px rgba(0,0,0,.4);
+font-weight:900;
+box-shadow:0 0 20px rgba(59,240,255,.6);
 }
 
 nav{
 display:flex;
 justify-content:space-around;
-background:#351a6f;
 padding:10px;
+background:#2f1669;
 }
 
 nav button{
 background:#7c3aed;
 border:none;
-color:white;
 padding:10px 14px;
-border-radius:20px;
+border-radius:999px;
+color:white;
 font-weight:bold;
 cursor:pointer;
-transition:.3s;
-}
-nav button:hover{
-background:#3bf0ff;
-color:#000;
+box-shadow:0 0 10px rgba(59,240,255,.5);
 }
 
 main{
 max-width:600px;
 margin:auto;
-padding:15px;
+padding:12px;
 }
 
 .module{
-background:#3a1c7a;
-border-radius:16px;
+background:#351a6f;
+border-radius:20px;
 padding:15px;
 margin-bottom:20px;
-box-shadow:0 0 15px rgba(59,240,255,.15);
+box-shadow:0 0 20px rgba(0,0,0,.4);
 }
 
+/* POSTS */
 .post{
-background:#47208f;
-border-radius:14px;
+background:#45208a;
+border-radius:18px;
 padding:12px;
 margin-bottom:15px;
-animation:fadeIn .4s ease;
+animation:pop .3s ease;
 }
-
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1;transform:none}
-}
+@keyframes pop{from{transform:scale(.97);opacity:.5}to{opacity:1}}
 
 .post img,video{
 width:100%;
-border-radius:10px;
+border-radius:12px;
 margin-top:8px;
 }
 
+/* ACTIONS */
+.actions{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+margin-top:8px;
+}
 .actions button{
-margin:5px 5px 0 0;
 background:#7c3aed;
 border:none;
 padding:6px 10px;
-border-radius:12px;
+border-radius:999px;
 color:white;
 cursor:pointer;
 }
 
-.comment{
-background:#5b2fb3;
-padding:6px;
-border-radius:8px;
-margin-top:5px;
-font-size:14px;
-}
-
-/* PILE ÉLECTRIQUE */
+/* BATTERY */
 .battery{
-width:100%;
-height:40px;
-border:3px solid #3bf0ff;
-border-radius:10px;
-position:relative;
+height:42px;
+border-radius:12px;
+border:2px solid #3bf0ff;
 overflow:hidden;
-margin-top:10px;
+position:relative;
 }
-
 .energy{
 height:100%;
 width:0%;
-background:linear-gradient(90deg,#3bf0ff,#00fff2);
+background:linear-gradient(90deg,#00f7ff,#3bf0ff,#7df9ff);
 box-shadow:0 0 20px #3bf0ff;
-animation:pulse 1s infinite;
+animation:flow 1s linear infinite;
+}
+@keyframes flow{
+from{filter:hue-rotate(0deg)}
+to{filter:hue-rotate(360deg)}
 }
 
-@keyframes pulse{
-0%{opacity:.7}
-50%{opacity:1}
-100%{opacity:.7}
-}
-
-.spark{
-position:absolute;
-width:100%;
-height:100%;
-background:radial-gradient(circle,#fff 10%,transparent 60%);
-opacity:.15;
-animation:spark 0.5s infinite;
-}
-
-@keyframes spark{
-from{transform:translateX(-20px)}
-to{transform:translateX(20px)}
-}
-
-/* Graph */
+/* GRAPH */
 canvas{
 width:100%;
-height:150px;
-background:#2b145c;
-border-radius:10px;
-margin-top:10px;
-}
-
-textarea,input{
-width:100%;
-padding:8px;
-border-radius:10px;
-border:none;
-margin-top:5px;
+height:160px;
+background:#1a093d;
+border-radius:12px;
+margin-top:12px;
 }
 
 .ad{
@@ -172,30 +137,25 @@ margin:20px 0;
 <header>⚡ Viral+</header>
 
 <nav>
-<button onclick="show('home')">Home</button>
-<button onclick="show('publish')">Publier</button>
-<button onclick="show('pop')">Popularité</button>
+<button onclick="view('home')">Home</button>
+<button onclick="view('publish')">Publier</button>
+<button onclick="view('pop')">Popularité</button>
+<button onclick="alert('Bientôt 👀')">Profil</button>
 </nav>
 
 <main>
 
-<!-- HOME -->
 <div id="home" class="module"></div>
 
-<!-- PUBLIER -->
 <div id="publish" class="module" style="display:none">
-<textarea id="text" placeholder="Exprime-toi…"></textarea>
+<textarea id="text" placeholder="Exprime-toi…" style="width:100%;border-radius:12px;padding:8px"></textarea>
 <input type="file" id="media" accept="image/*,video/*">
 <button onclick="publish()">Publier</button>
 </div>
 
-<!-- POPULARITÉ -->
 <div id="pop" class="module" style="display:none">
-<h3>Énergie de popularité</h3>
-<div class="battery">
-<div class="energy" id="energy"></div>
-<div class="spark"></div>
-</div>
+<h3>⚡ Énergie virale</h3>
+<div class="battery"><div id="energy" class="energy"></div></div>
 <canvas id="graph"></canvas>
 </div>
 
@@ -210,53 +170,43 @@ data-full-width-responsive="true"></ins>
 </main>
 
 <script>
+const home=document.getElementById("home");
 let feed=JSON.parse(localStorage.getItem("vpFeed")||"[]");
-let pop=Number(localStorage.getItem("vpPop")||0);
-let history=[...Array(20).keys()].map(()=>pop);
+let pop=Number(localStorage.getItem("vpPop")||20);
+let history=Array(30).fill(pop);
 
 function save(){
 localStorage.setItem("vpFeed",JSON.stringify(feed));
 localStorage.setItem("vpPop",pop);
 }
 
-function show(id){
+function view(v){
 ["home","publish","pop"].forEach(x=>{
-document.getElementById(x).style.display=(x==id?"block":"none");
+document.getElementById(x).style.display=x==v?"block":"none";
 });
 }
 
 function publish(){
-let t=document.getElementById("text").value;
-let f=document.getElementById("media").files[0];
+let t=text.value;
 if(!t)return;
-let r=new FileReader();
-r.onload=()=>{
-feed.unshift({t,media:r.result,likes:0,com:[]});
+feed.unshift({t,likes:0});
+pop+=5;
 save();render();
-};
-if(f)r.readAsDataURL(f); else r.onload();
-document.getElementById("text").value="";
 }
 
 function render(){
-let h=document.getElementById("home");
-h.innerHTML="";
+home.innerHTML="";
 feed.forEach((p,i)=>{
-let d=document.createElement("div");
-d.className="post";
-d.innerHTML=`<b>Utilisateur</b><br>${p.t}`;
-if(p.media){
-if(p.media.startsWith("data:video"))d.innerHTML+=`<video src="${p.media}" controls></video>`;
-else d.innerHTML+=`<img src="${p.media}">`;
-}
-d.innerHTML+=`
+home.innerHTML+=`
+<div class="post">
+<b>Utilisateur</b><br>${p.t}
 <div class="actions">
 <button onclick="like(${i})">👍 ${p.likes}</button>
-<button onclick="share()">🔗 Partager</button>
-<button onclick="comment(${i})">💬</button>
+<button onclick="share()">📤 Partager</button>
+<button onclick="alert('Commentaires bientôt')">💬</button>
+<button onclick="alert('Sauvegardé')">⭐</button>
+</div>
 </div>`;
-p.com.forEach(c=>d.innerHTML+=`<div class="comment">${c}</div>`);
-h.appendChild(d);
 });
 }
 
@@ -264,45 +214,40 @@ function like(i){
 feed[i].likes++;
 pop+=2;
 history.push(pop);history.shift();
-save();render();draw();
-}
-
-function comment(i){
-let c=prompt("Commentaire");
-if(c){feed[i].com.push(c);save();render();}
+save();render();
 }
 
 function share(){
-let url=location.href;
-window.open(`https://wa.me/?text=${encodeURIComponent(url)}`);
+window.open("https://wa.me/?text="+encodeURIComponent(location.href));
 }
 
 function draw(){
-let e=document.getElementById("energy");
-e.style.width=Math.min(pop,100)+"%";
-
-let c=document.getElementById("graph");
-let x=c.getContext("2d");
+const c=document.getElementById("graph");
+c.width=c.offsetWidth;
+c.height=160;
+const x=c.getContext("2d");
 x.clearRect(0,0,c.width,c.height);
 x.strokeStyle="#3bf0ff";
 x.beginPath();
 history.forEach((v,i)=>{
-let px=i*(c.width/20);
-let py=c.height-(v*1.2);
+let px=i*(c.width/(history.length-1));
+let py=c.height-Math.min(v,100)*1.4;
 i?x.lineTo(px,py):x.moveTo(px,py);
 });
 x.stroke();
+document.getElementById("energy").style.width=Math.min(pop,100)+"%";
 }
 
 setInterval(()=>{
-if(pop>0)pop--;
+pop=Math.max(0,pop-1);
 history.push(pop);history.shift();
-save();draw();
-},2000);
+draw();
+},1000);
 
-render();draw();
+render();
+draw();
 (adsbygoogle=window.adsbygoogle||[]).push({});
 </script>
 
 </body>
-</html>
+  </html>
