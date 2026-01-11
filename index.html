@@ -3,198 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral+ V2</title>
+<title>Viral+ V3 (Firebase)</title>
 
 <meta name="theme-color" content="#7c3aed">
-<link rel="manifest" href="manifest.json">
 
-<!-- Google AdSense -->
+<!-- Google AdSense (optionnel, garde si tu as un compte) -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597" crossorigin="anonymous"></script>
 
 <style>
 :root{
-  --bg:#2b145c;
-  --card:#3a1c7a;
-  --post:#47208f;
-  --accent:#3bf0ff;
-  --btn:#7c3aed;
-  --text:#ffffff;
-  --glow:rgba(59,240,255,.18);
-  --danger:#ef4444;
-  --success:#22c55e;
-  --info:#06b6d4;
+  --bg:#2b145c; --card:#3a1c7a; --post:#47208f; --accent:#3bf0ff;
+  --btn:#7c3aed; --text:#ffffff; --glow:rgba(59,240,255,.18);
+  --danger:#ef4444; --success:#22c55e; --info:#06b6d4;
 }
-
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Inter,Arial,sans-serif;
-  background:radial-gradient(1200px 600px at 20% 0%, #2b145c 0%, #1f0e45 60%, #160a33 100%);
-  color:var(--text);
-}
-
-/* Header */
-header{
-  position:sticky; top:0; z-index:30;
-  background:linear-gradient(90deg,#7c3aed,#3bf0ff);
-  padding:12px 16px;
-  display:flex; align-items:center; justify-content:space-between;
-  box-shadow:0 8px 24px rgba(0,0,0,.35);
-  backdrop-filter:blur(6px);
-}
+body{ margin:0; font-family:Inter,Arial,sans-serif; background:radial-gradient(1200px 600px at 20% 0%, #2b145c 0%, #1f0e45 60%, #160a33 100%); color:var(--text) }
+header{ position:sticky; top:0; z-index:30; background:linear-gradient(90deg,#7c3aed,#3bf0ff); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 8px 24px rgba(0,0,0,.35); backdrop-filter:blur(6px) }
 header .brand{ font-size:22px; font-weight:800; letter-spacing:.3px; text-shadow:0 2px 10px rgba(0,0,0,.35) }
 header .right{ display:flex; gap:8px; align-items:center }
-.badge{
-  background:#160a33; color:#3bf0ff; border:1px solid #3bf0ff;
-  padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700;
-  box-shadow:0 0 12px var(--glow);
-}
-
-/* Nav */
-nav{
-  display:flex; gap:8px; padding:10px; justify-content:center;
-  background:#2a155a; border-bottom:1px solid rgba(255,255,255,.08);
-}
-nav button{
-  background:var(--btn); border:none; color:white;
-  padding:10px 14px; border-radius:16px; font-weight:700; cursor:pointer;
-  transition:.25s; box-shadow:0 6px 16px rgba(124,58,237,.35);
-}
+.badge{ background:#160a33; color:#3bf0ff; border:1px solid #3bf0ff; padding:6px 10px; border-radius:999px; font-size:12px; font-weight:700; box-shadow:0 0 12px var(--glow) }
+nav{ display:flex; gap:8px; padding:10px; justify-content:center; background:#2a155a; border-bottom:1px solid rgba(255,255,255,.08) }
+nav button{ background:var(--btn); border:none; color:white; padding:10px 14px; border-radius:16px; font-weight:700; cursor:pointer; transition:.25s; box-shadow:0 6px 16px rgba(124,58,237,.35) }
 nav button:hover{ filter:brightness(1.15); transform:translateY(-1px) }
 nav button.active{ background:#3bf0ff; color:#000; box-shadow:0 6px 16px rgba(59,240,255,.35) }
-
 main{ max-width:900px; margin:auto; padding:16px }
-.module{
-  background:var(--card); border-radius:18px; padding:16px; margin-bottom:20px;
-  box-shadow:0 0 18px var(--glow);
-}
-
-/* Auth */
-.auth{
-  max-width:420px; margin:40px auto; background:var(--card); padding:18px; border-radius:16px; box-shadow:0 0 18px var(--glow)
-}
-.auth h2{ margin:0 0 10px 0 }
-.auth input{
-  width:100%; padding:10px; border-radius:12px; border:none; margin-top:6px; background:#4a238f; color:#fff
-}
+.module{ background:var(--card); border-radius:18px; padding:16px; margin-bottom:20px; box-shadow:0 0 18px var(--glow) }
+.auth{ max-width:420px; margin:40px auto; background:var(--card); padding:18px; border-radius:16px; box-shadow:0 0 18px var(--glow) }
+.auth input{ width:100%; padding:10px; border-radius:12px; border:none; margin-top:6px; background:#4a238f; color:#fff }
 .auth .row{ display:flex; gap:10px; margin-top:10px }
-.auth button{
-  flex:1; background:#3bf0ff; color:#000; border:none; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer
-}
+.auth button{ flex:1; background:#3bf0ff; color:#000; border:none; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer }
 .auth .switch{ text-align:center; margin-top:10px; opacity:.85 }
-
-/* Feed */
-.post{
-  background:var(--post); border-radius:14px; padding:12px; margin-bottom:14px;
-  animation:fadeIn .35s ease; position:relative;
-}
+.post{ background:var(--post); border-radius:14px; padding:12px; margin-bottom:14px; animation:fadeIn .35s ease; position:relative }
 @keyframes fadeIn{ from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
-.post img, .post video{ width:100%; border-radius:12px; margin-top:8px }
+.post img,.post video{ width:100%; border-radius:12px; margin-top:8px }
 .post .meta{ font-size:12px; opacity:.85; margin-bottom:6px }
 .post .author{ font-weight:700 }
 .actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }
-.actions button{
-  margin:0; background:var(--btn); border:none; padding:8px 12px; border-radius:12px;
-  color:white; cursor:pointer; font-weight:700; transition:.2s; display:flex; align-items:center; gap:6px;
-}
+.actions button{ margin:0; background:var(--btn); border:none; padding:8px 12px; border-radius:12px; color:white; cursor:pointer; font-weight:700; transition:.2s; display:flex; align-items:center; gap:6px }
 .actions button:hover{ filter:brightness(1.15) }
 .actions .like{ background:var(--success) }
 .actions .dislike{ background:var(--danger) }
 .actions .comment{ background:var(--info) }
 .actions .share{ background:#3bf0ff; color:#000 }
-
-/* Composer */
-textarea,input[type="file"]{
-  width:100%; padding:10px; border-radius:12px; border:none; margin-top:6px; background:#4a238f; color:#fff
-}
-textarea::placeholder{ color:#d6c8ff }
+textarea,input[type="file"]{ width:100%; padding:10px; border-radius:12px; border:none; margin-top:6px; background:#4a238f; color:#fff }
 .publish-actions{ display:flex; gap:10px; margin-top:10px }
-.publish-actions button{
-  background:#3bf0ff; color:#000; border:none; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer
-}
+.publish-actions button{ background:#3bf0ff; color:#000; border:none; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer }
 .publish-actions .clear{ background:var(--danger); color:#fff }
-
-/* Battery */
-.battery{
-  width:100%; height:44px; border:3px solid var(--accent); border-radius:12px; position:relative; overflow:hidden; margin-top:10px;
-  box-shadow:0 0 20px var(--glow);
-}
-.energy{
-  height:100%; width:0%; background:linear-gradient(90deg,#3bf0ff,#00fff2);
-  box-shadow:0 0 20px #3bf0ff; transition:width .4s ease;
-}
-.spark{
-  position:absolute; inset:0; background:radial-gradient(circle,#fff 10%,transparent 60%);
-  opacity:.12; animation:spark .6s infinite alternate ease-in-out;
-}
+.battery{ width:100%; height:44px; border:3px solid var(--accent); border-radius:12px; position:relative; overflow:hidden; margin-top:10px; box-shadow:0 0 20px var(--glow) }
+.energy{ height:100%; width:0%; background:linear-gradient(90deg,#3bf0ff,#00fff2); box-shadow:0 0 20px #3bf0ff; transition:width .4s ease }
+.spark{ position:absolute; inset:0; background:radial-gradient(circle,#fff 10%,transparent 60%); opacity:.12; animation:spark .6s infinite alternate ease-in-out }
 @keyframes spark{ from{transform:translateX(-16px)} to{transform:translateX(16px)} }
-
-/* Graph */
 .graph-wrap{ margin-top:12px }
-canvas{
-  width:100%; height:260px; background:#2b145c; border-radius:12px; margin-top:10px; display:block
-}
+canvas{ width:100%; height:260px; background:#2b145c; border-radius:12px; margin-top:10px; display:block }
 .legend{ display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; font-size:13px }
 .legend .item{ display:flex; align-items:center; gap:6px }
 .legend .dot{ width:10px; height:10px; border-radius:50% }
-.dot.text{ background:#f59e0b }     /* orange */
-.dot.video{ background:#22d3ee }    /* cyan */
-.dot.interact{ background:#a3e635 }  /* lime */
-
-/* Notifications */
-.toast{
-  position:fixed; right:16px; bottom:16px; z-index:50; display:flex; flex-direction:column; gap:8px
-}
-.toast .msg{
-  background:#160a33; border:1px solid #3bf0ff; color:#3bf0ff;
-  padding:10px 12px; border-radius:12px; box-shadow:0 0 14px var(--glow); min-width:220px; font-weight:700
-}
-
-/* Ads */
+.dot.text{ background:#f59e0b } .dot.video{ background:#22d3ee } .dot.interact{ background:#a3e635 }
+.toast{ position:fixed; right:16px; bottom:16px; z-index:50; display:flex; flex-direction:column; gap:8px }
+.toast .msg{ background:#160a33; border:1px solid #3bf0ff; color:#3bf0ff; padding:10px 12px; border-radius:12px; box-shadow:0 0 14px var(--glow); min-width:220px; font-weight:700 }
 .ad{ margin:20px 0 }
-
-/* Empty state */
-.empty{
-  background:#4a238f; border-radius:12px; padding:14px; text-align:center; opacity:.9
-}
-
-/* Sidebar (DM) */
-.layout{
-  display:grid; grid-template-columns: 1fr 320px; gap:16px;
-}
-@media(max-width:980px){
-  .layout{ grid-template-columns: 1fr }
-}
-
-/* DM panel */
-.dm{
-  background:var(--card); border-radius:18px; padding:12px; box-shadow:0 0 18px var(--glow)
-}
+.empty{ background:#4a238f; border-radius:12px; padding:14px; text-align:center; opacity:.9 }
+.layout{ display:grid; grid-template-columns: 1fr 320px; gap:16px }
+@media(max-width:980px){ .layout{ grid-template-columns: 1fr } }
+.dm{ background:var(--card); border-radius:18px; padding:12px; box-shadow:0 0 18px var(--glow) }
 .dm h3{ margin:6px 0 10px 0 }
 .dm .contacts{ display:flex; flex-direction:column; gap:8px; max-height:260px; overflow:auto }
-.contact{
-  display:flex; align-items:center; justify-content:space-between; background:#4a238f; padding:8px; border-radius:12px; cursor:pointer
-}
-.contact .name{ font-weight:700 }
-.contact .status{ font-size:12px; opacity:.8 }
-.dm .chat{
-  margin-top:10px; background:#47208f; border-radius:12px; padding:10px; max-height:260px; overflow:auto
-}
-.bubble{
-  background:#3a1c7a; padding:8px; border-radius:10px; margin:6px 0; max-width:80%;
-}
+.contact{ display:flex; align-items:center; justify-content:space-between; background:#4a238f; padding:8px; border-radius:12px; cursor:pointer }
+.contact .name{ font-weight:700 } .contact .status{ font-size:12px; opacity:.8 }
+.dm .chat{ margin-top:10px; background:#47208f; border-radius:12px; padding:10px; max-height:260px; overflow:auto }
+.bubble{ background:#3a1c7a; padding:8px; border-radius:10px; margin:6px 0; max-width:80% }
 .bubble.me{ background:#3bf0ff; color:#000; margin-left:auto }
 .dm .composer{ display:flex; gap:8px; margin-top:8px }
 .dm .composer input{ flex:1; background:#4a238f; color:#fff; border:none; border-radius:10px; padding:8px }
 .dm .composer button{ background:#3bf0ff; color:#000; border:none; border-radius:10px; padding:8px 12px; font-weight:700 }
-
-/* Call UI (simulé) */
-.callbar{
-  display:flex; gap:8px; margin-top:8px
-}
+.callbar{ display:flex; gap:8px; margin-top:8px }
 .callbar button{ background:#22c55e; color:#000; border:none; border-radius:10px; padding:8px 12px; font-weight:700 }
 .callbar .end{ background:#ef4444; color:#fff }
-
 </style>
 </head>
 
@@ -222,14 +106,13 @@ canvas{
   <div id="auth" class="auth">
     <h2>Bienvenue sur Viral+</h2>
     <div id="auth-mode">
-      <input id="auth-username" placeholder="Nom d’utilisateur">
       <input id="auth-email" placeholder="Email">
       <input id="auth-pass" type="password" placeholder="Mot de passe">
       <div class="row">
         <button onclick="signup()">Créer un compte</button>
         <button onclick="login()">Se connecter</button>
       </div>
-      <div class="switch">Tout est stocké localement pour cette V2. Pour le multi-utilisateur réel, on branchera un backend.</div>
+      <div class="switch">Gratuit avec Firebase (Spark). Les données sont en ligne et synchronisées en temps réel.</div>
     </div>
   </div>
 
@@ -304,251 +187,242 @@ canvas{
 
 <div class="toast" id="toast"></div>
 
-<script>
-/* ====== ÉTAT GLOBAL ====== */
-let users = JSON.parse(localStorage.getItem("vpUsers") || "{}"); // {username: {email, pass, avatar}}
-let currentUser = localStorage.getItem("vpCurrentUser") || null;
+<!-- Firebase SDKs -->
+<script type="module">
+  // 1) Import Firebase (CDN)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-let feed = JSON.parse(localStorage.getItem("vpFeed") || "[]");
-let pop = Number(localStorage.getItem("vpPop") || 0);
-let stats = JSON.parse(localStorage.getItem("vpStats") || '{"text":0,"video":0,"interact":0}');
-let historyText = JSON.parse(localStorage.getItem("vpHistText") || JSON.stringify(Array(24).fill(0)));
-let historyVideo = JSON.parse(localStorage.getItem("vpHistVideo") || JSON.stringify(Array(24).fill(0)));
-let historyInteract = JSON.parse(localStorage.getItem("vpHistInteract") || JSON.stringify(Array(24).fill(0)));
+  // 2) Config Firebase (remplace par tes clés)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
 
-let dmThreads = JSON.parse(localStorage.getItem("vpDM") || "{}"); // {userA__userB: [{from,to,type,content,ts}]}
-let dmTarget = null; // destinataire sélectionné
-let mediaRecorder = null; let audioChunks = [];
+  // 3) Init
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
 
-/* ====== PERSISTANCE ====== */
-function save(){
-  localStorage.setItem("vpUsers", JSON.stringify(users));
-  localStorage.setItem("vpCurrentUser", currentUser);
-  localStorage.setItem("vpFeed", JSON.stringify(feed));
-  localStorage.setItem("vpPop", pop);
-  localStorage.setItem("vpStats", JSON.stringify(stats));
-  localStorage.setItem("vpHistText", JSON.stringify(historyText));
-  localStorage.setItem("vpHistVideo", JSON.stringify(historyVideo));
-  localStorage.setItem("vpHistInteract", JSON.stringify(historyInteract));
-  localStorage.setItem("vpDM", JSON.stringify(dmThreads));
-}
+  // ====== UI helpers ======
+  function notify(message){
+    const t = document.getElementById("toast");
+    const m = document.createElement("div");
+    m.className = "msg";
+    m.textContent = message;
+    t.appendChild(m);
+    setTimeout(()=>{ m.style.opacity = "0"; m.style.transform = "translateY(6px)"; }, 2200);
+    setTimeout(()=>{ t.removeChild(m); }, 2800);
+  }
+  function show(id, btn){
+    ["home","publish","pop","messages"].forEach(x=>{
+      const el = document.getElementById(x);
+      if(el) el.style.display = (x===id ? "block" : "none");
+    });
+    document.querySelectorAll("nav button").forEach(b=> b.classList.remove("active"));
+    if(btn) btn.classList.add("active");
+  }
+  function clearComposer(){
+    document.getElementById("text").value = "";
+    document.getElementById("media").value = "";
+  }
 
-/* ====== AUTH ====== */
-function signup(){
-  const u = document.getElementById("auth-username").value.trim();
-  const e = document.getElementById("auth-email").value.trim();
-  const p = document.getElementById("auth-pass").value.trim();
-  if(!u || !e || !p){ notify("Remplis tous les champs"); return; }
-  if(users[u]){ notify("Nom d’utilisateur déjà pris"); return; }
-  users[u] = { email:e, pass:p, avatar:null };
-  currentUser = u;
-  save();
-  enterApp();
-  notify("Compte créé: " + u);
-}
-function login(){
-  const u = document.getElementById("auth-username").value.trim();
-  const p = document.getElementById("auth-pass").value.trim();
-  if(!u || !p){ notify("Identifiants manquants"); return; }
-  if(!users[u] || users[u].pass !== p){ notify("Identifiants invalides"); return; }
-  currentUser = u;
-  save();
-  enterApp();
-  notify("Connecté: " + u);
-}
-function enterApp(){
-  document.getElementById("auth").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  document.getElementById("nav").style.display = "flex";
-  document.getElementById("badge-user").textContent = currentUser || "Invité";
-  render(); draw(); buildContacts();
-  try{ (adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){}
-}
-
-/* ====== UI ====== */
-function show(id, btn){
-  ["home","publish","pop","messages"].forEach(x=>{
-    const el = document.getElementById(x);
-    if(el) el.style.display = (x===id ? "block" : "none");
+  // ====== Auth ======
+  async function signup(){
+    const email = document.getElementById("auth-email").value.trim();
+    const pass = document.getElementById("auth-pass").value.trim();
+    if(!email || !pass){ notify("Remplis email et mot de passe"); return; }
+    try{
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await setDoc(doc(db, "profiles", cred.user.uid), {
+        email, createdAt: serverTimestamp(), pop: 0
+      });
+      notify("Compte créé");
+    }catch(e){ notify("Erreur: " + e.message); }
+  }
+  async function login(){
+    const email = document.getElementById("auth-email").value.trim();
+    const pass = document.getElementById("auth-pass").value.trim();
+    if(!email || !pass){ notify("Identifiants manquants"); return; }
+    try{
+      await signInWithEmailAndPassword(auth, email, pass);
+      notify("Connecté");
+    }catch(e){ notify("Erreur: " + e.message); }
+  }
+  function enterApp(user){
+    document.getElementById("auth").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    document.getElementById("nav").style.display = "flex";
+    document.getElementById("badge-user").textContent = user.email || "Utilisateur";
+    subscribeFeed();
+    subscribeContacts();
+    subscribePopularity(user.uid);
+    try{ (adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){}
+  }
+  onAuthStateChanged(auth, (user)=>{
+    if(user){ enterApp(user); } else {
+      document.getElementById("auth").style.display = "block";
+      document.getElementById("app").style.display = "none";
+      document.getElementById("nav").style.display = "none";
+    }
   });
-  document.querySelectorAll("nav button").forEach(b=> b.classList.remove("active"));
-  if(btn) btn.classList.add("active");
-}
-function clearComposer(){
-  document.getElementById("text").value = "";
-  document.getElementById("media").value = "";
-}
 
-/* ====== FEED ====== */
-function publish(){
-  if(!currentUser){ notify("Connecte-toi pour publier"); return; }
-  const t = document.getElementById("text").value.trim();
-  const f = document.getElementById("media").files[0];
-  if(!t){ notify("Écris quelque chose"); return; }
-
-  if(f){
-    const r = new FileReader();
-    r.onload = () => {
-      const isVideo = r.result.startsWith("data:video");
-      feed.unshift({ author:currentUser, t, media:r.result, likes:0, dislikes:0, com:[], ts:Date.now(), type:isVideo?"video":"text" });
-      afterPublish(isVideo?"video":"text");
-    };
-    r.readAsDataURL(f);
-  } else {
-    feed.unshift({ author:currentUser, t, media:null, likes:0, dislikes:0, com:[], ts:Date.now(), type:"text" });
-    afterPublish("text");
-  }
-}
-function afterPublish(kind){
-  if(kind==="video") stats.video++; else stats.text++;
-  pop += 5;
-  save(); render(); draw();
-  document.getElementById("text").value = "";
-  document.getElementById("media").value = "";
-  notify("Publication ajoutée");
-}
-function render(){
-  const h = document.getElementById("feed");
-  h.innerHTML = "";
-
-  document.getElementById("badge-pop").textContent = "Pop: " + pop;
-  document.getElementById("badge-posts").textContent = "Posts: " + feed.length;
-
-  if(feed.length === 0){
-    const empty = document.createElement("div");
-    empty.className = "empty";
-    empty.innerHTML = "Aucune publication pour l’instant. Lance la première ✨";
-    h.appendChild(empty);
-    return;
-  }
-
-  const adIndex = 3;
-
-  feed.forEach((p,i)=>{
+  // ====== Feed (Firestore) ======
+  const feedEl = document.getElementById("feed");
+  function renderPost(docSnap){
+    const p = docSnap.data();
     const d = document.createElement("div");
     d.className = "post";
-    const date = new Date(p.ts).toLocaleString();
+    const date = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleString() : "";
     d.innerHTML = `
-      <div class="meta"><span class="author">${p.author}</span> • ${date}</div>
-      ${p.t}
+      <div class="meta"><span class="author">${p.authorEmail || "Anonyme"}</span> • ${date}</div>
+      ${p.text || ""}
     `;
-    if(p.media){
-      if(p.media.startsWith("data:video")) d.innerHTML += `<video src="${p.media}" controls></video>`;
-      else d.innerHTML += `<img src="${p.media}" alt="media">`;
+    if(p.mediaUrl){
+      if(p.mediaType && p.mediaType.startsWith("video")) d.innerHTML += `<video src="${p.mediaUrl}" controls></video>`;
+      else d.innerHTML += `<img src="${p.mediaUrl}" alt="media">`;
     }
     const actions = document.createElement("div");
     actions.className = "actions";
     actions.innerHTML = `
-      <button class="like" onclick="like(${i})" aria-label="Aimer">❤️ ${p.likes}</button>
-      <button class="dislike" onclick="dislike(${i})" aria-label="Ne pas aimer">👎 ${p.dislikes}</button>
-      <button class="comment" onclick="comment(${i})" aria-label="Commenter">💬 Commenter</button>
-      <button class="share" onclick="share('${encodeURIComponent(p.t)}')" aria-label="Partager">🔗 Partager</button>
-      <button onclick="openDM('${p.author}')" aria-label="Message">✉️ DM</button>
+      <button class="like">❤️ ${p.likes || 0}</button>
+      <button class="dislike">👎 ${p.dislikes || 0}</button>
+      <button class="comment">💬 Commenter</button>
+      <button class="share">🔗 Partager</button>
+      <button class="dm">✉️ DM</button>
     `;
+    actions.querySelector(".like").onclick = ()=> likePost(docSnap.id, (p.likes||0)+1);
+    actions.querySelector(".dislike").onclick = ()=> dislikePost(docSnap.id, (p.dislikes||0)+1);
+    actions.querySelector(".comment").onclick = ()=> commentPost(docSnap.id);
+    actions.querySelector(".share").onclick = ()=> share(p.text || "");
+    actions.querySelector(".dm").onclick = ()=> openDM(p.authorUid);
     d.appendChild(actions);
 
-    p.com.forEach(c=> {
-      const cc = document.createElement("div");
-      cc.className = "bubble";
-      cc.textContent = c;
-      d.appendChild(cc);
-    });
-
-    h.appendChild(d);
-
-    if(i === adIndex){
-      const ad = document.createElement("div");
-      ad.className = "ad";
-      ad.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8210705555437597" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
-      h.appendChild(ad);
-      try{ (adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){}
+    if(p.comments && p.comments.length){
+      p.comments.forEach(c=>{
+        const cc = document.createElement("div");
+        cc.className = "bubble";
+        cc.textContent = `${c.author}: ${c.text}`;
+        d.appendChild(cc);
+      });
     }
-  });
-}
-function like(i){
-  feed[i].likes++;
-  stats.interact++;
-  pop += 2;
-  save(); render(); draw();
-  notify("Tu as aimé une publication");
-}
-function dislike(i){
-  feed[i].dislikes++;
-  stats.interact++;
-  pop = Math.max(0, pop - 1);
-  save(); render(); draw();
-  notify("Tu n’as pas aimé une publication");
-}
-function comment(i){
-  const c = prompt("Commentaire");
-  if(c && c.trim()){
-    feed[i].com.push(`${currentUser}: ${c.trim()}`);
-    stats.interact++;
-    pop += 1;
-    save(); render(); draw();
+    return d;
+  }
+  function subscribeFeed(){
+    const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snap)=>{
+      feedEl.innerHTML = "";
+      document.getElementById("badge-posts").textContent = "Posts: " + snap.size;
+      if(snap.empty){
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Aucune publication pour l’instant. Lance la première ✨";
+        feedEl.appendChild(empty);
+        return;
+      }
+      let i = 0;
+      snap.forEach(docSnap=>{
+        const node = renderPost(docSnap);
+        feedEl.appendChild(node);
+        if(i===3){
+          const ad = document.createElement("div");
+          ad.className = "ad";
+          ad.innerHTML = `<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8210705555437597" data-ad-format="auto" data-full-width-responsive="true"></ins>`;
+          feedEl.appendChild(ad);
+          try{ (adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){}
+        }
+        i++;
+      });
+    });
+  }
+  async function publish(){
+    const user = auth.currentUser;
+    if(!user){ notify("Connecte-toi pour publier"); return; }
+    const text = document.getElementById("text").value.trim();
+    const file = document.getElementById("media").files[0];
+    if(!text && !file){ notify("Écris quelque chose ou ajoute un média"); return; }
+
+    let mediaUrl = null, mediaType = null;
+    if(file){
+      const path = `posts/${user.uid}/${Date.now()}_${file.name}`;
+      const ref = sRef(storage, path);
+      await uploadBytes(ref, file);
+      mediaUrl = await getDownloadURL(ref);
+      mediaType = file.type;
+    }
+    await addDoc(collection(db, "posts"), {
+      authorUid: user.uid,
+      authorEmail: user.email,
+      text,
+      mediaUrl,
+      mediaType,
+      likes: 0,
+      dislikes: 0,
+      comments: [],
+      createdAt: serverTimestamp(),
+      type: mediaType?.startsWith("video") ? "video" : "text"
+    });
+    await bumpPopularity(user.uid, 5);
+    document.getElementById("text").value = "";
+    document.getElementById("media").value = "";
+    notify("Publication ajoutée");
+  }
+  async function likePost(id, val){
+    const ref = doc(db, "posts", id);
+    await updateDoc(ref, { likes: val });
+    const user = auth.currentUser;
+    if(user) await bumpPopularity(user.uid, 2);
+    notify("Tu as aimé une publication");
+  }
+  async function dislikePost(id, val){
+    const ref = doc(db, "posts", id);
+    await updateDoc(ref, { dislikes: val });
+    const user = auth.currentUser;
+    if(user) await bumpPopularity(user.uid, -1);
+    notify("Tu n’as pas aimé une publication");
+  }
+  async function commentPost(id){
+    const text = prompt("Commentaire");
+    if(!text || !text.trim()) return;
+    const user = auth.currentUser;
+    const ref = doc(db, "posts", id);
+    const snap = await getDoc(ref);
+    const data = snap.data();
+    const comments = data.comments || [];
+    comments.push({ author: user?.email || "Anonyme", text: text.trim(), ts: Date.now() });
+    await updateDoc(ref, { comments });
+    if(user) await bumpPopularity(user.uid, 1);
     notify("Commentaire ajouté");
   }
-}
-function share(text=""){
-  const url = location.href;
-  const msg = (text ? decodeURIComponent(text) + " — " : "") + url;
-
-  if(navigator.share){
-    navigator.share({ title:"Viral+", text:msg, url });
-    return;
+  function share(text=""){
+    const url = location.href;
+    const msg = (text ? text + " — " : "") + url;
+    if(navigator.share){
+      navigator.share({ title:"Viral+", text:msg, url });
+      return;
+    }
+    window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`, "_blank");
   }
-  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
-  window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`, "_blank");
-}
 
-/* ====== DM ====== */
-function buildContacts(){
-  const c = document.getElementById("contacts");
-  c.innerHTML = "";
-  Object.keys(users).forEach(u=>{
-    if(u === currentUser) return;
-    const el = document.createElement("div");
-    el.className = "contact";
-    el.innerHTML = `<div class="name">${u}</div><div class="status">En ligne</div>`;
-    el.onclick = ()=> openDM(u);
-    c.appendChild(el);
-  });
-}
-function threadKey(a,b){
-  return [a,b].sort().join("__");
-}
-function openDM(target){
-  if(!currentUser){ notify("Connecte-toi"); return; }
-  dmTarget = target;
-  show('messages', document.querySelectorAll("nav button")[3]);
-  renderChat();
-}
-function renderChat(){
-  const chat = document.getElementById("chat");
-  chat.innerHTML = "";
-  if(!dmTarget){
-    chat.innerHTML = "<div class='empty'>Choisis un contact pour discuter</div>";
-    return;
-  }
-  const key = threadKey(currentUser, dmTarget);
-  const msgs = dmThreads[key] || [];
-  msgs.forEach(m=>{
-    const b = document.createElement("div");
-    b.className = "bubble" + (m.from===currentUser ? " me" : "");
-    if(m.type === "text"){
-      b.textContent = m.content;
-    } else if(m.type === "audio"){
-      const audio = document.createElement("audio");
-      audio.controls = true;
-      audio.src = m.content;
-      b.appendChild(audio);
-    } else if(m.type === "file"){
-      // simple preview
-      if(m.content.startsWith("data:image")){
-        const img = document.createElement("img");
-        img.src = m.content; img.style.maxWidth = "180px"; img.style.borderRadius = "8px";
-        b.appendChild(img);
-      } else if(m.content.startsWith("data:video")){
-        const v = document.createElement("video");
-        v.src = m.content; v.controls = true; v.style.maxWidth = "220px"; v.style.borderRadius = "
+  // ====== Popularité + Graph ======
+  const energyEl = document.getElementById("energy");
+  const graph = document.getElementById("graph");
+  const ctx = graph.getContext("2d");
+  let histText = Array(24).fill(0), histVideo = Array(24).fill(0), histInteract = Array(24).fill(0);
+
+  function draw(){
+    energyEl.style.width = Math.min(currentPop, 100) + "%";
+    ctx.clearRect(0,0,graph.width,graph.height);
+    const padding = 32, w = graph.width - padding*2, h = graph.height - padding*2;
+    ctx.strokeStyle = "rgba(255,255,255,.25)"; ctx.lineWidth = 1; ctx.beginPath();
+    for(let m=0;m<=12;m++){ const x = padding + (w/12)*m; ctx.moveTo(x,padding); ctx.lineTo(x,padding+h); }
+    for(let d=0;d<=24;d++){ con
