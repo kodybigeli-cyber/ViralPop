@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Viral+ — Réseau social</title>
+  <title>Viral+ — TikTok-like</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -72,22 +72,50 @@
     .btn.accent{ background:var(--accent); color:#0f172a }
     .muted{ color:#94a3b8 }
 
-    .feed{ display:flex; flex-direction:column; gap:12px }
-    .post{
-      background:#0b1220; border:1px solid rgba(255,255,255,.06);
-      border-radius:14px; padding:12px; animation:fadeIn .35s ease; will-change:transform,opacity
+    /* TikTok-like feed */
+    .feed {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      background:#000;
+      border-radius:12px;
     }
-    @keyframes fadeIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
-    .post .meta{ font-size:12px; color:var(--muted); margin-bottom:6px }
-    .post .author{ font-weight:700; color:#cbd5e1 }
-    .post img,.post video{ width:100%; border-radius:12px; margin-top:8px; background:#000 }
-
-    .actions{ display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }
-    .actions .btn{ display:flex; align-items:center; gap:6px }
-    .actions .like{ background:var(--success); color:#0f172a }
-    .actions .dislike{ background:var(--danger) }
-    .actions .comment{ background:#1e293b }
-    .actions .share{ background:var(--accent); color:#0f172a }
+    .post {
+      height: 100vh;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+    }
+    .post video, .post img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background:#000;
+    }
+    .overlay-top {
+      position: absolute; top: 12px; left: 12px; right: 12px;
+      display:flex; justify-content:space-between; align-items:center; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.6);
+    }
+    .overlay-top .author { font-weight:800 }
+    .overlay-bottom {
+      position: absolute; bottom: 16px; left: 16px; right: 16px; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.6);
+    }
+    .overlay-bottom .text { max-width: 70%; font-size:16px; line-height:1.4 }
+    .actions {
+      position: absolute; right: 20px; bottom: 100px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .actions .btn {
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      border-radius: 50%;
+      width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,.35);
+    }
 
     .battery{ width:100%; height:44px; border:2px solid var(--accent); border-radius:12px; position:relative; overflow:hidden; margin-top:10px; box-shadow:var(--glow) }
     .energy{ height:100%; width:0%; background:linear-gradient(90deg,#22d3ee,#3b82f6); transition:width .4s ease }
@@ -162,9 +190,8 @@
 
     <!-- App -->
     <section id="app" style="display:none">
-      <!-- Home -->
-      <section id="home" class="panel">
-        <h2>Fil d’actualité</h2>
+      <!-- Home (TikTok-like feed) -->
+      <section id="home" class="panel" style="padding:0">
         <div id="feed" class="feed"></div>
       </section>
 
@@ -177,245 +204,246 @@
           <button class="btn accent" id="publishBtn">Publier</button>
           <button class="btn danger" id="clearPublishBtn">Effacer</button>
         </div>
- <div class="spark"></span>Interactions</div>
-           
-              <input id="dmText" placeholder="Écrire un message…"/>
-            <div class="callbar">
-            </div>
-        <h2>Profil
-            <video id="avatarVideo" style="display:none" autoplay loop muted playsinline> <div class="profile-info"> </div>
-        
-          </select> { initializeApp } from "https://js/10.12.2/firebase } from "https://Id: "1:719277208Element("div");
- = "translateY(6px(btn=>{
-      btnById(s).style.display });
-        tabsloginBtn").onclick){ notify("Rempl; }
-      try{
-        const cred = await createUserWithEmail", cred.user.uid.toLowerCase(),
-        notify("Compte créé");
-      if(!email || !pass){ notify("Ident.display = "block(user.uid);
-     .getElementById(" const feedEl = document.getElementById(".data();
-      const❤️ ${p.likes || Snap.id, (p.likes = ()=> commentPost(docSnap.id);
-      actions.querySelector.forEach(c=>{
-         ;
-    }
-    function feedEl.innerHTML = "post";
-         El.appendChild(empty);
-          return){ notify("Connect file = document[0];
-      if(!text if(file && file("Fichier trop volum        const path, file);
-       ;
-      }
-      await.email,
-        text comments: [],
-             await bumpée");
-    }
-    document    };
-    asyncPost(id, val){
-           const comments url=window.location, url });
-       (url)}&text=${encodePop, 100) + "%";
-0;d<=24;d++){ const y = padding + (h/24)*d; ctx.moveTo(padding,y); ctx.lineTo(padding+w,y); }
-();
+      </section>
 
-      ctx.fill255,255,.7)"; ctx.save(); ctx.translate const getVar = vLine(histVideo, get plotLine(histInteractStyle = color; ctx.beginPath();
-        data.forEach((v,i)=>{
-          + (w/(data.length-1))*i;
-          + (h - (v/maxVal(doc(db, "profiles let t=0,v=0,i=0 const p = d.dataText.push(t); hist = await getDoc(ref = Math.max(0, (snap, -1);
-    }, 500    .actions .comment%; height:44px; border:100%; width:0%;-gradient(90deg,#; inset:0; background:translateX(-16pxtranslateX(16px)}:100%; height:280; display:flex; flex700; transition:{ display:flex; align:column; gap:8px:1px solid rgba(255,:#0f172a; margin:12px }
-
-    .profile
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597" crossorigin="anonymous"><div class="badges">
-        <button class="btn success" id="signupBtn">
-        <button class="btn accent" id="loginBtn">
+      <!-- Popularity -->
+      <section id="pop" class="panel" style="display:none">
+        <h2>Énergie de popularité</h2>
         <div class="battery">
-        <h2>Messages</div>
-           
-              <button class="btn" id="recBtn">
+          <div class="energy" id="energy"></div>
+          <div class="spark"></div>
+        </div>
+        <canvas id="graph" width="1000" height="280"></canvas>
+        <div class="legend">
+          <div class="item"><span class="dot text"></span>Texte/Image/Photo</div>
+          <div class="item"><span class="dot video"></span>Vidéos</div>
+          <div class="item"><span class="dot interact"></span>Interactions</div>
+        </div>
+      </section>
+
+      <!-- Messages -->
+      <section id="messages" class="panel" style="display:none">
+        <h2>Messages</h2>
+        <div class="row">
+          <div class="contacts" id="contacts"></div>
+          <div class="chatbox">
+            <div class="chat" id="chat"></div>
+            <div class="composer">
+              <input id="dmText" placeholder="Écrire un message…"/>
+              <button class="btn accent" id="sendDMBtn">Envoyer</button>
+              <button class="btn" id="recBtn">🎙️</button>
+              <input type="file" id="dmFile" accept="image/*,video/*,audio/*"/>
+            </div>
+            <div class="callbar">
+              <button class="btn success" id="callAudioBtn">Appel audio</button>
+              <button class="btn accent" id="callVideoBtn">Appel vidéo</button>
+              <button class="btn success" id="answerCallBtn">Répondre à l’appel</button>
+              <button class="btn danger" id="endCallBtn">Raccrocher</button>
+            </div>
             <div class="rtc">
-              <video id="localVideo" autoplay muted playsinline> <video id="remoteVideo" autoplay playsinline>
-        <h2>Profil</h2>
-        <div class="profile-card"></video>
+              <video id="localVideo" autoplay muted playsinline></video>
+              <video id="remoteVideo" autoplay playsinline></video>
+            </div>
           </div>
-        
-            <option value="video">Vidéo de profil</option>Mettre à jour</button>
-  <script type="module"> SDKs */
-    import { initializeApp } from "https://-app.js";
-    importPassword, signInDoc, doc, update    import { getStorage, ref as sRef, uploadBytesjs/10.12.2/firebase */
-    const firebaseQ",
+        </div>
+      </section>
+
+      <!-- Profile -->
+      <section id="profile" class="panel" style="display:none">
+        <h2>Profil</h2>
+        <div class="profile-card">
+          <div class="avatar">
+            <img id="avatarImg" src="assets/placeholder-avatar.png" alt="Avatar" />
+            <video id="avatarVideo" style="display:none" autoplay loop muted playsinline></video>
+          </div>
+          <div class="profile-info">
+            <div><strong>Email:</strong> <span id="profileEmail">—</span></div>
+            <div><strong>Popularité:</strong> <span id="profilePop">0</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <input type="file" id="avatarFile" accept="image/*,video/*"/>
+          <select id="avatarType">
+            <option value="image">Photo de profil</option>
+            <option value="video">Vidéo de profil</option>
+          </select>
+          <button class="btn accent" id="saveAvatarBtn">Mettre à jour</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- App logic + Firebase -->
+  <script type="module">
+    /* Firebase SDKs */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, onSnapshot, query, orderBy, serverTimestamp, setDoc, getDoc, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+    /* Config Firebase */
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnxGbKIWzj2LKEwrh1a36z0jXMJfPEKTQ",
       authDomain: "viralplus-dfe4a.firebaseapp.com",
-      project",
-      messagingSenderId: "719277 };
-
-    /* Init const db = getFirestore.textContent = message }
-    const tabs.addEventListener        const id = btn.dataset.tab.forEach(b=> b.class.getElementById("signupBtn").onclick = document.getElementById("auth-pass"). if(!email || !pass, email, pass);
-Doc(doc(db, "profiles("Erreur: " + e.message      const passifiants manquants").style.displaybadge-user").textUrl){
-        if const actions = <button class="btn comment">🔗 Partager</button>Snap.id, (p.likes||0)+1);
-      actions.querySelector(".(docSnap.id, (p.dis(p.text || "", location      if(p.comments"));
-      onSnapshot feedEl.innerHTML;
-      if(!user){ notify("Connecte-toi pour publier"); return; }
-      const text = document.getElementById("postText").value.trim();
-      const file = document.getElementById("postMedia").files[0];
-      if(!text && !file){ notify("Écris quelque chose ou ajoute un média"); return; }
-      if(file && file.size > 50 * 1024 * 1024){ notify("Fichier trop volumineux (max 50MB)"); return; }
-
-      let mediaUrl = null, mediaType = null;
-      if(file){
-        const path = `posts/${user.uid}/${Date.now()}_${file.name}`;
-        const ref = sRef(storage, path);
-        await uploadBytes(ref, file);
-        mediaUrl = await getDownloadURL(ref);
-        mediaType = file.type;
-      }
-      await addDoc(collection(db, "posts"), {
-        authorUid: user.uid,
-        authorEmail: user.email,
-        text,
-        textLower: (text || "").toLowerCase(),
-        mediaUrl,
-        mediaType,
-        likes: 0,
-        dislikes: 0,
-        comments: [],
-        createdAt: serverTimestamp(),
-        type: mediaType?.startsWith("video") ? "video" : "text"
-      });
-      await bumpPopularity(user.uid, 5);
-      document.getElementById("postText").value = "";
-      document.getElementById("postMedia").value = "";
-      notify("Publication ajoutée");
-    }
-    document.getElementById("publishBtn").onclick = publish;
-    document.getElementById("clearPublishBtn").onclick = ()=>{
-      document.getElementById("postText").value = "";
-      document.getElementById("postMedia").value = "";
+      projectId: "viralplus-dfe4a",
+      storageBucket: "viralplus-dfe4a.appspot.com",
+      messagingSenderId: "719277208432",
+      appId: "1:719277208432:web:bf8585bfcf00962b87d5b5"
     };
-    async function likePost(id, val){
-      const ref = doc(db, "posts", id);
-      await updateDoc(ref, { likes: val });
-      const user = auth.currentUser;
-      if(user) await bumpPopularity(user.uid, 2);
-      notify("Tu as aimé une publication");
+
+    /* Init */
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    /* UI helpers */
+    function notify(message){
+      const t = document.getElementById("toast");
+      const m = document.createElement("div");
+      m.className = "msg";
+      m.textContent = message;
+      t.appendChild(m);
+      setTimeout(()=>{ m.style.opacity = "0"; m.style.transform = "translateY(6px)"; }, 2200);
+      setTimeout(()=>{ t.removeChild(m); }, 2800);
     }
-    async function dislikePost(id, val){
-      const ref = doc(db, "posts", id);
-      await updateDoc(ref, { dislikes: val });
-      const user = auth.currentUser;
-      if(user) await bumpPopularity(user.uid, -1);
-      notify("Tu n’as pas aimé une publication");
-    }
-    async function commentPost(id){
-      const text = prompt("Commentaire");
-      if(!text || !text.trim()) return;
-      const user = auth.currentUser;
-      const ref = doc(db, "posts", id);
-      const snap = await getDoc(ref);
-      const data = snap.data();
-      const comments = data.comments || [];
-      comments.push({ author: user?.email || "Anonyme", text: text.trim(), ts: Date.now() });
-      await updateDoc(ref, { comments });
-      if(user) await bumpPopularity(user.uid, 1);
-      notify("Commentaire ajouté");
-    }
-    function sharePost(msg="", url=window.location.href){
-      if (navigator.share) {
-        navigator.share({ title:"Viral+", text:msg, url });
-        return;
-      }
-      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
-      window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(msg)}`, "_blank");
-    }
-
-    /* Popularité + triple courbe */
-    const energyEl = document.getElementById("energy");
-    const graph = document.getElementById("graph");
-    const ctx = graph.getContext("2d");
-    let histText = Array(24).fill(0), histVideo = Array(24).fill(0), histInteract = Array(24).fill(0);
-    let currentPop = 0;
-
-    function draw(){
-      energyEl.style.width = Math.min(currentPop, 100) + "%";
-      ctx.clearRect(0,0,graph.width,graph.height);
-      ctx.lineJoin = "round"; ctx.lineCap = "round";
-      const padding = 32, w = graph.width - padding*2, h = graph.height - padding*2;
-
-      ctx.strokeStyle = "rgba(255,255,255,.15)"; ctx.lineWidth = 1; ctx.beginPath();
-      for(let m=0;m<=12;m++){ const x = padding + (w/12)*m; ctx.moveTo(x,padding); ctx.lineTo(x,padding+h); }
-      for(let d=0;d<=24;d++){ const y = padding + (h/24)*d; ctx.moveTo(padding,y); ctx.lineTo(padding+w,y); }
-      ctx.stroke();
-
-      ctx.fillStyle = "rgba(255,255,255,.7)"; ctx.font = "12px Arial";
-      ctx.fillText("Mois →", padding + w - 50, padding - 10);
-      ctx.save(); ctx.translate(padding - 18, padding + 20); ctx.rotate(-Math.PI/2); ctx.fillText("Jours ↓", 0, 0); ctx.restore();
-
-      const maxVal = Math.max(100, ...histText, ...histVideo, ...histInteract);
-      const getVar = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
-
-      plotLine(histText, getVar('--line1') || "#f59e0b");
-      plotLine(histVideo, getVar('--line2') || "#22d3ee");
-      plotLine(histInteract, getVar('--line3') || "#a3e635");
-
-      function plotLine(data, color){
-        ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
-        data.forEach((v,i)=>{
-          const x = padding + (w/(data.length-1))*i;
-          const y = padding + (h - (v/maxVal)*h);
-          if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    const tabs = document.querySelectorAll(".tab");
+    const sections = ["home","publish","pop","messages","profile"];
+    tabs.forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.dataset.tab;
+        sections.forEach(s=>{
+          document.getElementById(s).style.display = (s===id ? "block" : "none");
         });
-        ctx.stroke();
-      }
-    }
-    function subscribePopularity(uid){
-      onSnapshot(doc(db, "profiles", uid), (snap)=>{
-        const data = snap.data();
-        currentPop = data?.pop || 0;
-        document.getElementById("badge-pop").textContent = "Pop: " + currentPop;
-        draw();
+        tabs.forEach(b=> b.classList.remove("active"));
+        btn.classList.add("active");
       });
-      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-      onSnapshot(q, (snap)=>{
-        let t=0,v=0,i=0;
-        snap.forEach(d=>{
-          const p = d.data();
-          if(p.type==="video") v++; else t++;
-          i += (p.likes||0) + (p.dislikes||0) + (p.comments?.length||0);
-        });
-        histText.push(t); histText.shift();
-        histVideo.push(v); histVideo.shift();
-        histInteract.push(i); histInteract.shift();
-        draw();
-      });
-    }
-    async function bumpPopularity(uid, delta){
-      const ref = doc(db, "profiles", uid);
-      const snap = await getDoc(ref);
-      if(!snap.exists()){
-        await setDoc(ref, { pop: Math.max(0, delta), email: auth.currentUser?.email || "", createdAt: serverTimestamp() });
-      }else{
-        const val = Math.max(0, (snap.data().pop||0) + delta);
-        await updateDoc(ref, { pop: val });
-      }
-    }
-    setInterval(async ()=>{
-      const user = auth.currentUser;
-      if(!user) return;
-      await bumpPopularity(user.uid, -1);
-    }, 5000);
+    });
 
-    /* Contacts & DM */
-    const contactsEl = document.getElementById("contacts");
-    const chatEl = document.getElementById("chat");
-    let dmTarget = null, unsubscribeChat = null;
+    /* Auth */
+    document.getElementById("signupBtn").onclick = signup;
+    document.getElementById("loginBtn").onclick = login;
 
-    function subscribeContacts(){
-      onSnapshot(collection(db, "profiles"), (snap)=>{
-        contactsEl.innerHTML = "";
-        snap.forEach(d=>{
-          const u = d.id;
-          if(auth.currentUser && u === auth.currentUser.uid) return;
-          const el = document.createElement("div");
-          el.className = "contact";
-          el.innerHTML = `<div class="name">${d.data().email || "Utilisateur"}</div><div class="status">En ligne</div>`;
-          el.onclick = ()=> openDM(u);
-          contactsEl.appendChild(el);
+    async function signup(){
+      const email = document.getElementById("auth-email").value.trim();
+      const pass = document.getElementById("auth-pass").value.trim();
+      if(!email || !pass){ notify("Remplis email et mot de passe"); return; }
+      try{
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await setDoc(doc(db, "profiles", cred.user.uid), {
+          email, emailLower: email.toLowerCase(),
+          createdAt: serverTimestamp(), pop: 0, avatarType: "image", avatarUrl: ""
         });
-      });
-   
+        notify("Compte créé");
+      }catch(e){ notify("Erreur: " + e.message); }
+    }
+    async function login(){
+      const email = document.getElementById("auth-email").value.trim();
+      const pass = document.getElementById("auth-pass").value.trim();
+      if(!email || !pass){ notify("Identifiants manquants"); return; }
+      try{
+        await signInWithEmailAndPassword(auth, email, pass);
+        notify("Connecté");
+      }catch(e){ notify("Erreur: " + e.message); }
+    }
+    function enterApp(user){
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("app").style.display = "block";
+      document.getElementById("badge-user").textContent = user.email || "Utilisateur";
+      subscribeFeed();
+      subscribeContacts();
+      subscribePopularity(user.uid);
+      subscribeProfile(user.uid);
+      try{ (adsbygoogle=window.adsbygoogle||[]).push({}); }catch(e){}
+    }
+    onAuthStateChanged(auth, (user)=>{
+      if(user){ enterApp(user); } else {
+        document.getElementById("auth").style.display = "block";
+        document.getElementById("app").style.display = "none";
+      }
+    });
+
+    /* Feed (TikTok-like) */
+    const feedEl = document.getElementById("feed");
+    function escapeHTML(s){ return s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m])); }
+    function renderPost(docSnap){
+      const p = docSnap.data();
+      const d = document.createElement("div");
+      d.className = "post";
+
+      // Media
+      let mediaNode = null;
+      if(p.mediaUrl){
+        if(p.mediaType && p.mediaType.startsWith("video")){
+          const v = document.createElement("video");
+          v.src = p.mediaUrl;
+          v.controls = false;
+          v.loop = true;
+          v.muted = true;
+          v.playsInline = true;
+          mediaNode = v;
+          // autoplay/pause selon visibilité
+          const observer = new IntersectionObserver(entries=>{
+            entries.forEach(entry=>{
+              if(entry.isIntersecting){ v.play().catch(()=>{}); } else { v.pause(); }
+            });
+          }, { threshold: 0.6 });
+          observer.observe(v);
+        } else {
+          const img = document.createElement("img");
+          img.src = p.mediaUrl;
+          mediaNode = img;
+        }
+      } else {
+        const textOnly = document.createElement("div");
+        textOnly.style.color = "#fff";
+        textOnly.style.fontSize = "20px";
+        textOnly.textContent = p.text || "";
+        mediaNode = textOnly;
+      }
+      d.appendChild(mediaNode);
+
+      // Overlay top (auteur + date)
+      const date = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleString() : "";
+      const top = document.createElement("div");
+      top.className = "overlay-top";
+      top.innerHTML = `<div class="author">${p.authorEmail || "Anonyme"}</div><div class="muted">${date}</div>`;
+      d.appendChild(top);
+
+      // Overlay bottom (texte)
+      const bottom = document.createElement("div");
+      bottom.className = "overlay-bottom";
+      bottom.innerHTML = `<div class="text">${p.text ? escapeHTML(p.text) : ""}</div>`;
+      d.appendChild(bottom);
+
+      // Actions overlay
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      actions.innerHTML = `
+        <button class="btn like" title="Like">❤️</button>
+        <button class="btn dislike" title="Dislike">👎</button>
+        <button class="btn comment" title="Commenter">💬</button>
+        <button class="btn share" title="Partager">🔗</button>
+        <button class="btn dm" title="DM">✉️</button>
+      `;
+      actions.querySelector(".like").onclick = ()=> likePost(docSnap.id, (p.likes||0)+1);
+      actions.querySelector(".dislike").onclick = ()=> dislikePost(docSnap.id, (p.dislikes||0)+1);
+      actions.querySelector(".comment").onclick = ()=> commentPost(docSnap.id);
+      actions.querySelector(".share").onclick = ()=> sharePost(p.text || "", location.href);
+      actions.querySelector(".dm").onclick = ()=> openDM(p.authorUid);
+      d.appendChild(actions);
+
+      // Comments bubbles (affichage sous forme de bulles en overlay bas)
+      if(p.comments && p.comments.length){
+        const commentsWrap = document.createElement("div");
+        commentsWrap.style.position = "absolute";
+        commentsWrap.style.bottom = "16px";
+        commentsWrap.style.right = "16px";
+        commentsWrap.style.maxWidth = "28%";
+        p.comments.slice(-3).forEach(c=>{
+          const cc = document.createElement("div");
+          cc.className = "bubble";
+          cc.style.background = "rgba(0,0,0,.5)";
+          cc.style.color = "#
