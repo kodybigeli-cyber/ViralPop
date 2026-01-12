@@ -447,3 +447,61 @@
           cc.className = "bubble";
           cc.style.background = "rgba(0,0,0,.5)";
           cc.style.color = "#
+            
+link.textContent = " Télécharger le fichier";
+            link.href = data.content;
+            link.target = "_blank";
+            link.rel = "noopener";
+            b.appendChild(link);
+          }
+
+          chatEl.appendChild(b);
+        });
+        chatEl.scrollTop = chatEl.scrollHeight;
+      });
+    }
+
+    /* Envoi message texte */
+    window.sendMessage = async function(){
+      const input = document.getElementById("msgInput");
+      if(!input || !input.value.trim() || !dmTarget || !auth.currentUser) return;
+
+      const key = threadKey(auth.currentUser.uid, dmTarget);
+      await addDoc(collection(db, "dm", key, "msgs"), {
+        from: auth.currentUser.uid,
+        type: "text",
+        content: input.value.trim(),
+        ts: serverTimestamp()
+      });
+
+      input.value = "";
+    };
+
+    /* Envoi fichier */
+    window.sendFile = async function(file){
+      if(!file || !dmTarget || !auth.currentUser) return;
+
+      const storageRef = ref(storage, "dm/" + Date.now() + "_" + file.name);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+
+      const key = threadKey(auth.currentUser.uid, dmTarget);
+      await addDoc(collection(db, "dm", key, "msgs"), {
+        from: auth.currentUser.uid,
+        type: "file",
+        content: url,
+        ts: serverTimestamp()
+      });
+    };
+
+    /* Sécurité : état utilisateur */
+    onAuthStateChanged(auth, (user)=>{
+      if(user){
+        subscribeContacts();
+        subscribePopularity(user.uid);
+      }
+    });
+
+  </script>
+</body>
+</html>
