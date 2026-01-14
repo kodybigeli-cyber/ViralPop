@@ -8,16 +8,152 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-body{margin:0;font-family:Inter;background:#0f172a;color:#e5e7eb}
-header{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#020617}
-button{background:#3b82f6;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
-input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #334155;background:#020617;color:#fff;margin-bottom:8px}
-.panel{padding:12px;margin:12px;border:1px solid #334155;border-radius:12px}
-.feed{height:70vh;overflow-y:auto}
-.post{margin-bottom:16px;border-radius:12px;overflow:hidden;background:#020617}
-.post img,.post video{width:100%;max-height:400px;object-fit:cover}
-.actions{display:flex;gap:10px;padding:8px}
-.hidden{display:none}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  overflow:hidden;
+}
+
+/* HEADER */
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:10;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px;
+  background:rgba(0,0,0,.4);
+}
+header strong{font-size:20px}
+header button{
+  background:#3b82f6;
+  border:none;
+  color:#fff;
+  padding:6px 12px;
+  border-radius:8px;
+  font-weight:700;
+}
+
+/* FEED */
+#feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+.post{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+  background:#000;
+}
+.post video,
+.post img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* OVERLAY */
+.overlay-bottom{
+  position:absolute;
+  bottom:80px;
+  left:12px;
+  right:80px;
+}
+.overlay-bottom .author{font-weight:800}
+.overlay-bottom .text{margin-top:6px;font-size:15px}
+
+.actions{
+  position:absolute;
+  right:12px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.actions button{
+  background:rgba(0,0,0,.5);
+  border:none;
+  color:#fff;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  font-size:18px;
+}
+
+/* POPULARITY WIDGET */
+#popWidget{
+  position:fixed;
+  top:70px;
+  right:10px;
+  z-index:15;
+  background:rgba(0,0,0,.55);
+  border-radius:14px;
+  padding:10px;
+  width:280px;
+  backdrop-filter:blur(6px);
+}
+.battery{
+  width:100%;
+  height:18px;
+  border:2px solid #22d3ee;
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:8px;
+}
+.energy{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22d3ee,#3b82f6);
+  transition:width .4s ease;
+}
+#popGraph{
+  width:100%;
+  height:140px;
+  background:#020617;
+  border-radius:10px;
+}
+
+/* AUTH */
+#authModal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:20;
+}
+.authBox{
+  background:#020617;
+  padding:20px;
+  border-radius:16px;
+  width:90%;
+  max-width:360px;
+}
+.authBox input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:1px solid #334155;
+  background:#020617;
+  color:#fff;
+}
+.authBox button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#3b82f6;
+  color:#fff;
+  font-weight:800;
+}
 </style>
 </head>
 
@@ -25,41 +161,31 @@ input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #334155
 
 <header>
   <strong>🔥 Viral+</strong>
-  <span id="userLabel">Invité</span>
+  <button id="loginBtn">Connexion</button>
 </header>
 
-<div id="auth" class="panel">
-  <h3>Connexion / Inscription</h3>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Mot de passe">
-  <button onclick="signup()">Créer compte</button>
-  <button onclick="login()">Connexion</button>
+<div id="feed"></div>
+
+<!-- POPULARITY -->
+<div id="popWidget">
+  <div class="battery"><div class="energy" id="energy"></div></div>
+  <canvas id="popGraph" width="260" height="140"></canvas>
 </div>
 
-<div id="app" class="hidden">
-
-  <div class="panel">
-    <textarea id="postText" placeholder="Exprime-toi..."></textarea>
-    <input type="file" id="postFile">
-    <button onclick="publish()">Publier</button>
+<!-- AUTH -->
+<div id="authModal">
+  <div class="authBox">
+    <h3>Connexion / Inscription</h3>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Mot de passe">
+    <button onclick="login()">Continuer</button>
   </div>
-
-  <div class="feed" id="feed"></div>
-
-  <div class="panel">
-    <h3>Messages</h3>
-    <input id="dmText" placeholder="Message">
-    <button onclick="sendDM()">Envoyer</button>
-    <div id="chat"></div>
-  </div>
-
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDnxGbKIWzj2LKEwrh1a36z0jXMJfPEKTQ",
@@ -69,124 +195,101 @@ const firebaseConfig = {
   appId: "1:719277208432:web:bf8585bfcf00962b87d5b5"
 };
 
-const appFB = initializeApp(firebaseConfig);
-const auth = getAuth(appFB);
-const db = getFirestore(appFB);
-const storage = getStorage(appFB);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-// ELEMENTS
-const authDiv = document.getElementById("auth");
-const appDiv = document.getElementById("app");
 const feed = document.getElementById("feed");
-const chat = document.getElementById("chat");
+const authModal = document.getElementById("authModal");
+document.getElementById("loginBtn").onclick = ()=> authModal.style.display="flex";
 
-// AUTH
-window.signup = async ()=>{
-  await createUserWithEmailAndPassword(auth,email.value,password.value);
-};
-
+/* AUTH */
 window.login = async ()=>{
-  await signInWithEmailAndPassword(auth,email.value,password.value);
+  try{
+    await signInWithEmailAndPassword(auth,email.value,password.value);
+  }catch{
+    await createUserWithEmailAndPassword(auth,email.value,password.value);
+  }
+  authModal.style.display="none";
 };
 
 onAuthStateChanged(auth,user=>{
-  if(user){
-    authDiv.classList.add("hidden");
-    appDiv.classList.remove("hidden");
-    userLabel.textContent = user.email;
-    loadFeed();
-    loadMessages();
-  }
+  document.getElementById("loginBtn").style.display = user ? "none" : "block";
 });
 
-// FEED
-function loadFeed(){
-  const q = query(collection(db,"posts"), orderBy("created","desc"));
-  onSnapshot(q,snap=>{
-    feed.innerHTML="";
-    snap.forEach(d=>{
-      const p=d.data();
-      const div=document.createElement("div");
-      div.className="post";
+/* FEED */
+const q = query(collection(db,"posts"), orderBy("created","desc"));
+onSnapshot(q,snap=>{
+  feed.innerHTML="";
+  snap.forEach(d=>{
+    const p=d.data();
+    const post=document.createElement("div");
+    post.className="post";
 
-      if(p.media){
-        if(p.type.startsWith("video")){
-          const v=document.createElement("video");
-          v.src=p.media; v.controls=true;
-          div.appendChild(v);
-        } else {
-          const i=document.createElement("img");
-          i.src=p.media;
-          div.appendChild(i);
-        }
-      }
+    let media;
+    if(p.type?.startsWith("video")){
+      media=document.createElement("video");
+      media.src=p.media;
+      media.loop=true;
+      media.muted=true;
+      media.autoplay=true;
+      media.playsInline=true;
+    }else{
+      media=document.createElement("img");
+      media.src=p.media;
+    }
+    post.appendChild(media);
 
-      const t=document.createElement("div");
-      t.style.padding="8px";
-      t.textContent=p.text;
-      div.appendChild(t);
+    const bottom=document.createElement("div");
+    bottom.className="overlay-bottom";
+    bottom.innerHTML=`<div class="author">@${p.author||"anonyme"}</div><div class="text">${p.text||""}</div>`;
+    post.appendChild(bottom);
 
-      const a=document.createElement("div");
-      a.className="actions";
-      const like=document.createElement("button");
-      like.textContent="❤️ "+(p.likes||0);
-      like.onclick=()=>likePost(d.id);
-      a.appendChild(like);
-      div.appendChild(a);
+    const actions=document.createElement("div");
+    actions.className="actions";
+    const like=document.createElement("button");
+    like.innerHTML="❤️";
+    like.onclick=()=> updateDoc(doc(db,"posts",d.id),{likes:increment(1)});
+    actions.appendChild(like);
+    post.appendChild(actions);
 
-      feed.appendChild(div);
+    feed.appendChild(post);
+  });
+});
+
+/* POPULARITY */
+const energy=document.getElementById("energy");
+const ctx=document.getElementById("popGraph").getContext("2d");
+let stats={text:[],video:[],interact:[]};
+
+onSnapshot(collection(db,"posts"),snap=>{
+  let posts=0,videos=0,likes=0;
+  snap.forEach(d=>{
+    const p=d.data();
+    posts++;
+    if(p.type?.startsWith("video")) videos++;
+    likes+=p.likes||0;
+  });
+
+  energy.style.width=Math.min(100,posts*5+likes*2)+"%";
+
+  stats.text.push(posts);
+  stats.video.push(videos);
+  stats.interact.push(likes);
+  if(stats.text.length>20){stats.text.shift();stats.video.shift();stats.interact.shift();}
+
+  ctx.clearRect(0,0,260,140);
+  [[stats.text,"#f59e0b"],[stats.video,"#22d3ee"],[stats.interact,"#a3e635"]].forEach(line=>{
+    ctx.beginPath();
+    ctx.strokeStyle=line[1];
+    line[0].forEach((v,i)=>{
+      const x=i/(line[0].length-1||1)*260;
+      const y=140-(v/100)*140;
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
     });
+    ctx.stroke();
   });
-}
-
-async function likePost(id){
-  await updateDoc(doc(db,"posts",id),{
-    likes: increment(1)
-  });
-}
-
-// PUBLISH
-window.publish = async ()=>{
-  let url="", type="";
-  if(postFile.files[0]){
-    const f=postFile.files[0];
-    const r=ref(storage,"posts/"+Date.now()+"_"+f.name);
-    await uploadBytes(r,f);
-    url=await getDownloadURL(r);
-    type=f.type;
-  }
-  await addDoc(collection(db,"posts"),{
-    text:postText.value,
-    media:url,
-    type:type,
-    likes:0,
-    created:serverTimestamp()
-  });
-  postText.value="";
-  postFile.value="";
-};
-
-// MESSAGES
-function loadMessages(){
-  const q=query(collection(db,"messages"),orderBy("created"));
-  onSnapshot(q,snap=>{
-    chat.innerHTML="";
-    snap.forEach(d=>{
-      const p=document.createElement("p");
-      p.textContent=d.data().from+" : "+d.data().text;
-      chat.appendChild(p);
-    });
-  });
-}
-
-window.sendDM = async ()=>{
-  await addDoc(collection(db,"messages"),{
-    from:auth.currentUser.email,
-    text:dmText.value,
-    created:serverTimestamp()
-  });
-  dmText.value="";
-};
+});
 </script>
 
 </body>
