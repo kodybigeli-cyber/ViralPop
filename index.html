@@ -6,8 +6,8 @@
 <title>Viral+ Ultimate Feed</title>
 <link rel="stylesheet" href="style.css">
 
-<!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597" crossorigin="anonymous"></script>
+<!-- Ezoic Integration Script -->
+<script src="https://go.ezoic.net/ezoic/ezoic.js" async></script>
 
 <style>
 body {margin:0; font-family:sans-serif; background:#000;}
@@ -40,48 +40,31 @@ body {margin:0; font-family:sans-serif; background:#000;}
 
 <div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh;"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-/********* Firebase Config *********/
-const firebaseConfig = {
-  apiKey: "AIzaSyDnxGbKIWzj2LKEwrh1a36z0jXMJfPEKTQ",
-  authDomain: "viralplus-dfe4a.firebaseapp.com",
-  projectId: "viralplus-dfe4a",
-  storageBucket: "viralplus-dfe4a.appspot.com",
-  messagingSenderId: "719277208432",
-  appId: "1:719277208432:web:bf8585bfcf00962b87d5b5"
-};
-
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+/********* Supabase Config *********/
+const SUPABASE_URL = "https://cjxyruudipzgfinchcgj.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeHlydXVkaXB6Z2ZpbmNoY2dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNjgxNDUsImV4cCI6MjA4Mzk0NDE0NX0.YSsDO1bsm0bzIq-MIz6DawHCIsX8SfTuN7FXxY4mdzA";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /********* Utilisateur *********/
 let currentUser = null;
-auth.onAuthStateChanged(user => {
-  if(user) currentUser = user.uid;
-  else {
-    const params = new URLSearchParams(window.location.search);
-    if(params.get("mode") === "guest") currentUser = "guest_" + Date.now();
-    else window.location.href = "auth.html";
-  }
-});
+async function signInGuest() {
+  const { data, error } = await supabase.auth.signInWithOAuth({ provider: "anonymous" });
+  currentUser = data?.user?.id || "guest_" + Date.now();
+}
+signInGuest();
 
 /********* Charger posts *********/
 const feedContainer = document.getElementById("feed-container");
 
-db.collection("posts").orderBy("createdAt","desc").onSnapshot(snapshot => {
+async function loadPosts() {
+  const { data: posts, error } = await supabase.from("posts").select("*").order("createdAt", { ascending: false });
   feedContainer.innerHTML = "";
-  snapshot.forEach(async doc => {
-    const data = doc.data();
 
+  posts.forEach(async post => {
     const videoEl = document.createElement("video");
-    videoEl.src = data.videoURL;
+    videoEl.src = post.videoURL;
     videoEl.controls = false;
     videoEl.autoplay = true;
     videoEl.loop = true;
@@ -92,11 +75,11 @@ db.collection("posts").orderBy("createdAt","desc").onSnapshot(snapshot => {
     wrapper.appendChild(videoEl);
 
     // Badge influenceur
+    const { data: likes } = await supabase.from("likes").select("*").eq("post_id", post.id);
+    const { data: pops } = await supabase.from("pop").select("*").eq("post_id", post.id);
+    const score = (likes?.length || 0) + (pops?.length || 0);
     const badge = document.createElement("div");
     badge.className = "influencer-badge";
-    const likesSnap = await db.collection("posts").doc(doc.id).collection("likes").get();
-    const popsSnap = await db.collection("posts").doc(doc.id).collection("pop").get();
-    const score = likesSnap.size + popsSnap.size;
     badge.innerText = score >= 50 ? "🔥 VIP" : "⭐";
     wrapper.appendChild(badge);
 
@@ -111,11 +94,7 @@ db.collection("posts").orderBy("createdAt","desc").onSnapshot(snapshot => {
     commentBtn.innerText = "Envoyer";
     commentBtn.onclick = async () => {
       if(currentUser && commentInput.value.trim() !== ""){
-        await db.collection("posts").doc(doc.id).collection("comments").add({
-          uid: currentUser,
-          text: commentInput.value,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        await supabase.from("comments").insert([{ post_id: post.id, uid: currentUser, text: commentInput.value }]);
         commentInput.value = "";
       }
     };
@@ -129,19 +108,19 @@ db.collection("posts").orderBy("createdAt","desc").onSnapshot(snapshot => {
 
     const likeBtn = document.createElement("button");
     likeBtn.innerText = "👍";
-    likeBtn.onclick = async () => { await db.collection("posts").doc(doc.id).collection("likes").doc(currentUser).set({uid:currentUser}); updateStats(doc.id); }
+    likeBtn.onclick = async () => { await supabase.from("likes").upsert({ post_id: post.id, uid: currentUser }); updateStats(post.id); }
 
     const dislikeBtn = document.createElement("button");
     dislikeBtn.innerText = "👎";
-    dislikeBtn.onclick = async () => { await db.collection("posts").doc(doc.id).collection("dislikes").doc(currentUser).set({uid:currentUser}); updateStats(doc.id); }
+    dislikeBtn.onclick = async () => { await supabase.from("dislikes").upsert({ post_id: post.id, uid: currentUser }); updateStats(post.id); }
 
     const popBtn = document.createElement("button");
     popBtn.innerText = "⚡ Pop+";
-    popBtn.onclick = async () => { await db.collection("posts").doc(doc.id).collection("pop").doc(currentUser).set({uid:currentUser}); updateStats(doc.id); }
+    popBtn.onclick = async () => { await supabase.from("pop").upsert({ post_id: post.id, uid: currentUser }); updateStats(post.id); }
 
     const boostBtn = document.createElement("button");
     boostBtn.innerText = "🚀 Boost";
-    boostBtn.onclick = () => { alert("Boost sponsorisé activé !"); /* Ici futur code paiement / promotion */ }
+    boostBtn.onclick = () => { alert("Boost sponsorisé activé !"); }
 
     actions.appendChild(likeBtn);
     actions.appendChild(dislikeBtn);
@@ -149,22 +128,20 @@ db.collection("posts").orderBy("createdAt","desc").onSnapshot(snapshot => {
     actions.appendChild(boostBtn);
     wrapper.appendChild(actions);
 
-    // Toggle commentaires
-    videoEl.onclick = () => {
-      commentBox.style.display = commentBox.style.display==="block"?"none":"block";
-    }
+    videoEl.onclick = () => { commentBox.style.display = commentBox.style.display==="block"?"none":"block"; }
 
     feedContainer.appendChild(wrapper);
   });
-});
+}
+loadPosts();
 
 /********* Stats et barre badge *********/
 async function updateStats(postId){
-  const likes = await db.collection("posts").doc(postId).collection("likes").get();
-  const pops = await db.collection("posts").doc(postId).collection("pop").get();
-  document.getElementById("likesCount").innerText = likes.size + " Likes";
-  document.getElementById("popCount").innerText = pops.size + " Pop+";
-  const fillPercent = Math.min(100,(pops.size/50)*100);
+  const { data: likes } = await supabase.from("likes").select("*").eq("post_id", postId);
+  const { data: pops } = await supabase.from("pop").select("*").eq("post_id", postId);
+  document.getElementById("likesCount").innerText = (likes?.length||0) + " Likes";
+  document.getElementById("popCount").innerText = (pops?.length||0) + " Pop+";
+  const fillPercent = Math.min(100,(pops?.length/50)*100);
   document.getElementById("badge-fill").style.width = fillPercent+"%";
 }
 
@@ -175,7 +152,6 @@ const observer = new IntersectionObserver(entries=>{
 
 const videoEls = document.getElementsByClassName("feed-video");
 Array.from(videoEls).forEach(v=>observer.observe(v));
-
 </script>
 </body>
-</html>
+  </html>
