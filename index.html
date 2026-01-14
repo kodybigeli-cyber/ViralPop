@@ -2,205 +2,180 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Viral+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viral+ Ultimate Feed</title>
+<link rel="stylesheet" href="style.css">
+
+<!-- Google AdSense -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8210705555437597" crossorigin="anonymous"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial;overflow:hidden}
-
-/* FEED */
-#feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
-.post{height:100vh;position:relative;scroll-snap-align:start}
-.post video,.post img{width:100%;height:100%;object-fit:cover}
-
-/* ACTIONS */
-.actions{
- position:absolute;right:12px;bottom:120px;
- display:flex;flex-direction:column;gap:14px;z-index:10
-}
-.actions button{
- width:48px;height:48px;border-radius:50%;
- border:none;background:rgba(0,0,0,.6);
- color:#fff;font-size:20px;cursor:pointer;position:relative
-}
-.actions span{position:absolute;top:-18px;font-size:12px}
-
-/* BADGE */
-.badge{
- position:absolute;bottom:-8px;right:-6px;
- background:gold;color:#000;font-size:10px;
- padding:2px 4px;border-radius:6px;
- animation:glow 1.5s infinite alternate
-}
-@keyframes glow{
- from{box-shadow:0 0 4px gold}
- to{box-shadow:0 0 12px gold}
-}
-
-/* HEART FLOAT */
-.heart{
- position:absolute;right:90px;bottom:120px;
- font-size:18px;color:#ff4d6d;
- animation:float 2s forwards;pointer-events:none
-}
-@keyframes float{
- from{opacity:1;transform:translateY(0) scale(1)}
- to{opacity:0;transform:translateY(-160px) scale(1.6)}
-}
-
-/* POP+ */
-#pop{
- position:fixed;inset:0;
- background:rgba(0,0,0,.96);
- display:none;flex-direction:column;
- z-index:99;padding:16px
-}
-#close{align-self:flex-end;font-size:22px;cursor:pointer}
-
-/* TABS */
-.tabs{display:flex;gap:10px;margin:10px 0}
-.tabs button{
- flex:1;background:#020617;color:#fff;
- border:none;padding:8px;border-radius:6px
-}
-.tabs button.active{background:#22d3ee;color:#000}
-
-/* LIST */
-.list{
- flex:1;overflow-y:auto;
- background:#020617;border-radius:8px;padding:8px
-}
-.user{
- display:flex;justify-content:space-between;
- padding:6px;border-bottom:1px solid #111;font-size:14px
-}
-.user span{opacity:.6}
+body {margin:0; font-family:sans-serif; background:#000;}
+.feed-video {width:100%; height:90vh; object-fit:cover; display:block; margin-bottom:10px; scroll-snap-align:start;}
+.video-wrapper {position:relative; scroll-snap-align:start;}
+.actions-bar {position:absolute; right:10px; bottom:50px; display:flex; flex-direction:column; gap:10px;}
+.actions-bar button {background:rgba(0,0,0,0.6); color:#fff; border:none; font-size:18px; padding:10px 12px; border-radius:50%; cursor:pointer;}
+.top-bar {position:fixed; top:0; left:0; width:100%; display:flex; justify-content:space-between; align-items:center; padding:10px; background:rgba(0,0,0,0.5); z-index:100;}
+#stats-bar {display:flex; gap:15px; color:#fff; font-weight:bold; align-items:center;}
+#badge-bar {height:8px; background:#555; border-radius:5px; overflow:hidden; width:150px;}
+#badge-fill {height:100%; background:#0f0; width:0%; transition:width 0.5s;}
+.comment-box {position:absolute; right:10px; bottom:50px; width:30%; max-height:200px; overflow-y:auto; background:rgba(0,0,0,0.5); color:#fff; padding:5px; border-radius:10px; display:none;}
+.comment-input {width:70%; padding:5px;}
+.comment-btn {padding:5px 10px;}
+.influencer-badge {position:absolute; top:10px; right:10px; background:#ff0; color:#000; padding:3px 7px; border-radius:5px; font-weight:bold;}
 </style>
-</head>
 
+</head>
 <body>
 
-<div id="feed"></div>
-
-<!-- POP+ -->
-<div id="pop">
- <div id="close" onclick="togglePop(false)">✖</div>
- <div id="status"></div>
-
- <div class="tabs">
-  <button id="tabLike" class="active" onclick="showTab('like')">❤️ Likers</button>
-  <button id="tabNo" onclick="showTab('no')">👤 Pas liké</button>
- </div>
-
- <div id="likeList" class="list"></div>
- <div id="noList" class="list" style="display:none"></div>
+<!-- Barre supérieure -->
+<div class="top-bar">
+  <img src="logo.png" alt="Viral+ Logo" style="height:40px;">
+  <div id="stats-bar">
+    <span id="likesCount">0 Likes</span>
+    <span id="popCount">0 Pop+</span>
+    <div id="badge-bar"><div id="badge-fill"></div></div>
+  </div>
 </div>
 
+<div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh;"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage.js"></script>
+
 <script>
-// USER LOCAL
-const user="User"+Math.floor(Math.random()*999);
+/********* Firebase Config *********/
+const firebaseConfig = {
+  apiKey: "AIzaSyDnxGbKIWzj2LKEwrh1a36z0jXMJfPEKTQ",
+  authDomain: "viralplus-dfe4a.firebaseapp.com",
+  projectId: "viralplus-dfe4a",
+  storageBucket: "viralplus-dfe4a.appspot.com",
+  messagingSenderId: "719277208432",
+  appId: "1:719277208432:web:bf8585bfcf00962b87d5b5"
+};
 
-// POSTS
-const posts=[
- {media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",type:"video",likes:5,likers:[]},
-];
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+const storage = firebase.storage();
 
-// FEED
-const feed=document.getElementById("feed");
-
-posts.forEach(p=>{
- const post=document.createElement("div");
- post.className="post";
-
- const m=p.type==="video"?document.createElement("video"):document.createElement("img");
- m.src=p.media;
- if(p.type==="video"){m.autoplay=true;m.loop=true;m.muted=true}
- post.appendChild(m);
-
- const actions=document.createElement("div");
- actions.className="actions";
-
- // LIKE
- const like=document.createElement("button");
- like.innerHTML="❤️";
- const count=document.createElement("span");
- count.innerText=p.likes;
- like.appendChild(count);
-
- like.onclick=()=>{
-  if(!p.likers.includes(user)){
-   p.likes++;
-   p.likers.push(user);
-   count.innerText=p.likes;
-   spawnHeart(post);
-   checkInfluencer(like,p);
+/********* Utilisateur *********/
+let currentUser = null;
+auth.onAuthStateChanged(user => {
+  if(user) currentUser = user.uid;
+  else {
+    const params = new URLSearchParams(window.location.search);
+    if(params.get("mode") === "guest") currentUser = "guest_" + Date.now();
+    else window.location.href = "auth.html";
   }
- };
-
- actions.appendChild(like);
-
- // POP+
- const popBtn=document.createElement("button");
- popBtn.innerHTML="⚡";
- popBtn.onclick=()=>openPop(p);
- actions.appendChild(popBtn);
-
- post.appendChild(actions);
- feed.appendChild(post);
 });
 
-// HEART
-function spawnHeart(post){
- const h=document.createElement("div");
- h.className="heart";h.innerText="❤️";
- post.appendChild(h);
- setTimeout(()=>h.remove(),2000);
+/********* Charger posts *********/
+const feedContainer = document.getElementById("feed-container");
+
+db.collection("posts").orderBy("createdAt","desc").onSnapshot(snapshot => {
+  feedContainer.innerHTML = "";
+  snapshot.forEach(async doc => {
+    const data = doc.data();
+
+    const videoEl = document.createElement("video");
+    videoEl.src = data.videoURL;
+    videoEl.controls = false;
+    videoEl.autoplay = true;
+    videoEl.loop = true;
+    videoEl.className = "feed-video";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "video-wrapper";
+    wrapper.appendChild(videoEl);
+
+    // Badge influenceur
+    const badge = document.createElement("div");
+    badge.className = "influencer-badge";
+    const likesSnap = await db.collection("posts").doc(doc.id).collection("likes").get();
+    const popsSnap = await db.collection("posts").doc(doc.id).collection("pop").get();
+    const score = likesSnap.size + popsSnap.size;
+    badge.innerText = score >= 50 ? "🔥 VIP" : "⭐";
+    wrapper.appendChild(badge);
+
+    // Commentaires
+    const commentBox = document.createElement("div");
+    commentBox.className = "comment-box";
+    const commentInput = document.createElement("input");
+    commentInput.className = "comment-input";
+    commentInput.placeholder = "Écrire un commentaire...";
+    const commentBtn = document.createElement("button");
+    commentBtn.className = "comment-btn";
+    commentBtn.innerText = "Envoyer";
+    commentBtn.onclick = async () => {
+      if(currentUser && commentInput.value.trim() !== ""){
+        await db.collection("posts").doc(doc.id).collection("comments").add({
+          uid: currentUser,
+          text: commentInput.value,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        commentInput.value = "";
+      }
+    };
+    commentBox.appendChild(commentInput);
+    commentBox.appendChild(commentBtn);
+    wrapper.appendChild(commentBox);
+
+    // Actions
+    const actions = document.createElement("div");
+    actions.className = "actions-bar";
+
+    const likeBtn = document.createElement("button");
+    likeBtn.innerText = "👍";
+    likeBtn.onclick = async () => { await db.collection("posts").doc(doc.id).collection("likes").doc(currentUser).set({uid:currentUser}); updateStats(doc.id); }
+
+    const dislikeBtn = document.createElement("button");
+    dislikeBtn.innerText = "👎";
+    dislikeBtn.onclick = async () => { await db.collection("posts").doc(doc.id).collection("dislikes").doc(currentUser).set({uid:currentUser}); updateStats(doc.id); }
+
+    const popBtn = document.createElement("button");
+    popBtn.innerText = "⚡ Pop+";
+    popBtn.onclick = async () => { await db.collection("posts").doc(doc.id).collection("pop").doc(currentUser).set({uid:currentUser}); updateStats(doc.id); }
+
+    const boostBtn = document.createElement("button");
+    boostBtn.innerText = "🚀 Boost";
+    boostBtn.onclick = () => { alert("Boost sponsorisé activé !"); /* Ici futur code paiement / promotion */ }
+
+    actions.appendChild(likeBtn);
+    actions.appendChild(dislikeBtn);
+    actions.appendChild(popBtn);
+    actions.appendChild(boostBtn);
+    wrapper.appendChild(actions);
+
+    // Toggle commentaires
+    videoEl.onclick = () => {
+      commentBox.style.display = commentBox.style.display==="block"?"none":"block";
+    }
+
+    feedContainer.appendChild(wrapper);
+  });
+});
+
+/********* Stats et barre badge *********/
+async function updateStats(postId){
+  const likes = await db.collection("posts").doc(postId).collection("likes").get();
+  const pops = await db.collection("posts").doc(postId).collection("pop").get();
+  document.getElementById("likesCount").innerText = likes.size + " Likes";
+  document.getElementById("popCount").innerText = pops.size + " Pop+";
+  const fillPercent = Math.min(100,(pops.size/50)*100);
+  document.getElementById("badge-fill").style.width = fillPercent+"%";
 }
 
-// BADGE
-function checkInfluencer(btn,p){
- if(p.likes>=100 && !btn.querySelector(".badge")){
-  const b=document.createElement("div");
-  b.className="badge";
-  b.innerText="Influenceur";
-  btn.appendChild(b);
- }
-}
+/********* Autoplay vidéo *********/
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.play(); else entry.target.pause(); });
+},{threshold:0.75});
 
-// POP+
-const pop=document.getElementById("pop");
-const likeList=document.getElementById("likeList");
-const noList=document.getElementById("noList");
-const status=document.getElementById("status");
+const videoEls = document.getElementsByClassName("feed-video");
+Array.from(videoEls).forEach(v=>observer.observe(v));
 
-function togglePop(v){pop.style.display=v?"flex":"none"}
-
-function openPop(p){
- togglePop(true);
- status.innerText=p.likes>=100?"🏅 Influenceur":"👤 Normal";
-
- likeList.innerHTML="";
- noList.innerHTML="";
-
- const exposed=[...Array(20)].map((_,i)=>"User"+(i+1));
-
- exposed.forEach(u=>{
-  const div=document.createElement("div");
-  div.className="user";
-  div.innerHTML=u+" <span>"+(p.likers.includes(u)?"❤️":"—")+"</span>";
-  (p.likers.includes(u)?likeList:noList).appendChild(div);
- });
-}
-
-// TABS
-function showTab(t){
- document.getElementById("tabLike").classList.toggle("active",t==="like");
- document.getElementById("tabNo").classList.toggle("active",t==="no");
- likeList.style.display=t==="like"?"block":"none";
- noList.style.display=t==="no"?"block":"none";
-}
 </script>
-
 </body>
 </html>
