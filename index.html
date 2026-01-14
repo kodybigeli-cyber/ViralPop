@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral+</title>
+<title>Viral+ Pop+</title>
 
 <style>
 *{box-sizing:border-box}
@@ -15,7 +15,7 @@ body{
   overflow:hidden;
 }
 
-/* HEADER */
+/* HEADER + POP+ */
 header{
   position:fixed;
   top:0;
@@ -28,12 +28,28 @@ header{
   background:rgba(0,0,0,.5);
 }
 header strong{font-size:20px}
+#popBar{
+  flex:1;
+  height:16px;
+  margin-left:12px;
+  border:2px solid #22d3ee;
+  border-radius:10px;
+  overflow:hidden;
+  background:#111;
+}
+#popEnergy{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22d3ee,#3b82f6);
+  transition: width 0.3s;
+}
 
 /* FEED */
 #feed{
   height:100vh;
   overflow-y:scroll;
   scroll-snap-type:y mandatory;
+  padding-top:60px;
 }
 .post{
   height:100vh;
@@ -46,7 +62,7 @@ header strong{font-size:20px}
   object-fit:cover;
 }
 
-/* OVERLAY */
+/* OVERLAY + ACTIONS */
 .overlay{
   position:absolute;
   bottom:90px;
@@ -74,31 +90,20 @@ header strong{font-size:20px}
   font-size:18px;
 }
 
-/* POPULARITY */
-#popWidget{
+/* GRAPH POPULARITÉ */
+#graphContainer{
   position:fixed;
-  top:70px;
+  bottom:10px;
+  left:10px;
   right:10px;
-  width:260px;
+  height:150px;
   background:rgba(0,0,0,.6);
   border-radius:12px;
   padding:10px;
 }
-.battery{
-  height:16px;
-  border:2px solid #22d3ee;
-  border-radius:10px;
-  overflow:hidden;
-  margin-bottom:6px;
-}
-.energy{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#22d3ee,#3b82f6);
-}
 canvas{
   width:100%;
-  height:120px;
+  height:100%;
   background:#020617;
   border-radius:8px;
 }
@@ -108,42 +113,24 @@ canvas{
 <body>
 
 <header>
-  <strong>🔥 Viral+</strong>
+  <strong>Viral+</strong>
+  <div id="popBar"><div id="popEnergy"></div></div>
 </header>
 
 <div id="feed"></div>
 
-<div id="popWidget">
-  <div class="battery"><div class="energy" id="energy"></div></div>
-  <canvas id="graph" width="240" height="120"></canvas>
+<div id="graphContainer">
+  <canvas id="graph" width="300" height="150"></canvas>
 </div>
 
 <script>
 // ------------------
-// DONNÉES MOCK (STABLE)
+// DONNÉES MOCK
 // ------------------
 const posts = [
-  {
-    author:"anonyme",
-    text:"Bienvenue sur Viral+",
-    media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    type:"video",
-    likes:2
-  },
-  {
-    author:"kody",
-    text:"Scroll fluide comme TikTok",
-    media:"https://picsum.photos/1080/1920?1",
-    type:"image",
-    likes:5
-  },
-  {
-    author:"user47",
-    text:"Ta marque : barre + 3 courbes",
-    media:"https://picsum.photos/1080/1920?2",
-    type:"image",
-    likes:1
-  }
+  {author:"anonyme", text:"Bienvenue sur Viral+", media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", type:"video", likes:2, dislikes:1, comments:1},
+  {author:"kody", text:"Scroll fluide comme TikTok", media:"https://picsum.photos/1080/1920?1", type:"image", likes:5, dislikes:0, comments:2},
+  {author:"user47", text:"Ta marque : Pop+ et courbes", media:"https://picsum.photos/1080/1920?2", type:"image", likes:1, dislikes:3, comments:0}
 ];
 
 // ------------------
@@ -175,6 +162,7 @@ posts.forEach((p,i)=>{
 
   const actions=document.createElement("div");
   actions.className="actions";
+
   const like=document.createElement("button");
   like.innerHTML="❤️";
   like.onclick=()=>{
@@ -182,48 +170,91 @@ posts.forEach((p,i)=>{
     updatePopularity();
   };
   actions.appendChild(like);
-  post.appendChild(actions);
 
+  const dislike=document.createElement("button");
+  dislike.innerHTML="💔";
+  dislike.onclick=()=>{
+    p.dislikes++;
+    updatePopularity();
+  };
+  actions.appendChild(dislike);
+
+  const comment=document.createElement("button");
+  comment.innerHTML="💬";
+  comment.onclick=()=>{
+    p.comments++;
+    updatePopularity();
+  };
+  actions.appendChild(comment);
+
+  const popPlus=document.createElement("button");
+  popPlus.innerHTML="⚡";
+  popPlus.onclick=()=>{
+    // Pop+ bonus
+    p.likes+=2;
+    updatePopularity();
+  };
+  actions.appendChild(popPlus);
+
+  post.appendChild(actions);
   feed.appendChild(post);
 });
 
 // ------------------
 // POPULARITY GRAPH
 // ------------------
-const energy=document.getElementById("energy");
+const energy=document.getElementById("popEnergy");
 const ctx=document.getElementById("graph").getContext("2d");
 
-let history={text:[],video:[],interact:[]};
+let history={likes:[],dislikes:[],comments:[]};
 
 function updatePopularity(){
-  let text=0,video=0,likes=0;
+  let likes=0, dislikes=0, comments=0;
   posts.forEach(p=>{
-    if(p.type==="video") video++;
-    else text++;
     likes+=p.likes;
+    dislikes+=p.dislikes;
+    comments+=p.comments;
   });
 
-  const score=Math.min(100,text*10+video*15+likes*2);
+  const score=Math.min(100, likes*3 - dislikes*2 + comments*2);
   energy.style.width=score+"%";
 
-  history.text.push(text);
-  history.video.push(video);
-  history.interact.push(likes);
+  // Historique pour graph
+  history.likes.push(likes + Math.random()*2 -1); // variation montagne
+  history.dislikes.push(dislikes + Math.random()*2 -1);
+  history.comments.push(comments + Math.random()*2 -1);
 
-  if(history.text.length>15){
-    history.text.shift();
-    history.video.shift();
-    history.interact.shift();
+  if(history.likes.length>20){
+    history.likes.shift();
+    history.dislikes.shift();
+    history.comments.shift();
   }
 
   drawGraph();
 }
 
 function drawGraph(){
-  ctx.clearRect(0,0,240,120);
-  drawLine(history.text,"#f59e0b");
-  drawLine(history.video,"#22d3ee");
-  drawLine(history.interact,"#a3e635");
+  ctx.clearRect(0,0,300,150);
+
+  // Règles horizontale et verticale
+  ctx.strokeStyle="#555";
+  ctx.lineWidth=1;
+  for(let i=0;i<=5;i++){
+    ctx.beginPath();
+    ctx.moveTo(0,i*30);
+    ctx.lineTo(300,i*30);
+    ctx.stroke();
+  }
+  for(let i=0;i<=5;i++){
+    ctx.beginPath();
+    ctx.moveTo(i*60,0);
+    ctx.lineTo(i*60,150);
+    ctx.stroke();
+  }
+
+  drawLine(history.likes,"#22d3ee");
+  drawLine(history.dislikes,"#f87171");
+  drawLine(history.comments,"#a3e635");
 }
 
 function drawLine(data,color){
@@ -231,8 +262,8 @@ function drawLine(data,color){
   ctx.strokeStyle=color;
   ctx.lineWidth=2;
   data.forEach((v,i)=>{
-    const x=i/(data.length-1||1)*240;
-    const y=120-(v/20)*120;
+    const x=i/(data.length-1||1)*300;
+    const y=150-Math.min(v,20)/20*150;
     i?ctx.lineTo(x,y):ctx.moveTo(x,y);
   });
   ctx.stroke();
