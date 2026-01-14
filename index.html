@@ -3,90 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral+ Splash</title>
-<style>
-/* Corps et fond cosmique */
-body {
-  margin: 0;
-  min-height: 100vh;
-  background:
-    radial-gradient(1200px 600px at 80% 20%, rgba(180, 0, 249, 0.15), transparent 60%),
-    radial-gradient(900px 500px at 20% 80%, rgba(0, 207, 255, 0.12), transparent 55%),
-    linear-gradient(180deg, #0A0A1F 0%, #0A0A1F 60%, #120A2A 100%);
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-/* Splash Logo */
-.splash-logo h1 {
-  font-size: 4rem;
-  background: linear-gradient(135deg, #B400F9, #8B00FF);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(180,0,249,0.6), 0 0 20px rgba(139,0,255,0.4);
-  z-index: 10;
-  position: relative;
-}
-
-/* Bulles flottantes */
-.bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%,
-    rgba(180,0,249,0.35) 0%,
-    rgba(180,0,249,0.05) 40%,
-    rgba(180,0,249,0.0) 70%);
-  box-shadow: 0 0 30px rgba(180,0,249,0.6), inset 0 0 40px rgba(255,255,255,0.12);
-  animation: float 30s ease-in-out infinite;
-}
-
-.b1 { width: 420px; height: 420px; left: 8%;  top: 62%; }
-.b2 { width: 320px; height: 320px; left: 72%; top: 18%; }
-.b3 { width: 260px; height: 260px; left: 48%; top: 70%; }
-.b4 { width: 180px; height: 180px; left: 22%; top: 24%; }
-.b5 { width: 140px; height: 140px; left: 84%; top: 64%; }
-
-/* Animation bulles */
-@keyframes float {
-  0%   { transform: translateY(0) scale(1); }
-  50%  { transform: translateY(-24px) scale(1.05); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-/* Étoiles scintillantes */
-.stars {
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8) 50%, transparent 51%),
-    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.8) 50%, transparent 51%),
-    radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.8) 50%, transparent 51%);
-  animation: twinkle 3s linear infinite;
-}
-
-@keyframes twinkle {
-  0%, 100% { filter: brightness(1); }
-  50%      { filter: brightness(1.6); }
-}
-</style>
+<title>Viral+ Ultimate</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Étoiles -->
-  <div class="stars"></div>
 
-  <!-- Bulles violettes -->
-  <div class="bubble b1"></div>
-  <div class="bubble b2"></div>
-  <div class="bubble b3"></div>
-  <div class="bubble b4"></div>
-  <div class="bubble b5"></div>
-
-  <!-- Logo -->
-  <div class="splash-logo">
-    <h1>Viral+</h1>
+<!-- Barre supérieure -->
+<div class="top-bar">
+  <div id="stats-bar">
+    <span id="likesCount">0 Likes</span>
+    <span id="popCount">0 Pop+</span>
+    <div id="badge-bar"><div id="badge-fill"></div></div>
   </div>
+</div>
+
+<div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh;">
+
+  <!-- VIDEO 1 -->
+  <div class="video-wrapper">
+    <video src="video1.mp4" class="feed-video" autoplay muted loop></video>
+
+    <div class="actions-bar">
+      <button onclick="like(this)">❤️ <span>0</span></button>
+      <button onclick="popPlus(this)">⚡ Pop+</button>
+      <button onclick="boost(this)">🚀 Boost</button>
+      <button onclick="toggleComment(this)">💬</button>
+    </div>
+
+    <div class="comment-box hidden">
+      <input type="text" placeholder="Écrire un commentaire">
+      <button onclick="sendComment(this)">Envoyer</button>
+      <div class="comments-list"></div>
+    </div>
+
+    <div class="influencer-badge">⭐</div>
+  </div>
+
+  <!-- VIDEO 2 -->
+  <div class="video-wrapper">
+    <video src="video2.mp4" class="feed-video" autoplay muted loop></video>
+
+    <div class="actions-bar">
+      <button onclick="like(this)">❤️ <span>0</span></button>
+      <button onclick="popPlus(this)">⚡ Pop+</button>
+      <button onclick="boost(this)">🚀 Boost</button>
+      <button onclick="toggleComment(this)">💬</button>
+    </div>
+
+    <div class="comment-box hidden">
+      <input type="text" placeholder="Écrire un commentaire">
+      <button onclick="sendComment(this)">Envoyer</button>
+      <div class="comments-list"></div>
+    </div>
+
+    <div class="influencer-badge">⭐</div>
+  </div>
+
+</div>
+
+<script>
+/********* INTERACTIONS *********/
+function like(btn){
+  const span = btn.querySelector("span");
+  span.innerText = parseInt(span.innerText) + 1;
+  updateStats(btn);
+}
+
+function popPlus(btn){
+  const wrapper = btn.closest(".video-wrapper");
+  wrapper.dataset.pop = wrapper.dataset.pop ? parseInt(wrapper.dataset.pop)+1 : 1;
+  updateStats(btn);
+}
+
+function boost(btn){
+  alert("Boost sponsorisé activé !");
+}
+
+function toggleComment(btn){
+  const box = btn.closest(".video-wrapper").querySelector(".comment-box");
+  box.classList.toggle("hidden");
+}
+
+function sendComment(btn){
+  const input = btn.previousElementSibling;
+  const text = input.value.trim();
+  if(text === "") return;
+  const list = btn.parentElement.querySelector(".comments-list");
+  const p = document.createElement("p");
+  p.innerText = text;
+  list.appendChild(p);
+  input.value = "";
+}
+
+/********* BADGE VIP & STATS *********/
+function updateStats(btn){
+  const wrapper = btn.closest(".video-wrapper");
+  const likes = wrapper.querySelector(".actions-bar button span").innerText;
+  const pops = wrapper.dataset.pop || 0;
+  wrapper.querySelector(".influencer-badge").innerText = (parseInt(likes)+parseInt(pops))>=50 ? "VIP" : "⭐";
+
+  // Mettre à jour la barre de progression
+  const fillPercent = Math.min(100, (parseInt(pops)/50)*100);
+  wrapper.querySelector("#badge-fill")?.style.width = fillPercent+"%";
+}
+
+/********* AUTOPLAY / PAUSE VIDÉOS *********/
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting) entry.target.play();
+    else entry.target.pause();
+  });
+},{threshold:0.75});
+
+const videos = document.getElementsByClassName("feed-video");
+Array.from(videos).forEach(v=>observer.observe(v));
+</script>
+
 </body>
 </html>
