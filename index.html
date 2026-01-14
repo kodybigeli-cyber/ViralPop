@@ -14,46 +14,6 @@ body{
   overflow:hidden;
 }
 
-/* HEADER */
-header{
-  position:fixed;
-  top:0;
-  width:100%;
-  z-index:10;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:12px;
-  background:rgba(0,0,0,0.8);
-}
-header strong{font-size:20px; margin-bottom:6px;}
-#popBarContainer{
-  width:90%;
-  max-width:400px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-.battery{
-  flex:1;
-  height:16px;
-  border:2px solid #22d3ee;
-  border-radius:10px;
-  overflow:hidden;
-  position:relative;
-}
-.energy{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#22d3ee,#3b82f6);
-  transition:width 0.3s;
-}
-#popPercent{
-  min-width:40px;
-  text-align:right;
-  font-weight:bold;
-}
-
 /* FEED */
 #feed{
   height:100vh;
@@ -71,7 +31,7 @@ header strong{font-size:20px; margin-bottom:6px;}
   object-fit:cover;
 }
 
-/* OVERLAY */
+/* OVERLAY POST INFO */
 .overlay{
   position:absolute;
   bottom:90px;
@@ -81,7 +41,7 @@ header strong{font-size:20px; margin-bottom:6px;}
 .overlay .author{font-weight:bold; font-size:16px;}
 .overlay .text{margin-top:6px; font-size:14px;}
 
-/* ACTIONS */
+/* ACTIONS VERTICALES */
 .actions{
   position:absolute;
   right:12px;
@@ -111,12 +71,56 @@ header strong{font-size:20px; margin-bottom:6px;}
   color:#fff;
 }
 
-/* GRAPH */
-#graphContainer{
+/* MODAL POP+ */
+#popModal{
   position:fixed;
-  bottom:12px;
-  left:50%;
-  transform:translateX(-50%);
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.95);
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  z-index:100;
+}
+#popModal .close{
+  position:absolute;
+  top:20px;
+  right:20px;
+  font-size:24px;
+  cursor:pointer;
+}
+#popBarContainer{
+  width:90%;
+  max-width:400px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:12px;
+}
+.battery{
+  flex:1;
+  height:16px;
+  border:2px solid #22d3ee;
+  border-radius:10px;
+  overflow:hidden;
+  position:relative;
+}
+.energy{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22d3ee,#3b82f6);
+  transition:width 0.3s;
+}
+#popPercent{
+  min-width:40px;
+  text-align:right;
+  font-weight:bold;
+}
+#graphContainer{
   width:90%;
   max-width:400px;
 }
@@ -138,41 +142,42 @@ canvas{
 </head>
 <body>
 
-<header>
-  <strong>Viral+</strong>
+<div id="feed"></div>
+
+<!-- POP+ MODAL -->
+<div id="popModal">
+  <div class="close" onclick="togglePop(false)">✖</div>
   <div id="popBarContainer">
     <div class="battery"><div class="energy" id="energy"></div></div>
     <div id="popPercent">0%</div>
   </div>
-</header>
-
-<div id="feed"></div>
-
-<div id="graphContainer">
-  <canvas id="graph"></canvas>
-  <div class="legend">
-    <div><span style="background:#22d3ee"></span> Likes</div>
-    <div><span style="background:#f87171"></span> Dislikes</div>
-    <div><span style="background:#a3e635"></span> Commentaires</div>
+  <div id="graphContainer">
+    <canvas id="graph"></canvas>
+    <div class="legend">
+      <div><span style="background:#22d3ee"></span> Likes</div>
+      <div><span style="background:#f87171"></span> Dislikes</div>
+      <div><span style="background:#a3e635"></span> Commentaires</div>
+    </div>
+  </div>
+  <div style="margin-top:10px;">
+    <span id="likeCount">❤️ 0</span> &nbsp; 
+    <span id="dislikeCount">💔 0</span> &nbsp; 
+    <span id="commentCount">💬 0</span>
   </div>
 </div>
 
 <script>
-// ------------------
 // POSTS MOCK
-// ------------------
 const posts = [
   {author:"anonyme", text:"Bienvenue sur Viral+", media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", type:"video", likes:2, dislikes:0, comments:1},
   {author:"kody", text:"Scroll fluide comme TikTok", media:"https://picsum.photos/1080/1920?1", type:"image", likes:5, dislikes:1, comments:2},
   {author:"user47", text:"Ta marque : barre + 3 courbes", media:"https://picsum.photos/1080/1920?2", type:"image", likes:1, dislikes:0, comments:0}
 ];
 
-// ------------------
-// FEED
-// ------------------
 const feed=document.getElementById("feed");
 
-posts.forEach((p)=>{
+// Création du feed
+posts.forEach((p,i)=>{
   const post=document.createElement("div");
   post.className="post";
 
@@ -197,7 +202,7 @@ posts.forEach((p)=>{
   const actions=document.createElement("div");
   actions.className="actions";
 
-  // J'aime
+  // ❤️ J'aime
   const like=document.createElement("button");
   like.innerHTML="❤️";
   const likeCount=document.createElement("span");
@@ -206,11 +211,11 @@ posts.forEach((p)=>{
   like.onclick=()=>{
     p.likes++;
     likeCount.innerText=p.likes;
-    updatePopularity();
+    updatePopData(p);
   };
   actions.appendChild(like);
 
-  // J'aime pas
+  // 💔 J'aime pas
   const dislike=document.createElement("button");
   dislike.innerHTML="💔";
   const dislikeCount=document.createElement("span");
@@ -219,11 +224,11 @@ posts.forEach((p)=>{
   dislike.onclick=()=>{
     p.dislikes++;
     dislikeCount.innerText=p.dislikes;
-    updatePopularity();
+    updatePopData(p);
   };
   actions.appendChild(dislike);
 
-  // Commentaires
+  // 💬 Commentaires
   const comment=document.createElement("button");
   comment.innerHTML="💬";
   const commentCount=document.createElement("span");
@@ -232,37 +237,59 @@ posts.forEach((p)=>{
   comment.onclick=()=>{
     p.comments++;
     commentCount.innerText=p.comments;
-    updatePopularity();
+    updatePopData(p);
   };
   actions.appendChild(comment);
+
+  // 📈 Pop+
+  const popBtn=document.createElement("button");
+  popBtn.innerHTML="📈";
+  popBtn.onclick=()=>{
+    togglePop(true,p);
+  };
+  actions.appendChild(popBtn);
 
   post.appendChild(actions);
   feed.appendChild(post);
 });
 
 // ------------------
-// POPULARITY & GRAPH
+// POP+ MODAL
 // ------------------
+const popModal=document.getElementById("popModal");
 const energy=document.getElementById("energy");
 const popPercent=document.getElementById("popPercent");
+const likeDisplay=document.getElementById("likeCount");
+const dislikeDisplay=document.getElementById("dislikeCount");
+const commentDisplay=document.getElementById("commentCount");
+
 const ctx=document.getElementById("graph").getContext("2d");
-
 let history={likes:[],dislikes:[],comments:[]};
+let currentPost=null;
 
-function updatePopularity(){
-  let totalLikes=0,totalDislikes=0,totalComments=0;
-  posts.forEach(p=>{
-    totalLikes+=p.likes;
-    totalDislikes+=p.dislikes;
-    totalComments+=p.comments;
-  });
+function togglePop(show,post=null){
+  popModal.style.display = show ? "flex" : "none";
+  if(show && post){
+    currentPost=post;
+    updatePopData(post);
+  }
+}
 
-  // Score barre horizontale
+function updatePopData(post){
+  currentPost=post;
+  const totalLikes = post.likes;
+  const totalDislikes = post.dislikes;
+  const totalComments = post.comments;
+
+  likeDisplay.innerText = "❤️ "+totalLikes;
+  dislikeDisplay.innerText = "💔 "+totalDislikes;
+  commentDisplay.innerText = "💬 "+totalComments;
+
   const score=Math.min(100,totalLikes*5 - totalDislikes*2 + totalComments*2);
   energy.style.width=score+"%";
   popPercent.innerText=Math.round(score)+"%";
 
-  // Historique avec variations style bourse
+  // Historique style bourse
   history.likes.push(totalLikes + Math.random()*3 - 1.5);
   history.dislikes.push(totalDislikes + Math.random()*2 - 1);
   history.comments.push(totalComments + Math.random()*2 - 1);
@@ -315,19 +342,13 @@ function drawLine(data,color){
   ctx.stroke();
 }
 
-// Animation automatique style bourse
+// Animation style bourse pour Pop+ ouvert
 setInterval(()=>{
-  // Chaque 0.5s on ajoute un léger mouvement
-  posts.forEach(p=>{
-    p.likes += Math.random()*0.1;
-    p.dislikes += Math.random()*0.05;
-    p.comments += Math.random()*0.05;
-  });
-  updatePopularity();
+  if(currentPost){
+    updatePopData(currentPost);
+  }
 },500);
 
-// Initialisation
-updatePopularity();
 </script>
 </body>
-  </html>
+</html>
