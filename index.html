@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral+ Pop+ Final</title>
+<title>Viral+ Pop+ Dynamique</title>
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;}
 body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;}
 
 /* FEED */
@@ -63,13 +63,13 @@ canvas{width:100%;height:150px;background:#020617;border-radius:8px;}
 .flash.likes{background:#22d3ee;}
 .flash.dislikes{background:#f87171;}
 .flash.comments{background:#a3e635;}
-@keyframes flashAnim{0%{transform:scale(0.5);opacity:1;}50%{transform:scale(1.5);opacity:0.8;}100%{transform:scale(2);opacity:0;}}
 .trend{position:absolute;font-size:12px;font-weight:bold;pointer-events:none;}
 .trend.up{color:#00ff00;}
 .trend.down{color:#ff0000;}
 </style>
 </head>
 <body>
+
 <div id="feed"></div>
 
 <!-- POP+ MODAL -->
@@ -110,22 +110,20 @@ const posts = [
 
 const feed=document.getElementById("feed");
 
-// Pulse animation
+// ANIMATIONS
 function pulseElement(el){el.classList.add("pulse"); setTimeout(()=>el.classList.remove("pulse"),150);}
-
-// Pop-up numérique
 function showPopUp(el,value,color){
   const pop=document.createElement("div");
   pop.innerText=value>0?`+${value}`:`${value}`;
-  pop.style.position="absolute";
-  pop.style.top="-20px"; pop.style.left="50%"; pop.style.transform="translateX(-50%)";
-  pop.style.color=color; pop.style.fontWeight="bold"; pop.style.opacity=1;
+  pop.style.position="absolute"; pop.style.top="-20px"; pop.style.left="50%";
+  pop.style.transform="translateX(-50%)"; pop.style.color=color; pop.style.fontWeight="bold";
+  pop.style.pointerEvents="none"; pop.style.opacity=1;
   el.appendChild(pop);
   pop.animate([{transform:'translate(-50%,0)',opacity:1},{transform:'translate(-50%,-30px)',opacity:0}],{duration:800,easing:'ease-out'});
   setTimeout(()=>el.removeChild(pop),800);
 }
 
-// Création du feed
+// CREATION FEED
 posts.forEach((p)=>{
   const post=document.createElement("div"); post.className="post";
   let media;
@@ -143,7 +141,11 @@ posts.forEach((p)=>{
   const like=document.createElement("button"); like.innerHTML="❤️";
   const likeCount=document.createElement("span"); likeCount.innerText=p.likes; like.appendChild(likeCount);
   like.onclick=()=>{
-    p.likes++; likeCount.innerText=p.likes; pulseElement(like); showPopUp(like,1,'#22d3ee'); updatePopData(p);
+    p.likes++; 
+    likeCount.innerText=p.likes;
+    pulseElement(like);
+    showPopUp(like,1,'#22d3ee'); 
+    updatePopData(p);
   };
   actions.appendChild(like);
 
@@ -151,7 +153,11 @@ posts.forEach((p)=>{
   const dislike=document.createElement("button"); dislike.innerHTML="💔";
   const dislikeCount=document.createElement("span"); dislikeCount.innerText=p.dislikes; dislike.appendChild(dislikeCount);
   dislike.onclick=()=>{
-    p.dislikes++; dislikeCount.innerText=p.dislikes; pulseElement(dislike); showPopUp(dislike,1,'#f87171'); updatePopData(p);
+    p.dislikes++;
+    dislikeCount.innerText=p.dislikes;
+    pulseElement(dislike);
+    showPopUp(dislike,1,'#f87171'); 
+    updatePopData(p);
   };
   actions.appendChild(dislike);
 
@@ -159,7 +165,11 @@ posts.forEach((p)=>{
   const comment=document.createElement("button"); comment.innerHTML="💬";
   const commentCount=document.createElement("span"); commentCount.innerText=p.comments; comment.appendChild(commentCount);
   comment.onclick=()=>{
-    p.comments++; commentCount.innerText=p.comments; pulseElement(comment); showPopUp(comment,1,'#a3e635'); updatePopData(p);
+    p.comments++;
+    commentCount.innerText=p.comments;
+    pulseElement(comment);
+    showPopUp(comment,1,'#a3e635'); 
+    updatePopData(p);
   };
   actions.appendChild(comment);
 
@@ -184,7 +194,6 @@ const ctx=document.getElementById("graph").getContext("2d");
 
 let history={likes:[],dislikes:[],comments:[]};
 let displayHistory={likes:[],dislikes:[],comments:[]};
-let points=[],deltaPoints=[],flashPoints=[],trendPoints=[];
 let currentPost=null;
 
 function togglePop(show,post=null){
@@ -210,7 +219,6 @@ function updatePopData(post,init=false){
     displayHistory.likes=history.likes.slice();
     displayHistory.dislikes=history.dislikes.slice();
     displayHistory.comments=history.comments.slice();
-    points=[]; deltaPoints=[]; flashPoints=[]; trendPoints=[];
   }else{
     history.likes.push(post.likes + Math.random()*2-1);
     history.dislikes.push(post.dislikes + Math.random()*2-1);
@@ -219,65 +227,50 @@ function updatePopData(post,init=false){
   }
 }
 
-// Animate & draw
+// Animate & draw dynamiquement style bourse
 function animate(){
   if(!currentPost){ requestAnimationFrame(animate); return; }
+
   for(let i=0;i<history.likes.length;i++){
-    displayHistory.likes[i]+= (history.likes[i]-displayHistory.likes[i])*0.1;
-    displayHistory.dislikes[i]+= (history.dislikes[i]-displayHistory.dislikes[i])*0.1;
-    displayHistory.comments[i]+= (history.comments[i]-displayHistory.comments[i])*0.1;
+    displayHistory.likes[i] += (history.likes[i] - displayHistory.likes[i])*0.1 + (Math.random()-0.5);
+    displayHistory.dislikes[i] += (history.dislikes[i] - displayHistory.dislikes[i])*0.1 + (Math.random()-0.5);
+    displayHistory.comments[i] += (history.comments[i] - displayHistory.comments[i])*0.1 + (Math.random()-0.5);
   }
-  drawGraph(displayHistory.likes,displayHistory.dislikes,displayHistory.comments);
+
+  drawGraph(displayHistory.likes, displayHistory.dislikes, displayHistory.comments);
+
   requestAnimationFrame(animate);
 }
 
-// Draw lines
-function drawGraph(likes,dislikes,comments){
+// DRAW GRAPH STYLE BOURSE
+function drawGraph(likes, dislikes, comments){
   ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-  drawLineWithExtras(likes,"#22d3ee","likes");
-  drawLineWithExtras(dislikes,"#f87171","dislikes");
-  drawLineWithExtras(comments,"#a3e635","comments");
-  // grille
-  ctx.strokeStyle="rgba(255,255,255,0.2)"; ctx.lineWidth=1;
+
+  drawLineBourse(likes,"#22d3ee");
+  drawLineBourse(dislikes,"#f87171");
+  drawLineBourse(comments,"#a3e635");
+
+  // grille légère
+  ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1;
   const rows=5,cols=6;
-  for(let i=0;i<=rows;i++){let y=i*(ctx.canvas.height/rows);ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(ctx.canvas.width,y);ctx.stroke();}
-  for(let i=0;i<=cols;i++){let x=i*(ctx.canvas.width/cols);ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,ctx.canvas.height);ctx.stroke();}
+  for(let i=0;i<=rows;i++){
+    let y=i*(ctx.canvas.height/rows);
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(ctx.canvas.width,y); ctx.stroke();
+  }
+  for(let i=0;i<=cols;i++){
+    let x=i*(ctx.canvas.width/cols);
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,ctx.canvas.height); ctx.stroke();
+  }
 }
 
-// Draw line + points + delta + flash + trend
-function drawLineWithExtras(data,color,type){
+function drawLineBourse(data,color){
   ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2;
-  let maxPrev=Math.max(...data);
   data.forEach((v,i)=>{
-    const x=i/(data.length-1||1)*ctx.canvas.width;
-    const y=ctx.canvas.height-(v/20)*ctx.canvas.height;
-    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-
-    if(!points[i]) points[i]={};
-    if(!points[i][type]){
-      const el=document.createElement("div"); el.className="point "+type; document.getElementById("graphContainer").appendChild(el);
-      points[i][type]=el;
-      const d=document.createElement("div"); d.className="delta"; document.getElementById("graphContainer").appendChild(d);
-      deltaPoints[i]?deltaPoints[i][type]=d:deltaPoints[i]={}; deltaPoints[i][type]=d;
-      const f=document.createElement("div"); f.className="flash "+type; document.getElementById("graphContainer").appendChild(f);
-      flashPoints[i]?flashPoints[i][type]=f:flashPoints[i]={}; flashPoints[i][type]=f;
-      const t=document.createElement("div"); t.className="trend"; document.getElementById("graphContainer").appendChild(t);
-      trendPoints[i]?trendPoints[i][type]=t:trendPoints[i]={}; trendPoints[i][type]=t;
-    }
-
-    points[i][type].style.left=(x-4)+"px"; points[i][type].style.top=(y-4)+"px";
-    const prev=i>0?data[i-1]:data[i]; const diff=Math.round(v-prev);
-    deltaPoints[i][type].innerText=(diff>0?"+":"")+diff;
-    deltaPoints[i][type].className="delta "+(diff>=0?"up":"down");
-    deltaPoints[i][type].style.left=(x+6)+"px"; deltaPoints[i][type].style.top=(y-6)+"px";
-
-    if(v>=maxPrev){flashPoints[i][type].style.left=(x-6)+"px"; flashPoints[i][type].style.top=(y-6)+"px"; flashPoints[i][type].style.opacity=1;
-      flashPoints[i][type].classList.add("flashAnim"); setTimeout(()=>{flashPoints[i][type].style.opacity=0; flashPoints[i][type].classList.remove("flashAnim");},400); maxPrev=v;}
-
-    trendPoints[i][type].innerText = diff>0?"▲":"▼";
-    trendPoints[i][type].className = "trend "+(diff>=0?"up":"down");
-    trendPoints[i][type].style.left=(x+8)+"px"; trendPoints[i][type].style.top=(y-10)+"px";
+    const x = i/(data.length-1||1) * ctx.canvas.width;
+    const y = ctx.canvas.height - Math.max(0, Math.min(ctx.canvas.height, (v/20)*ctx.canvas.height + (Math.random()*8-4)));
+    i? ctx.lineTo(x,y) : ctx.moveTo(x,y);
   });
+  ctx.stroke();
 }
 
 animate();
