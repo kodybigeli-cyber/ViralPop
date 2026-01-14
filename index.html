@@ -11,9 +11,9 @@
 body{margin:0;font-family:Inter;background:#0f172a;color:#e5e7eb}
 header{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#020617}
 button{background:#3b82f6;color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer}
-input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #334155;background:#020617;color:#fff}
+input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #334155;background:#020617;color:#fff;margin-bottom:8px}
 .panel{padding:12px;margin:12px;border:1px solid #334155;border-radius:12px}
-.feed{height:80vh;overflow-y:auto}
+.feed{height:70vh;overflow-y:auto}
 .post{margin-bottom:16px;border-radius:12px;overflow:hidden;background:#020617}
 .post img,.post video{width:100%;max-height:400px;object-fit:cover}
 .actions{display:flex;gap:10px;padding:8px}
@@ -38,27 +38,27 @@ input,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #334155
 
 <div id="app" class="hidden">
 
-<div class="panel">
-  <textarea id="postText" placeholder="Exprime-toi..."></textarea>
-  <input type="file" id="postFile">
-  <button onclick="publish()">Publier</button>
-</div>
+  <div class="panel">
+    <textarea id="postText" placeholder="Exprime-toi..."></textarea>
+    <input type="file" id="postFile">
+    <button onclick="publish()">Publier</button>
+  </div>
 
-<div class="feed" id="feed"></div>
+  <div class="feed" id="feed"></div>
 
-<div class="panel">
-  <h3>Messages</h3>
-  <input id="dmText" placeholder="Message">
-  <button onclick="sendDM()">Envoyer</button>
-  <div id="chat"></div>
-</div>
+  <div class="panel">
+    <h3>Messages</h3>
+    <input id="dmText" placeholder="Message">
+    <button onclick="sendDM()">Envoyer</button>
+    <div id="chat"></div>
+  </div>
 
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
@@ -69,11 +69,18 @@ const firebaseConfig = {
   appId: "1:719277208432:web:bf8585bfcf00962b87d5b5"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth();
-const db = getFirestore();
-const storage = getStorage();
+const appFB = initializeApp(firebaseConfig);
+const auth = getAuth(appFB);
+const db = getFirestore(appFB);
+const storage = getStorage(appFB);
 
+// ELEMENTS
+const authDiv = document.getElementById("auth");
+const appDiv = document.getElementById("app");
+const feed = document.getElementById("feed");
+const chat = document.getElementById("chat");
+
+// AUTH
 window.signup = async ()=>{
   await createUserWithEmailAndPassword(auth,email.value,password.value);
 };
@@ -84,35 +91,36 @@ window.login = async ()=>{
 
 onAuthStateChanged(auth,user=>{
   if(user){
-    authDiv.style.display="none";
+    authDiv.classList.add("hidden");
     appDiv.classList.remove("hidden");
-    userLabel.textContent=user.email;
+    userLabel.textContent = user.email;
     loadFeed();
+    loadMessages();
   }
 });
 
-const authDiv=document.getElementById("auth");
-const appDiv=document.getElementById("app");
-
-async function loadFeed(){
-  const q=query(collection(db,"posts"),orderBy("created","desc"));
+// FEED
+function loadFeed(){
+  const q = query(collection(db,"posts"), orderBy("created","desc"));
   onSnapshot(q,snap=>{
     feed.innerHTML="";
     snap.forEach(d=>{
       const p=d.data();
       const div=document.createElement("div");
       div.className="post";
+
       if(p.media){
         if(p.type.startsWith("video")){
           const v=document.createElement("video");
-          v.src=p.media;v.controls=true;
+          v.src=p.media; v.controls=true;
           div.appendChild(v);
-        }else{
+        } else {
           const i=document.createElement("img");
           i.src=p.media;
           div.appendChild(i);
         }
       }
+
       const t=document.createElement("div");
       t.style.padding="8px";
       t.textContent=p.text;
@@ -122,7 +130,7 @@ async function loadFeed(){
       a.className="actions";
       const like=document.createElement("button");
       like.textContent="❤️ "+(p.likes||0);
-      like.onclick=()=>likePost(d.id,p.likes||0);
+      like.onclick=()=>likePost(d.id);
       a.appendChild(like);
       div.appendChild(a);
 
@@ -131,15 +139,18 @@ async function loadFeed(){
   });
 }
 
-async function likePost(id,count){
-  await addDoc(collection(db,"likes"),{post:id});
+async function likePost(id){
+  await updateDoc(doc(db,"posts",id),{
+    likes: increment(1)
+  });
 }
 
+// PUBLISH
 window.publish = async ()=>{
-  let url="",type="";
+  let url="", type="";
   if(postFile.files[0]){
     const f=postFile.files[0];
-    const r=ref(storage,"posts/"+Date.now()+f.name);
+    const r=ref(storage,"posts/"+Date.now()+"_"+f.name);
     await uploadBytes(r,f);
     url=await getDownloadURL(r);
     type=f.type;
@@ -152,7 +163,21 @@ window.publish = async ()=>{
     created:serverTimestamp()
   });
   postText.value="";
+  postFile.value="";
 };
+
+// MESSAGES
+function loadMessages(){
+  const q=query(collection(db,"messages"),orderBy("created"));
+  onSnapshot(q,snap=>{
+    chat.innerHTML="";
+    snap.forEach(d=>{
+      const p=document.createElement("p");
+      p.textContent=d.data().from+" : "+d.data().text;
+      chat.appendChild(p);
+    });
+  });
+}
 
 window.sendDM = async ()=>{
   await addDoc(collection(db,"messages"),{
@@ -162,16 +187,7 @@ window.sendDM = async ()=>{
   });
   dmText.value="";
 };
-
-onSnapshot(collection(db,"messages"),snap=>{
-  chat.innerHTML="";
-  snap.forEach(d=>{
-    const p=document.createElement("p");
-    p.textContent=d.data().from+" : "+d.data().text;
-    chat.appendChild(p);
-  });
-});
 </script>
 
 </body>
-  </html>
+</html>
