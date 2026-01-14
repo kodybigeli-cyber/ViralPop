@@ -24,7 +24,6 @@ body {margin:0; font-family:sans-serif; background:#000;}
 .comment-btn {padding:5px 10px;}
 .influencer-badge {position:absolute; top:10px; right:10px; background:#ff0; color:#000; padding:3px 7px; border-radius:5px; font-weight:bold;}
 </style>
-
 </head>
 <body>
 
@@ -38,29 +37,30 @@ body {margin:0; font-family:sans-serif; background:#000;}
   </div>
 </div>
 
-<div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh;"></div>
+<div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh; -webkit-overflow-scrolling: touch;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /********* Supabase Config *********/
 const SUPABASE_URL = "https://cjxyruudipzgfinchcgj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeHlydXVkaXB6Z2ZpbmNoY2dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNjgxNDUsImV4cCI6MjA4Mzk0NDE0NX0.YSsDO1bsm0bzIq-MIz6DawHCIsX8SfTuN7FXxY4mdzA";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeHlydXVkaXB6Z2ZpbmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNjgxNDUsImV4cCI6MjA4Mzk0NDE0NX0.YSsDO1bsm0bzIq-MIz6DawHCIsX8SfTuN7FXxY4mdzA";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/********* Utilisateur *********/
-let currentUser = null;
-async function signInGuest() {
-  const { data, error } = await supabase.auth.signInWithOAuth({ provider: "anonymous" });
-  currentUser = data?.user?.id || "guest_" + Date.now();
-}
-signInGuest();
+/********* Utilisateur invité *********/
+let currentUser = "guest_" + Date.now(); // simple ID invité
 
 /********* Charger posts *********/
 const feedContainer = document.getElementById("feed-container");
 
 async function loadPosts() {
   const { data: posts, error } = await supabase.from("posts").select("*").order("createdAt", { ascending: false });
+  if(error) { console.error("Erreur Supabase posts:", error); return; }
+  if(!posts || posts.length===0) { feedContainer.innerHTML = "<p style='color:white;text-align:center;margin-top:20px;'>Aucun contenu disponible</p>"; return; }
+
   feedContainer.innerHTML = "";
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.play(); else entry.target.pause(); });
+  },{threshold:0.75});
 
   posts.forEach(async post => {
     const videoEl = document.createElement("video");
@@ -93,7 +93,7 @@ async function loadPosts() {
     commentBtn.className = "comment-btn";
     commentBtn.innerText = "Envoyer";
     commentBtn.onclick = async () => {
-      if(currentUser && commentInput.value.trim() !== ""){
+      if(commentInput.value.trim() !== ""){
         await supabase.from("comments").insert([{ post_id: post.id, uid: currentUser, text: commentInput.value }]);
         commentInput.value = "";
       }
@@ -131,6 +131,7 @@ async function loadPosts() {
     videoEl.onclick = () => { commentBox.style.display = commentBox.style.display==="block"?"none":"block"; }
 
     feedContainer.appendChild(wrapper);
+    observer.observe(videoEl);
   });
 }
 loadPosts();
@@ -144,14 +145,6 @@ async function updateStats(postId){
   const fillPercent = Math.min(100,(pops?.length/50)*100);
   document.getElementById("badge-fill").style.width = fillPercent+"%";
 }
-
-/********* Autoplay vidéo *********/
-const observer = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.play(); else entry.target.pause(); });
-},{threshold:0.75});
-
-const videoEls = document.getElementsByClassName("feed-video");
-Array.from(videoEls).forEach(v=>observer.observe(v));
 </script>
 </body>
-  </html>
+</html>
