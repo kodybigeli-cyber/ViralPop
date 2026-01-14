@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral+ Pop+ UX</title>
+<title>Viral+ Pop+ Animé</title>
 <style>
 *{box-sizing:border-box}
 body{
@@ -177,7 +177,7 @@ const posts = [
 const feed=document.getElementById("feed");
 
 // Création du feed
-posts.forEach((p,i)=>{
+posts.forEach((p)=>{
   const post=document.createElement("div");
   post.className="post";
 
@@ -211,7 +211,6 @@ posts.forEach((p,i)=>{
   like.onclick=()=>{
     p.likes++;
     likeCount.innerText=p.likes;
-    updatePopData(p);
   };
   actions.appendChild(like);
 
@@ -224,7 +223,6 @@ posts.forEach((p,i)=>{
   dislike.onclick=()=>{
     p.dislikes++;
     dislikeCount.innerText=p.dislikes;
-    updatePopData(p);
   };
   actions.appendChild(dislike);
 
@@ -237,16 +235,13 @@ posts.forEach((p,i)=>{
   comment.onclick=()=>{
     p.comments++;
     commentCount.innerText=p.comments;
-    updatePopData(p);
   };
   actions.appendChild(comment);
 
   // 📈 Pop+
   const popBtn=document.createElement("button");
   popBtn.innerHTML="📈";
-  popBtn.onclick=()=>{
-    togglePop(true,p);
-  };
+  popBtn.onclick=()=>{ togglePop(true,p); };
   actions.appendChild(popBtn);
 
   post.appendChild(actions);
@@ -267,50 +262,74 @@ const ctx=document.getElementById("graph").getContext("2d");
 let history={likes:[],dislikes:[],comments:[]};
 let currentPost=null;
 
+// pour animation fluide
+let displayHistory={likes:[],dislikes:[],comments:[]};
+
 function togglePop(show,post=null){
   popModal.style.display = show ? "flex" : "none";
   if(show && post){
     currentPost=post;
-    updatePopData(post);
+    updatePopData(post,true);
   }
 }
 
-function updatePopData(post){
+// Mettre à jour Pop+ avec animation
+function updatePopData(post,init=false){
   currentPost=post;
-  const totalLikes = post.likes;
-  const totalDislikes = post.dislikes;
-  const totalComments = post.comments;
 
-  likeDisplay.innerText = "❤️ "+totalLikes;
-  dislikeDisplay.innerText = "💔 "+totalDislikes;
-  commentDisplay.innerText = "💬 "+totalComments;
+  likeDisplay.innerText="❤️ "+post.likes;
+  dislikeDisplay.innerText="💔 "+post.dislikes;
+  commentDisplay.innerText="💬 "+post.comments;
 
-  const score=Math.min(100,totalLikes*5 - totalDislikes*2 + totalComments*2);
+  const score=Math.min(100,post.likes*5 - post.dislikes*2 + post.comments*2);
   energy.style.width=score+"%";
   popPercent.innerText=Math.round(score)+"%";
 
-  // Historique style bourse
-  history.likes.push(totalLikes + Math.random()*3 - 1.5);
-  history.dislikes.push(totalDislikes + Math.random()*2 - 1);
-  history.comments.push(totalComments + Math.random()*2 - 1);
+  if(init){
+    history.likes=Array(20).fill(post.likes);
+    history.dislikes=Array(20).fill(post.dislikes);
+    history.comments=Array(20).fill(post.comments);
+    displayHistory.likes=history.likes.slice();
+    displayHistory.dislikes=history.dislikes.slice();
+    displayHistory.comments=history.comments.slice();
+  } else {
+    // ajout avec fluctuation
+    history.likes.push(post.likes + Math.random()*2-1);
+    history.dislikes.push(post.dislikes + Math.random()*2-1);
+    history.comments.push(post.comments + Math.random()*2-1);
 
-  if(history.likes.length>20){
-    history.likes.shift();
-    history.dislikes.shift();
-    history.comments.shift();
+    if(history.likes.length>20){
+      history.likes.shift();
+      history.dislikes.shift();
+      history.comments.shift();
+    }
   }
-
-  drawGraph();
 }
 
-function drawGraph(){
+// Animation fluide entremêlée
+function animate(){
+  if(!currentPost){ requestAnimationFrame(animate); return; }
+
+  // interpolation pour smooth
+  for(let i=0;i<history.likes.length;i++){
+    displayHistory.likes[i]+= (history.likes[i]-displayHistory.likes[i])*0.1;
+    displayHistory.dislikes[i]+= (history.dislikes[i]-displayHistory.dislikes[i])*0.1;
+    displayHistory.comments[i]+= (history.comments[i]-displayHistory.comments[i])*0.1;
+  }
+
+  drawGraph(displayHistory.likes, displayHistory.dislikes, displayHistory.comments);
+  requestAnimationFrame(animate);
+}
+
+// Dessiner les courbes
+function drawGraph(likes,dislikes,comments){
   ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
 
-  drawLine(history.likes,"#22d3ee");
-  drawLine(history.dislikes,"#f87171");
-  drawLine(history.comments,"#a3e635");
+  drawLine(likes,"#22d3ee");
+  drawLine(dislikes,"#f87171");
+  drawLine(comments,"#a3e635");
 
-  // Règles
+  // règles
   ctx.strokeStyle="rgba(255,255,255,0.2)";
   ctx.lineWidth=1;
   const rows=5,cols=6;
@@ -330,6 +349,7 @@ function drawGraph(){
   }
 }
 
+// Dessin d’une ligne
 function drawLine(data,color){
   ctx.beginPath();
   ctx.strokeStyle=color;
@@ -342,7 +362,10 @@ function drawLine(data,color){
   ctx.stroke();
 }
 
-// Animation style bourse pour Pop+ ouvert
+// Animation continue
+animate();
+
+// Mise à jour automatique Pop+ style bourse
 setInterval(()=>{
   if(currentPost){
     updatePopData(currentPost);
