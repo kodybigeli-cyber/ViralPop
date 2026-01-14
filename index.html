@@ -3,278 +3,298 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Viral+ Pop+ Dynamique</title>
+<title>Viral+</title>
+
 <style>
-*{box-sizing:border-box;}
-body{margin:0;background:#000;color:#fff;font-family:Arial,sans-serif;overflow:hidden;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
 
 /* FEED */
-#feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;}
-.post{height:100vh;scroll-snap-align:start;position:relative;}
-.post video,.post img{width:100%;height:100%;object-fit:cover;}
-
-/* OVERLAY POST INFO */
-.overlay{position:absolute;bottom:90px;left:12px;right:80px;}
-.overlay .author{font-weight:bold;font-size:16px;}
-.overlay .text{margin-top:6px;font-size:14px;}
-
-/* ACTIONS VERTICALES */
-.actions{position:absolute;right:12px;bottom:120px;display:flex;flex-direction:column;gap:12px;}
-.actions button{
-  width:48px;height:48px;border-radius:50%;border:none;background:rgba(0,0,0,0.5);
-  color:#fff;font-size:18px;cursor:pointer;display:flex;justify-content:center;align-items:center;position:relative;transition: transform 0.15s ease;
+#feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
 }
-.actions button span{position:absolute;top:-20px;font-size:12px;color:#fff;}
-.actions button.pulse{transform: scale(1.3);}
+.post{
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+}
+.post video,.post img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
-/* MODAL POP+ */
-#popModal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);
-display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;z-index:100;}
-#popModal .close{position:absolute;top:20px;right:20px;font-size:24px;cursor:pointer;}
-#popBarContainer{width:90%;max-width:400px;display:flex;align-items:center;gap:10px;margin-bottom:12px;position:relative;}
-.battery{flex:1;height:16px;border:2px solid #22d3ee;border-radius:10px;overflow:hidden;position:relative;}
-.energy{height:100%;width:0%;background:linear-gradient(90deg,#22d3ee,#3b82f6);transition:width 0.3s;}
-.energy.pulse{animation: pulseBar 0.3s ease;}
-@keyframes pulseBar{0%{transform: scaleX(1);}50%{transform: scaleX(1.2);}100%{transform: scaleX(1);}}
-.flame{position:absolute;width:12px;height:12px;border-radius:50%;
-background: radial-gradient(circle, #fffa00 0%, #ff3 60%, #f00 100%);
-top:-3px;right:0;animation: flameAnim 0.4s infinite alternate;}
-@keyframes flameAnim{0%{transform: translateY(0) scale(1);}50%{transform: translateY(-4px) scale(1.2);}100%{transform: translateY(0) scale(1);}}
-#popPercent{min-width:40px;text-align:right;font-weight:bold;display:flex;align-items:center;gap:4px;}
-#fireScore{color:#ff4500;font-weight:bold;animation: pulseFire 0.5s infinite alternate;font-size:16px;}
-@keyframes pulseFire{0%{transform: scale(1);}100%{transform: scale(1.2);}}
+/* ACTIONS */
+.actions{
+  position:absolute;
+  right:12px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  z-index:5;
+}
+.actions button{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:none;
+  background:rgba(0,0,0,.6);
+  color:#fff;
+  font-size:20px;
+  position:relative;
+  cursor:pointer;
+}
+.actions span{
+  position:absolute;
+  top:-18px;
+  font-size:12px;
+}
 
-/* GRAPH CONTAINER */
-#graphContainer{width:90%;max-width:400px;position:relative;}
-canvas{width:100%;height:150px;background:#020617;border-radius:8px;}
-.legend{display:flex;justify-content:space-between;font-size:12px;margin-top:4px;}
-.legend div{display:flex;align-items:center;gap:4px;}
-.legend span{display:inline-block;width:12px;height:12px;border-radius:50%;}
+/* LIKE ANIMATIONS */
+.pulse{
+  animation:pulse .25s ease;
+}
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.35)}
+  100%{transform:scale(1)}
+}
+.plus{
+  position:absolute;
+  top:-10px;
+  right:-10px;
+  font-size:14px;
+  color:#22d3ee;
+  animation:plus 1s forwards;
+}
+@keyframes plus{
+  0%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-18px)}
+}
 
-/* POINTS, DELTA, FLASH, TREND */
-.point{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;}
-.point.likes{background:#22d3ee;}
-.point.dislikes{background:#f87171;}
-.point.comments{background:#a3e635;}
-.delta{position:absolute;font-size:10px;font-weight:bold;pointer-events:none;}
-.delta.up{color:#00ff00;}
-.delta.down{color:#ff0000;}
-.flash{position:absolute;width:12px;height:12px;border-radius:50%;pointer-events:none;opacity:0;}
-.flash.likes{background:#22d3ee;}
-.flash.dislikes{background:#f87171;}
-.flash.comments{background:#a3e635;}
-.trend{position:absolute;font-size:12px;font-weight:bold;pointer-events:none;}
-.trend.up{color:#00ff00;}
-.trend.down{color:#ff0000;}
+/* FLOATING HEARTS */
+.heart{
+  position:absolute;
+  right:90px;
+  bottom:120px;
+  font-size:18px;
+  color:#ff4d6d;
+  animation:float 2s linear forwards;
+  pointer-events:none;
+}
+@keyframes float{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  100%{opacity:0;transform:translateY(-160px) scale(1.6)}
+}
+
+/* POP+ OVERLAY */
+#pop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.95);
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  z-index:99;
+}
+#close{
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:22px;
+  cursor:pointer;
+}
+
+/* BAR */
+.bar{
+  width:85%;
+  max-width:380px;
+  height:16px;
+  border:2px solid #22d3ee;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:6px;
+}
+.energy{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22d3ee,#3b82f6);
+  transition:width .4s;
+}
+#percent{margin-bottom:8px;font-weight:bold}
+
+/* GRAPH */
+canvas{
+  width:85%;
+  max-width:380px;
+  height:160px;
+  background:#020617;
+  border-radius:8px;
+}
+.legend{
+  display:flex;
+  gap:12px;
+  font-size:12px;
+  margin-top:6px;
+}
+.legend div{
+  display:flex;
+  gap:4px;
+  align-items:center;
+}
+.legend span{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+}
 </style>
 </head>
+
 <body>
 
 <div id="feed"></div>
 
-<!-- POP+ MODAL -->
-<div id="popModal">
-  <div class="close" onclick="togglePop(false)">✖</div>
-  <div id="popBarContainer">
-    <div class="battery">
-      <div class="energy" id="energy"></div>
-      <div class="flame" id="flame"></div>
-    </div>
-    <div id="popPercent">
-      <span id="percent">0%</span>
-      <span id="fireScore">🔥 0</span>
-    </div>
-  </div>
-  <div id="graphContainer">
-    <canvas id="graph"></canvas>
-    <div class="legend">
-      <div><span style="background:#22d3ee"></span> Likes</div>
-      <div><span style="background:#f87171"></span> Dislikes</div>
-      <div><span style="background:#a3e635"></span> Commentaires</div>
-    </div>
-  </div>
-  <div style="margin-top:10px;">
-    <span id="likeCount">❤️ 0</span> &nbsp; 
-    <span id="dislikeCount">💔 0</span> &nbsp; 
-    <span id="commentCount">💬 0</span>
+<!-- POP+ -->
+<div id="pop">
+  <div id="close" onclick="togglePop(false)">✖</div>
+  <div class="bar"><div class="energy" id="energy"></div></div>
+  <div id="percent">0%</div>
+  <canvas id="graph" width="360" height="160"></canvas>
+  <div class="legend">
+    <div><span style="background:#22d3ee"></span>Likes</div>
+    <div><span style="background:#f87171"></span>Dislikes</div>
+    <div><span style="background:#a3e635"></span>Commentaires</div>
   </div>
 </div>
 
 <script>
-// POSTS MOCK
-const posts = [
-  {author:"anonyme", text:"Bienvenue sur Viral+", media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", type:"video", likes:2, dislikes:0, comments:1},
-  {author:"kody", text:"Scroll fluide comme TikTok", media:"https://picsum.photos/1080/1920?1", type:"image", likes:5, dislikes:1, comments:2},
-  {author:"user47", text:"Ta marque : barre + 3 courbes", media:"https://picsum.photos/1080/1920?2", type:"image", likes:1, dislikes:0, comments:0}
+const posts=[
+ {media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",type:"video",likes:5,dis:1,com:2},
+ {media:"https://picsum.photos/1080/1920?1",type:"image",likes:3,dis:0,com:1}
 ];
 
 const feed=document.getElementById("feed");
 
-// ANIMATIONS
-function pulseElement(el){el.classList.add("pulse"); setTimeout(()=>el.classList.remove("pulse"),150);}
-function showPopUp(el,value,color){
-  const pop=document.createElement("div");
-  pop.innerText=value>0?`+${value}`:`${value}`;
-  pop.style.position="absolute"; pop.style.top="-20px"; pop.style.left="50%";
-  pop.style.transform="translateX(-50%)"; pop.style.color=color; pop.style.fontWeight="bold";
-  pop.style.pointerEvents="none"; pop.style.opacity=1;
-  el.appendChild(pop);
-  pop.animate([{transform:'translate(-50%,0)',opacity:1},{transform:'translate(-50%,-30px)',opacity:0}],{duration:800,easing:'ease-out'});
-  setTimeout(()=>el.removeChild(pop),800);
-}
+posts.forEach(p=>{
+ const post=document.createElement("div");
+ post.className="post";
 
-// CREATION FEED
-posts.forEach((p)=>{
-  const post=document.createElement("div"); post.className="post";
-  let media;
-  if(p.type==="video"){media=document.createElement("video");media.src=p.media;media.autoplay=true;media.loop=true;media.muted=true;}
-  else{media=document.createElement("img");media.src=p.media;}
-  post.appendChild(media);
+ const media=p.type==="video"?document.createElement("video"):document.createElement("img");
+ media.src=p.media;
+ if(p.type==="video"){media.autoplay=true;media.loop=true;media.muted=true;}
+ post.appendChild(media);
 
-  const overlay=document.createElement("div"); overlay.className="overlay";
-  overlay.innerHTML=`<div class="author">@${p.author}</div><div class="text">${p.text}</div>`;
-  post.appendChild(overlay);
+ const actions=document.createElement("div");
+ actions.className="actions";
 
-  const actions=document.createElement("div"); actions.className="actions";
+ function likeBtn(){
+  const b=document.createElement("button");
+  b.innerHTML="❤️";
+  const s=document.createElement("span");
+  s.innerText=p.likes;
+  b.appendChild(s);
 
-  // ❤️ J'aime
-  const like=document.createElement("button"); like.innerHTML="❤️";
-  const likeCount=document.createElement("span"); likeCount.innerText=p.likes; like.appendChild(likeCount);
-  like.onclick=()=>{
-    p.likes++; 
-    likeCount.innerText=p.likes;
-    pulseElement(like);
-    showPopUp(like,1,'#22d3ee'); 
-    updatePopData(p);
+  b.onclick=()=>{
+    p.likes++;
+    s.innerText=p.likes;
+    b.classList.add("pulse");
+    setTimeout(()=>b.classList.remove("pulse"),200);
+
+    const plus=document.createElement("div");
+    plus.className="plus";
+    plus.innerText="+1 ❤️";
+    b.appendChild(plus);
+    setTimeout(()=>plus.remove(),900);
+
+    spawnHeart(post);
   };
-  actions.appendChild(like);
+  return b;
+ }
 
-  // 💔 J'aime pas
-  const dislike=document.createElement("button"); dislike.innerHTML="💔";
-  const dislikeCount=document.createElement("span"); dislikeCount.innerText=p.dislikes; dislike.appendChild(dislikeCount);
-  dislike.onclick=()=>{
-    p.dislikes++;
-    dislikeCount.innerText=p.dislikes;
-    pulseElement(dislike);
-    showPopUp(dislike,1,'#f87171'); 
-    updatePopData(p);
-  };
-  actions.appendChild(dislike);
+ actions.appendChild(likeBtn());
+ actions.appendChild(simpleBtn("👎",p.dis,()=>p.dis++));
+ actions.appendChild(simpleBtn("💬",p.com,()=>p.com++));
+ actions.appendChild(popBtn(p));
 
-  // 💬 Commentaires
-  const comment=document.createElement("button"); comment.innerHTML="💬";
-  const commentCount=document.createElement("span"); commentCount.innerText=p.comments; comment.appendChild(commentCount);
-  comment.onclick=()=>{
-    p.comments++;
-    commentCount.innerText=p.comments;
-    pulseElement(comment);
-    showPopUp(comment,1,'#a3e635'); 
-    updatePopData(p);
-  };
-  actions.appendChild(comment);
-
-  // 📈 Pop+
-  const popBtn=document.createElement("button"); popBtn.innerHTML="📈";
-  popBtn.onclick=()=>{ togglePop(true,p); pulseElement(popBtn); };
-  actions.appendChild(popBtn);
-
-  post.appendChild(actions); feed.appendChild(post);
+ post.appendChild(actions);
+ feed.appendChild(post);
 });
 
-// POP+ Modal
-const popModal=document.getElementById("popModal");
+function simpleBtn(icon,val,cb){
+ const b=document.createElement("button");
+ b.innerHTML=icon;
+ const s=document.createElement("span");
+ s.innerText=val;
+ b.appendChild(s);
+ b.onclick=()=>{cb();s.innerText=val};
+ return b;
+}
+
+function popBtn(p){
+ const b=document.createElement("button");
+ b.innerHTML="⚡";
+ b.onclick=()=>openPop(p);
+ return b;
+}
+
+/* FLOAT HEART */
+function spawnHeart(post){
+ const h=document.createElement("div");
+ h.className="heart";
+ h.innerText="❤️";
+ h.style.left=(Math.random()*40+40)+"%";
+ post.appendChild(h);
+ setTimeout(()=>h.remove(),2000);
+}
+
+/* POP+ */
+const pop=document.getElementById("pop");
 const energy=document.getElementById("energy");
-const flame=document.getElementById("flame");
-const percentDisplay=document.getElementById("percent");
-const fireScoreDisplay=document.getElementById("fireScore");
-const likeDisplay=document.getElementById("likeCount");
-const dislikeDisplay=document.getElementById("dislikeCount");
-const commentDisplay=document.getElementById("commentCount");
+const percent=document.getElementById("percent");
 const ctx=document.getElementById("graph").getContext("2d");
+let timer;
 
-let history={likes:[],dislikes:[],comments:[]};
-let displayHistory={likes:[],dislikes:[],comments:[]};
-let currentPost=null;
-
-function togglePop(show,post=null){
-  popModal.style.display = show ? "flex" : "none";
-  if(show && post){currentPost=post;updatePopData(post,true);}
+function togglePop(v){
+ pop.style.display=v?"flex":"none";
+ if(!v) clearInterval(timer);
 }
 
-function updatePopData(post,init=false){
-  currentPost=post;
-  likeDisplay.innerText="❤️ "+post.likes;
-  dislikeDisplay.innerText="💔 "+post.dislikes;
-  commentDisplay.innerText="💬 "+post.comments;
-  let score=Math.min(100,post.likes*5 - post.dislikes*2 + post.comments*2);
-  energy.style.width=score+"%"; percentDisplay.innerText=Math.round(score)+"%";
-  fireScoreDisplay.innerText="🔥 "+Math.round(score/2);
-  energy.classList.add("pulse"); setTimeout(()=>energy.classList.remove("pulse"),300);
-  flame.style.right = Math.min(score,100)+"%";
+function openPop(p){
+ togglePop(true);
+ const total=p.likes+p.dis+p.com;
+ const score=Math.min(100,Math.round((p.likes/Math.max(1,total))*100));
+ energy.style.width=score+"%";
+ percent.innerText=score+"% énergie";
 
-  if(init){
-    history.likes=Array(20).fill(post.likes);
-    history.dislikes=Array(20).fill(post.dislikes);
-    history.comments=Array(20).fill(post.comments);
-    displayHistory.likes=history.likes.slice();
-    displayHistory.dislikes=history.dislikes.slice();
-    displayHistory.comments=history.comments.slice();
-  }else{
-    history.likes.push(post.likes + Math.random()*2-1);
-    history.dislikes.push(post.dislikes + Math.random()*2-1);
-    history.comments.push(post.comments + Math.random()*2-1);
-    if(history.likes.length>20){history.likes.shift(); history.dislikes.shift(); history.comments.shift();}
-  }
+ const l=[20],d=[14],c=[10];
+ timer=setInterval(()=>{
+  push(l);push(d);push(c);
+  draw(l,d,c);
+ },700);
 }
 
-// Animate & draw dynamiquement style bourse
-function animate(){
-  if(!currentPost){ requestAnimationFrame(animate); return; }
-
-  for(let i=0;i<history.likes.length;i++){
-    displayHistory.likes[i] += (history.likes[i] - displayHistory.likes[i])*0.1 + (Math.random()-0.5);
-    displayHistory.dislikes[i] += (history.dislikes[i] - displayHistory.dislikes[i])*0.1 + (Math.random()-0.5);
-    displayHistory.comments[i] += (history.comments[i] - displayHistory.comments[i])*0.1 + (Math.random()-0.5);
-  }
-
-  drawGraph(displayHistory.likes, displayHistory.dislikes, displayHistory.comments);
-
-  requestAnimationFrame(animate);
+function push(a){
+ a.push(Math.max(5,a[a.length-1]+(Math.random()*6-3)));
+ if(a.length>30)a.shift();
 }
-
-// DRAW GRAPH STYLE BOURSE
-function drawGraph(likes, dislikes, comments){
-  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-
-  drawLineBourse(likes,"#22d3ee");
-  drawLineBourse(dislikes,"#f87171");
-  drawLineBourse(comments,"#a3e635");
-
-  // grille légère
-  ctx.strokeStyle="rgba(255,255,255,0.15)"; ctx.lineWidth=1;
-  const rows=5,cols=6;
-  for(let i=0;i<=rows;i++){
-    let y=i*(ctx.canvas.height/rows);
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(ctx.canvas.width,y); ctx.stroke();
-  }
-  for(let i=0;i<=cols;i++){
-    let x=i*(ctx.canvas.width/cols);
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,ctx.canvas.height); ctx.stroke();
-  }
+function draw(a,b,c){
+ ctx.clearRect(0,0,360,160);
+ line(a,"#22d3ee");line(b,"#f87171");line(c,"#a3e635");
 }
-
-function drawLineBourse(data,color){
-  ctx.beginPath(); ctx.strokeStyle=color; ctx.lineWidth=2;
-  data.forEach((v,i)=>{
-    const x = i/(data.length-1||1) * ctx.canvas.width;
-    const y = ctx.canvas.height - Math.max(0, Math.min(ctx.canvas.height, (v/20)*ctx.canvas.height + (Math.random()*8-4)));
-    i? ctx.lineTo(x,y) : ctx.moveTo(x,y);
-  });
-  ctx.stroke();
+function line(d,col){
+ ctx.strokeStyle=col;
+ ctx.beginPath();
+ d.forEach((v,i)=>{
+  const x=i*(360/30),y=160-v*2;
+  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ });
+ ctx.stroke();
 }
-
-animate();
-setInterval(()=>{if(currentPost) updatePopData(currentPost);},500);
 </script>
+
 </body>
-</html>
+  </html>
