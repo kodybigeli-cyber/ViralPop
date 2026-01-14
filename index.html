@@ -5,15 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Viral+</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Inter,Arial,sans-serif;
   background:#000;
   color:#fff;
+  font-family:Arial,sans-serif;
   overflow:hidden;
 }
 
@@ -27,17 +25,9 @@ header{
   justify-content:space-between;
   align-items:center;
   padding:12px;
-  background:rgba(0,0,0,.4);
+  background:rgba(0,0,0,.5);
 }
 header strong{font-size:20px}
-header button{
-  background:#3b82f6;
-  border:none;
-  color:#fff;
-  padding:6px 12px;
-  border-radius:8px;
-  font-weight:700;
-}
 
 /* FEED */
 #feed{
@@ -47,26 +37,24 @@ header button{
 }
 .post{
   height:100vh;
-  position:relative;
   scroll-snap-align:start;
-  background:#000;
+  position:relative;
 }
-.post video,
-.post img{
+.post video,.post img{
   width:100%;
   height:100%;
   object-fit:cover;
 }
 
 /* OVERLAY */
-.overlay-bottom{
+.overlay{
   position:absolute;
-  bottom:80px;
+  bottom:90px;
   left:12px;
   right:80px;
 }
-.overlay-bottom .author{font-weight:800}
-.overlay-bottom .text{margin-top:6px;font-size:15px}
+.overlay .author{font-weight:bold}
+.overlay .text{margin-top:6px}
 
 .actions{
   position:absolute;
@@ -74,85 +62,45 @@ header button{
   bottom:120px;
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:12px;
 }
 .actions button{
-  background:rgba(0,0,0,.5);
-  border:none;
-  color:#fff;
   width:48px;
   height:48px;
   border-radius:50%;
+  border:none;
+  background:rgba(0,0,0,.5);
+  color:#fff;
   font-size:18px;
 }
 
-/* POPULARITY WIDGET */
+/* POPULARITY */
 #popWidget{
   position:fixed;
   top:70px;
   right:10px;
-  z-index:15;
-  background:rgba(0,0,0,.55);
-  border-radius:14px;
+  width:260px;
+  background:rgba(0,0,0,.6);
+  border-radius:12px;
   padding:10px;
-  width:280px;
-  backdrop-filter:blur(6px);
 }
 .battery{
-  width:100%;
-  height:18px;
+  height:16px;
   border:2px solid #22d3ee;
-  border-radius:12px;
+  border-radius:10px;
   overflow:hidden;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
 .energy{
   height:100%;
   width:0%;
   background:linear-gradient(90deg,#22d3ee,#3b82f6);
-  transition:width .4s ease;
 }
-#popGraph{
+canvas{
   width:100%;
-  height:140px;
+  height:120px;
   background:#020617;
-  border-radius:10px;
-}
-
-/* AUTH */
-#authModal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.8);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:20;
-}
-.authBox{
-  background:#020617;
-  padding:20px;
-  border-radius:16px;
-  width:90%;
-  max-width:360px;
-}
-.authBox input{
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
   border-radius:8px;
-  border:1px solid #334155;
-  background:#020617;
-  color:#fff;
-}
-.authBox button{
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:10px;
-  background:#3b82f6;
-  color:#fff;
-  font-weight:800;
 }
 </style>
 </head>
@@ -161,135 +109,136 @@ header button{
 
 <header>
   <strong>🔥 Viral+</strong>
-  <button id="loginBtn">Connexion</button>
 </header>
 
 <div id="feed"></div>
 
-<!-- POPULARITY -->
 <div id="popWidget">
   <div class="battery"><div class="energy" id="energy"></div></div>
-  <canvas id="popGraph" width="260" height="140"></canvas>
+  <canvas id="graph" width="240" height="120"></canvas>
 </div>
 
-<!-- AUTH -->
-<div id="authModal">
-  <div class="authBox">
-    <h3>Connexion / Inscription</h3>
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Mot de passe">
-    <button onclick="login()">Continuer</button>
-  </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, collection, onSnapshot, query, orderBy, doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDnxGbKIWzj2LKEwrh1a36z0jXMJfPEKTQ",
-  authDomain: "viralplus-dfe4a.firebaseapp.com",
-  projectId: "viralplus-dfe4a",
-  storageBucket: "viralplus-dfe4a.appspot.com",
-  appId: "1:719277208432:web:bf8585bfcf00962b87d5b5"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-const feed = document.getElementById("feed");
-const authModal = document.getElementById("authModal");
-document.getElementById("loginBtn").onclick = ()=> authModal.style.display="flex";
-
-/* AUTH */
-window.login = async ()=>{
-  try{
-    await signInWithEmailAndPassword(auth,email.value,password.value);
-  }catch{
-    await createUserWithEmailAndPassword(auth,email.value,password.value);
+<script>
+// ------------------
+// DONNÉES MOCK (STABLE)
+// ------------------
+const posts = [
+  {
+    author:"anonyme",
+    text:"Bienvenue sur Viral+",
+    media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    type:"video",
+    likes:2
+  },
+  {
+    author:"kody",
+    text:"Scroll fluide comme TikTok",
+    media:"https://picsum.photos/1080/1920?1",
+    type:"image",
+    likes:5
+  },
+  {
+    author:"user47",
+    text:"Ta marque : barre + 3 courbes",
+    media:"https://picsum.photos/1080/1920?2",
+    type:"image",
+    likes:1
   }
-  authModal.style.display="none";
-};
+];
 
-onAuthStateChanged(auth,user=>{
-  document.getElementById("loginBtn").style.display = user ? "none" : "block";
+// ------------------
+// FEED
+// ------------------
+const feed=document.getElementById("feed");
+
+posts.forEach((p,i)=>{
+  const post=document.createElement("div");
+  post.className="post";
+
+  let media;
+  if(p.type==="video"){
+    media=document.createElement("video");
+    media.src=p.media;
+    media.autoplay=true;
+    media.loop=true;
+    media.muted=true;
+  }else{
+    media=document.createElement("img");
+    media.src=p.media;
+  }
+  post.appendChild(media);
+
+  const overlay=document.createElement("div");
+  overlay.className="overlay";
+  overlay.innerHTML=`<div class="author">@${p.author}</div><div class="text">${p.text}</div>`;
+  post.appendChild(overlay);
+
+  const actions=document.createElement("div");
+  actions.className="actions";
+  const like=document.createElement("button");
+  like.innerHTML="❤️";
+  like.onclick=()=>{
+    p.likes++;
+    updatePopularity();
+  };
+  actions.appendChild(like);
+  post.appendChild(actions);
+
+  feed.appendChild(post);
 });
 
-/* FEED */
-const q = query(collection(db,"posts"), orderBy("created","desc"));
-onSnapshot(q,snap=>{
-  feed.innerHTML="";
-  snap.forEach(d=>{
-    const p=d.data();
-    const post=document.createElement("div");
-    post.className="post";
-
-    let media;
-    if(p.type?.startsWith("video")){
-      media=document.createElement("video");
-      media.src=p.media;
-      media.loop=true;
-      media.muted=true;
-      media.autoplay=true;
-      media.playsInline=true;
-    }else{
-      media=document.createElement("img");
-      media.src=p.media;
-    }
-    post.appendChild(media);
-
-    const bottom=document.createElement("div");
-    bottom.className="overlay-bottom";
-    bottom.innerHTML=`<div class="author">@${p.author||"anonyme"}</div><div class="text">${p.text||""}</div>`;
-    post.appendChild(bottom);
-
-    const actions=document.createElement("div");
-    actions.className="actions";
-    const like=document.createElement("button");
-    like.innerHTML="❤️";
-    like.onclick=()=> updateDoc(doc(db,"posts",d.id),{likes:increment(1)});
-    actions.appendChild(like);
-    post.appendChild(actions);
-
-    feed.appendChild(post);
-  });
-});
-
-/* POPULARITY */
+// ------------------
+// POPULARITY GRAPH
+// ------------------
 const energy=document.getElementById("energy");
-const ctx=document.getElementById("popGraph").getContext("2d");
-let stats={text:[],video:[],interact:[]};
+const ctx=document.getElementById("graph").getContext("2d");
 
-onSnapshot(collection(db,"posts"),snap=>{
-  let posts=0,videos=0,likes=0;
-  snap.forEach(d=>{
-    const p=d.data();
-    posts++;
-    if(p.type?.startsWith("video")) videos++;
-    likes+=p.likes||0;
+let history={text:[],video:[],interact:[]};
+
+function updatePopularity(){
+  let text=0,video=0,likes=0;
+  posts.forEach(p=>{
+    if(p.type==="video") video++;
+    else text++;
+    likes+=p.likes;
   });
 
-  energy.style.width=Math.min(100,posts*5+likes*2)+"%";
+  const score=Math.min(100,text*10+video*15+likes*2);
+  energy.style.width=score+"%";
 
-  stats.text.push(posts);
-  stats.video.push(videos);
-  stats.interact.push(likes);
-  if(stats.text.length>20){stats.text.shift();stats.video.shift();stats.interact.shift();}
+  history.text.push(text);
+  history.video.push(video);
+  history.interact.push(likes);
 
-  ctx.clearRect(0,0,260,140);
-  [[stats.text,"#f59e0b"],[stats.video,"#22d3ee"],[stats.interact,"#a3e635"]].forEach(line=>{
-    ctx.beginPath();
-    ctx.strokeStyle=line[1];
-    line[0].forEach((v,i)=>{
-      const x=i/(line[0].length-1||1)*260;
-      const y=140-(v/100)*140;
-      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
-    });
-    ctx.stroke();
+  if(history.text.length>15){
+    history.text.shift();
+    history.video.shift();
+    history.interact.shift();
+  }
+
+  drawGraph();
+}
+
+function drawGraph(){
+  ctx.clearRect(0,0,240,120);
+  drawLine(history.text,"#f59e0b");
+  drawLine(history.video,"#22d3ee");
+  drawLine(history.interact,"#a3e635");
+}
+
+function drawLine(data,color){
+  ctx.beginPath();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=2;
+  data.forEach((v,i)=>{
+    const x=i/(data.length-1||1)*240;
+    const y=120-(v/20)*120;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
   });
-});
+  ctx.stroke();
+}
+
+updatePopularity();
 </script>
 
 </body>
