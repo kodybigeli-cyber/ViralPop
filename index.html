@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Barre supérieure -->
 <div class="top-bar">
   <div id="stats-bar">
     <span id="likesCount">0 Likes</span>
@@ -17,11 +16,13 @@
   </div>
 </div>
 
-<div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh;">
+<div id="feed-container">
 
   <!-- VIDEO 1 -->
   <div class="video-wrapper">
     <video src="video1.mp4" class="feed-video" autoplay muted loop></video>
+
+    <canvas class="chart-canvas"></canvas>
 
     <div class="actions-bar">
       <button onclick="like(this)">❤️ <span>0</span></button>
@@ -43,6 +44,8 @@
   <div class="video-wrapper">
     <video src="video2.mp4" class="feed-video" autoplay muted loop></video>
 
+    <canvas class="chart-canvas"></canvas>
+
     <div class="actions-bar">
       <button onclick="like(this)">❤️ <span>0</span></button>
       <button onclick="popPlus(this)">⚡ Pop+</button>
@@ -61,7 +64,9 @@
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
 /********* INTERACTIONS *********/
 function like(btn){
   const span = btn.querySelector("span");
@@ -102,7 +107,6 @@ function updateStats(btn){
   const pops = wrapper.dataset.pop || 0;
   wrapper.querySelector(".influencer-badge").innerText = (parseInt(likes)+parseInt(pops))>=50 ? "VIP" : "⭐";
 
-  // Mettre à jour la barre de progression
   const fillPercent = Math.min(100, (parseInt(pops)/50)*100);
   wrapper.querySelector("#badge-fill")?.style.width = fillPercent+"%";
 }
@@ -117,7 +121,58 @@ const observer = new IntersectionObserver(entries=>{
 
 const videos = document.getElementsByClassName("feed-video");
 Array.from(videos).forEach(v=>observer.observe(v));
-</script>
 
+/********* GRAPHE COURBES BOURSE *********/
+function initCharts(){
+  const wrappers = document.querySelectorAll(".video-wrapper");
+  wrappers.forEach(wrapper=>{
+    const ctx = wrapper.querySelector(".chart-canvas").getContext("2d");
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: Array.from({length:20},(_,i)=>i+1),
+        datasets: [
+          {
+            label: 'Likes',
+            data: Array.from({length:20},()=>Math.floor(Math.random()*50)),
+            borderColor: '#00CFFF',
+            borderWidth: 2,
+            fill:false
+          },
+          {
+            label: 'Pop+',
+            data: Array.from({length:20},()=>Math.floor(Math.random()*50)),
+            borderColor: '#B400F9',
+            borderWidth: 2,
+            fill:false
+          },
+          {
+            label: 'Boost',
+            data: Array.from({length:20},()=>Math.floor(Math.random()*20)),
+            borderColor: '#FFD700',
+            borderWidth: 2,
+            fill:false
+          }
+        ]
+      },
+      options:{
+        responsive:true,
+        plugins:{
+          legend:{display:false}
+        },
+        scales:{
+          x:{display:false},
+          y:{display:false}
+        },
+        elements:{
+          point:{radius:0}
+        }
+      }
+    });
+  });
+}
+window.addEventListener("load", initCharts);
+
+</script>
 </body>
-</html>
+      </html>
