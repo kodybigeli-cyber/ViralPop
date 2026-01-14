@@ -10,7 +10,90 @@
 <script src="https://go.ezoic.net/ezoic/ezoic.js" async></script>
 
 <style>
-body {margin:0; font-family:sans-serif; background:#000;}
+/* ----------------- Body / Fond cosmique ----------------- */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 80% 20%, rgba(180, 0, 249, 0.15), transparent 60%),
+    radial-gradient(900px 500px at 20% 80%, rgba(0, 207, 255, 0.12), transparent 55%),
+    linear-gradient(180deg, #0A0A1F 0%, #0A0A1F 60%, #120A2A 100%);
+  overflow: hidden;
+  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* ----------------- Splash Logo ----------------- */
+.splash-logo {
+  position: fixed;
+  top:50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+.splash-logo h1 {
+  font-size: 4rem;
+  background: linear-gradient(135deg, #00CFFF, #B400F9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(0, 207, 255, 0.6), 0 0 20px rgba(180,0,249,0.4);
+}
+
+/* ----------------- Bulles flottantes ----------------- */
+.bubble, .bg-bubbles span {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%,
+    rgba(255,255,255,0.35) 0%,
+    rgba(255,255,255,0.05) 40%,
+    rgba(255,255,255,0.0) 70%);
+  box-shadow: 0 0 30px rgba(180, 0, 249, 0.6),
+              inset 0 0 40px rgba(255, 255, 255, 0.12);
+  animation: float 30s ease-in-out infinite;
+}
+
+.b1 { width: 420px; height: 420px; left: 8%;  top: 62%; }
+.b2 { width: 320px; height: 320px; left: 72%; top: 18%; }
+.b3 { width: 260px; height: 260px; left: 48%; top: 70%; }
+.b4 { width: 180px; height: 180px; left: 22%; top: 24%; }
+.b5 { width: 140px; height: 140px; left: 84%; top: 64%; }
+
+.bg-bubbles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.bg-bubbles span {
+  width: 60px; height: 60px;
+  left: calc(10% * var(--i));
+  top: calc(10% * var(--i));
+  animation: float 35s ease-in-out infinite;
+}
+
+/* ----------------- Animations ----------------- */
+@keyframes float {
+  0%   { transform: translateY(0) scale(1); }
+  50%  { transform: translateY(-24px) scale(1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* ----------------- Étoiles scintillantes ----------------- */
+.stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.8) 50%, transparent 51%),
+    radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.8) 50%, transparent 51%),
+    radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.8) 50%, transparent 51%);
+  animation: twinkle 3s linear infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { filter: brightness(1); }
+  50%      { filter: brightness(1.6); }
+}
+
+/* ----------------- Feed Vidéo ----------------- */
 .feed-video {width:100%; height:90vh; object-fit:cover; display:block; margin-bottom:10px; scroll-snap-align:start;}
 .video-wrapper {position:relative; scroll-snap-align:start;}
 .actions-bar {position:absolute; right:10px; bottom:50px; display:flex; flex-direction:column; gap:10px;}
@@ -25,42 +108,62 @@ body {margin:0; font-family:sans-serif; background:#000;}
 .influencer-badge {position:absolute; top:10px; right:10px; background:#ff0; color:#000; padding:3px 7px; border-radius:5px; font-weight:bold;}
 </style>
 </head>
+
 <body>
-
-<!-- Barre supérieure -->
-<div class="top-bar">
-  <img src="logo.png" alt="Viral+ Logo" style="height:40px;">
-  <div id="stats-bar">
-    <span id="likesCount">0 Likes</span>
-    <span id="popCount">0 Pop+</span>
-    <div id="badge-bar"><div id="badge-fill"></div></div>
+  <!-- Fond cosmique + bulles -->
+  <div class="stars"></div>
+  <div class="bubble b1"></div>
+  <div class="bubble b2"></div>
+  <div class="bubble b3"></div>
+  <div class="bubble b4"></div>
+  <div class="bubble b5"></div>
+  <div class="bg-bubbles">
+    <span style="--i:1;"></span>
+    <span style="--i:2;"></span>
+    <span style="--i:3;"></span>
+    <span style="--i:4;"></span>
+    <span style="--i:5;"></span>
   </div>
-</div>
 
-<div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh; -webkit-overflow-scrolling: touch;"></div>
+  <!-- Splash Logo -->
+  <div class="splash-logo">
+    <h1>Viral+</h1>
+  </div>
+
+  <!-- Barre supérieure -->
+  <div class="top-bar">
+    <img src="logo.png" alt="Viral+ Logo" style="height:40px;">
+    <div id="stats-bar">
+      <span id="likesCount">0 Likes</span>
+      <span id="popCount">0 Pop+</span>
+      <div id="badge-bar"><div id="badge-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div id="feed-container" style="scroll-snap-type: y mandatory; overflow-y: scroll; height:100vh;"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /********* Supabase Config *********/
 const SUPABASE_URL = "https://cjxyruudipzgfinchcgj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeHlydXVkaXB6Z2ZpbmNoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNjgxNDUsImV4cCI6MjA4Mzk0NDE0NX0.YSsDO1bsm0bzIq-MIz6DawHCIsX8SfTuN7FXxY4mdzA";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqeHlydXVkaXB6Z2ZpbmNoY2dqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgzNjgxNDUsImV4cCI6MjA4Mzk0NDE0NX0.YSsDO1bsm0bzIq-MIz6DawHCIsX8SfTuN7FXxY4mdzA";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 /********* Utilisateur invité *********/
-let currentUser = "guest_" + Date.now(); // simple ID invité
+let currentUser = null;
+async function signInGuest() {
+  const { data, error } = await supabase.auth.signInWithOAuth({ provider: "anonymous" });
+  currentUser = data?.user?.id || "guest_" + Date.now();
+}
+signInGuest();
 
 /********* Charger posts *********/
 const feedContainer = document.getElementById("feed-container");
 
 async function loadPosts() {
   const { data: posts, error } = await supabase.from("posts").select("*").order("createdAt", { ascending: false });
-  if(error) { console.error("Erreur Supabase posts:", error); return; }
-  if(!posts || posts.length===0) { feedContainer.innerHTML = "<p style='color:white;text-align:center;margin-top:20px;'>Aucun contenu disponible</p>"; return; }
-
   feedContainer.innerHTML = "";
-  const observer = new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.play(); else entry.target.pause(); });
-  },{threshold:0.75});
 
   posts.forEach(async post => {
     const videoEl = document.createElement("video");
@@ -80,7 +183,7 @@ async function loadPosts() {
     const score = (likes?.length || 0) + (pops?.length || 0);
     const badge = document.createElement("div");
     badge.className = "influencer-badge";
-    badge.innerText = score >= 50 ? "🔥 VIP" : "⭐";
+    badge.innerText = score >= 50 ? " VIP" : "⭐";
     wrapper.appendChild(badge);
 
     // Commentaires
@@ -93,7 +196,7 @@ async function loadPosts() {
     commentBtn.className = "comment-btn";
     commentBtn.innerText = "Envoyer";
     commentBtn.onclick = async () => {
-      if(commentInput.value.trim() !== ""){
+      if(currentUser && commentInput.value.trim() !== ""){
         await supabase.from("comments").insert([{ post_id: post.id, uid: currentUser, text: commentInput.value }]);
         commentInput.value = "";
       }
@@ -107,11 +210,11 @@ async function loadPosts() {
     actions.className = "actions-bar";
 
     const likeBtn = document.createElement("button");
-    likeBtn.innerText = "👍";
+    likeBtn.innerText = "❤️";
     likeBtn.onclick = async () => { await supabase.from("likes").upsert({ post_id: post.id, uid: currentUser }); updateStats(post.id); }
 
     const dislikeBtn = document.createElement("button");
-    dislikeBtn.innerText = "👎";
+    dislikeBtn.innerText = "💔";
     dislikeBtn.onclick = async () => { await supabase.from("dislikes").upsert({ post_id: post.id, uid: currentUser }); updateStats(post.id); }
 
     const popBtn = document.createElement("button");
@@ -131,7 +234,6 @@ async function loadPosts() {
     videoEl.onclick = () => { commentBox.style.display = commentBox.style.display==="block"?"none":"block"; }
 
     feedContainer.appendChild(wrapper);
-    observer.observe(videoEl);
   });
 }
 loadPosts();
@@ -145,6 +247,15 @@ async function updateStats(postId){
   const fillPercent = Math.min(100,(pops?.length/50)*100);
   document.getElementById("badge-fill").style.width = fillPercent+"%";
 }
+
+/********* Autoplay vidéo avec IntersectionObserver *********/
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{ if(entry.isIntersecting) entry.target.play(); else entry.target.pause(); });
+},{threshold:0.75});
+
+const videoEls = document.getElementsByClassName("feed-video");
+Array.from(videoEls).forEach(v=>observer.observe(v));
 </script>
+
 </body>
 </html>
