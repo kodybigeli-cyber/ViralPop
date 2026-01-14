@@ -1,169 +1,333 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Viral+</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #121212;
-      color: #fff;
-      overflow-x: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viral+ Pop+ UX</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+}
 
-    /* Barre du haut avec logo et batterie */
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 20px;
-      background: #1e1e1e;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 10;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    }
+/* HEADER */
+header{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:10;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:12px;
+  background:rgba(0,0,0,0.8);
+}
+header strong{font-size:20px; margin-bottom:6px;}
+#popBarContainer{
+  width:90%;
+  max-width:400px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.battery{
+  flex:1;
+  height:16px;
+  border:2px solid #22d3ee;
+  border-radius:10px;
+  overflow:hidden;
+  position:relative;
+}
+.energy{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#22d3ee,#3b82f6);
+  transition:width 0.3s;
+}
+#popPercent{
+  min-width:40px;
+  text-align:right;
+  font-weight:bold;
+}
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ff4081;
-    }
+/* FEED */
+#feed{
+  height:100vh;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
+}
+.post{
+  height:100vh;
+  scroll-snap-align:start;
+  position:relative;
+}
+.post video,.post img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
 
-    .battery {
-      position: relative;
-      width: 150px;
-      height: 20px;
-      border: 2px solid #fff;
-      border-radius: 5px;
-      overflow: hidden;
-    }
+/* OVERLAY */
+.overlay{
+  position:absolute;
+  bottom:90px;
+  left:12px;
+  right:80px;
+}
+.overlay .author{font-weight:bold; font-size:16px;}
+.overlay .text{margin-top:6px; font-size:14px;}
 
-    .battery-fill {
-      background: #ff4081;
-      width: 0%;
-      height: 100%;
-      transition: width 0.5s;
-    }
+/* ACTIONS */
+.actions{
+  position:absolute;
+  right:12px;
+  bottom:120px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.actions button{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:none;
+  background:rgba(0,0,0,0.5);
+  color:#fff;
+  font-size:18px;
+  cursor:pointer;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+}
+.actions button span{
+  position:absolute;
+  top:-20px;
+  font-size:12px;
+  color:#fff;
+}
 
-    /* Section des courbes */
-    .charts {
-      margin-top: 70px;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-end;
-      gap: 20px;
-    }
-
-    .chart {
-      width: 60px;
-      background: linear-gradient(180deg, #ff4081, #ff80ab);
-      border-radius: 10px 10px 0 0;
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      transition: height 0.5s;
-    }
-
-    /* Boutons d’action */
-    .actions {
-      position: fixed;
-      bottom: 20px;
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      padding: 0 20px;
-    }
-
-    .action-btn {
-      flex: 1;
-      margin: 0 5px;
-      padding: 15px;
-      background: #1e1e1e;
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-    }
-
-    .action-btn:hover {
-      background: #ff4081;
-      transform: scale(1.1);
-    }
-
-  </style>
+/* GRAPH */
+#graphContainer{
+  position:fixed;
+  bottom:12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:90%;
+  max-width:400px;
+}
+canvas{
+  width:100%;
+  height:150px;
+  background:#020617;
+  border-radius:8px;
+}
+.legend{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  margin-top:4px;
+}
+.legend div{display:flex; align-items:center; gap:4px;}
+.legend span{display:inline-block;width:12px;height:12px;border-radius:50%;}
+</style>
 </head>
 <body>
 
-  <!-- Barre du haut -->
-  <div class="top-bar">
-    <div class="logo">Viral+</div>
-    <div class="battery">
-      <div class="battery-fill" id="batteryFill"></div>
-    </div>
+<header>
+  <strong>Viral+</strong>
+  <div id="popBarContainer">
+    <div class="battery"><div class="energy" id="energy"></div></div>
+    <div id="popPercent">0%</div>
   </div>
+</header>
 
-  <!-- Section courbes dynamiques -->
-  <div class="charts">
-    <div class="chart" id="chart1"></div>
-    <div class="chart" id="chart2"></div>
-    <div class="chart" id="chart3"></div>
+<div id="feed"></div>
+
+<div id="graphContainer">
+  <canvas id="graph"></canvas>
+  <div class="legend">
+    <div><span style="background:#22d3ee"></span> Likes</div>
+    <div><span style="background:#f87171"></span> Dislikes</div>
+    <div><span style="background:#a3e635"></span> Commentaires</div>
   </div>
+</div>
 
-  <!-- Boutons d'action -->
-  <div class="actions">
-    <button class="action-btn" id="likeBtn">J’aime</button>
-    <button class="action-btn" id="dislikeBtn">J’aime pas</button>
-    <button class="action-btn" id="commentBtn">Commentaires</button>
-    <button class="action-btn" id="popBtn">Pop+</button>
-  </div>
+<script>
+// ------------------
+// POSTS MOCK
+// ------------------
+const posts = [
+  {author:"anonyme", text:"Bienvenue sur Viral+", media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", type:"video", likes:2, dislikes:0, comments:1},
+  {author:"kody", text:"Scroll fluide comme TikTok", media:"https://picsum.photos/1080/1920?1", type:"image", likes:5, dislikes:1, comments:2},
+  {author:"user47", text:"Ta marque : barre + 3 courbes", media:"https://picsum.photos/1080/1920?2", type:"image", likes:1, dislikes:0, comments:0}
+];
 
-  <script>
-    // Batterie dynamique
-    let battery = 0;
-    const batteryFill = document.getElementById('batteryFill');
-    setInterval(() => {
-      battery += Math.random() * 5;
-      if (battery > 100) battery = 0;
-      batteryFill.style.width = battery + '%';
-    }, 800);
+// ------------------
+// FEED
+// ------------------
+const feed=document.getElementById("feed");
 
-    // Courbes dynamiques
-    const charts = [
-      document.getElementById('chart1'),
-      document.getElementById('chart2'),
-      document.getElementById('chart3')
-    ];
+posts.forEach((p)=>{
+  const post=document.createElement("div");
+  post.className="post";
 
-    function updateCharts() {
-      charts.forEach(chart => {
-        let height = 50 + Math.random() * 200; // hauteur entre 50 et 250px
-        chart.style.height = height + 'px';
-      });
-    }
+  let media;
+  if(p.type==="video"){
+    media=document.createElement("video");
+    media.src=p.media;
+    media.autoplay=true;
+    media.loop=true;
+    media.muted=true;
+  }else{
+    media=document.createElement("img");
+    media.src=p.media;
+  }
+  post.appendChild(media);
 
-    setInterval(updateCharts, 1000);
+  const overlay=document.createElement("div");
+  overlay.className="overlay";
+  overlay.innerHTML=`<div class="author">@${p.author}</div><div class="text">${p.text}</div>`;
+  post.appendChild(overlay);
 
-    // Actions boutons
-    document.getElementById('likeBtn').addEventListener('click', () => {
-      alert("Tu as cliqué sur J'aime 👍");
-    });
-    document.getElementById('dislikeBtn').addEventListener('click', () => {
-      alert("Tu as cliqué sur J'aime pas 👎");
-    });
-    document.getElementById('commentBtn').addEventListener('click', () => {
-      alert("Tu as cliqué sur Commentaires 💬");
-    });
-    document.getElementById('popBtn').addEventListener('click', () => {
-      alert("Tu as cliqué sur Pop+ 🚀");
-    });
+  const actions=document.createElement("div");
+  actions.className="actions";
 
-  </script>
+  // J'aime
+  const like=document.createElement("button");
+  like.innerHTML="❤️";
+  const likeCount=document.createElement("span");
+  likeCount.innerText=p.likes;
+  like.appendChild(likeCount);
+  like.onclick=()=>{
+    p.likes++;
+    likeCount.innerText=p.likes;
+    updatePopularity();
+  };
+  actions.appendChild(like);
+
+  // J'aime pas
+  const dislike=document.createElement("button");
+  dislike.innerHTML="💔";
+  const dislikeCount=document.createElement("span");
+  dislikeCount.innerText=p.dislikes;
+  dislike.appendChild(dislikeCount);
+  dislike.onclick=()=>{
+    p.dislikes++;
+    dislikeCount.innerText=p.dislikes;
+    updatePopularity();
+  };
+  actions.appendChild(dislike);
+
+  // Commentaires
+  const comment=document.createElement("button");
+  comment.innerHTML="💬";
+  const commentCount=document.createElement("span");
+  commentCount.innerText=p.comments;
+  comment.appendChild(commentCount);
+  comment.onclick=()=>{
+    p.comments++;
+    commentCount.innerText=p.comments;
+    updatePopularity();
+  };
+  actions.appendChild(comment);
+
+  post.appendChild(actions);
+  feed.appendChild(post);
+});
+
+// ------------------
+// POPULARITY & GRAPH
+// ------------------
+const energy=document.getElementById("energy");
+const popPercent=document.getElementById("popPercent");
+const ctx=document.getElementById("graph").getContext("2d");
+
+let history={likes:[],dislikes:[],comments:[]};
+
+function updatePopularity(){
+  let totalLikes=0,totalDislikes=0,totalComments=0;
+  posts.forEach(p=>{
+    totalLikes+=p.likes;
+    totalDislikes+=p.dislikes;
+    totalComments+=p.comments;
+  });
+
+  // Score barre horizontale
+  const score=Math.min(100,totalLikes*5 - totalDislikes*2 + totalComments*2);
+  energy.style.width=score+"%";
+  popPercent.innerText=Math.round(score)+"%";
+
+  // Historique avec variations style bourse
+  history.likes.push(totalLikes + Math.random()*3 - 1.5);
+  history.dislikes.push(totalDislikes + Math.random()*2 - 1);
+  history.comments.push(totalComments + Math.random()*2 - 1);
+
+  if(history.likes.length>20){
+    history.likes.shift();
+    history.dislikes.shift();
+    history.comments.shift();
+  }
+
+  drawGraph();
+}
+
+function drawGraph(){
+  ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
+
+  drawLine(history.likes,"#22d3ee");
+  drawLine(history.dislikes,"#f87171");
+  drawLine(history.comments,"#a3e635");
+
+  // Règles
+  ctx.strokeStyle="rgba(255,255,255,0.2)";
+  ctx.lineWidth=1;
+  const rows=5,cols=6;
+  for(let i=0;i<=rows;i++){
+    let y=i*(ctx.canvas.height/rows);
+    ctx.beginPath();
+    ctx.moveTo(0,y);
+    ctx.lineTo(ctx.canvas.width,y);
+    ctx.stroke();
+  }
+  for(let i=0;i<=cols;i++){
+    let x=i*(ctx.canvas.width/cols);
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,ctx.canvas.height);
+    ctx.stroke();
+  }
+}
+
+function drawLine(data,color){
+  ctx.beginPath();
+  ctx.strokeStyle=color;
+  ctx.lineWidth=2;
+  data.forEach((v,i)=>{
+    const x=i/(data.length-1||1)*ctx.canvas.width;
+    const y=ctx.canvas.height - (v/20)*ctx.canvas.height;
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+}
+
+// Animation automatique style bourse
+setInterval(()=>{
+  // Chaque 0.5s on ajoute un léger mouvement
+  posts.forEach(p=>{
+    p.likes += Math.random()*0.1;
+    p.dislikes += Math.random()*0.05;
+    p.comments += Math.random()*0.05;
+  });
+  updatePopularity();
+},500);
+
+// Initialisation
+updatePopularity();
+</script>
 </body>
-</html>
+  </html>
