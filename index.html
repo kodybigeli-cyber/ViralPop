@@ -2,155 +2,80 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Viral+</title>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:Arial;overflow:hidden}
 
 /* FEED */
-#feed{
-  height:100vh;
-  overflow-y:scroll;
-  scroll-snap-type:y mandatory;
-}
-.post{
-  height:100vh;
-  position:relative;
-  scroll-snap-align:start;
-}
-.post video,.post img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
+#feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
+.post{height:100vh;position:relative;scroll-snap-align:start}
+.post video,.post img{width:100%;height:100%;object-fit:cover}
 
 /* ACTIONS */
 .actions{
-  position:absolute;
-  right:12px;
-  bottom:120px;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  z-index:5;
+ position:absolute;right:12px;bottom:120px;
+ display:flex;flex-direction:column;gap:14px;z-index:10
 }
 .actions button{
-  width:48px;
-  height:48px;
-  border-radius:50%;
-  border:none;
-  background:rgba(0,0,0,.6);
-  color:#fff;
-  font-size:20px;
-  position:relative;
-  cursor:pointer;
+ width:48px;height:48px;border-radius:50%;
+ border:none;background:rgba(0,0,0,.6);
+ color:#fff;font-size:20px;cursor:pointer;position:relative
 }
-.actions span{
-  position:absolute;
-  top:-18px;
-  font-size:12px;
+.actions span{position:absolute;top:-18px;font-size:12px}
+
+/* BADGE */
+.badge{
+ position:absolute;bottom:-8px;right:-6px;
+ background:gold;color:#000;font-size:10px;
+ padding:2px 4px;border-radius:6px;
+ animation:glow 1.5s infinite alternate
+}
+@keyframes glow{
+ from{box-shadow:0 0 4px gold}
+ to{box-shadow:0 0 12px gold}
 }
 
-/* LIKE ANIMATIONS */
-.pulse{
-  animation:pulse .25s ease;
-}
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.35)}
-  100%{transform:scale(1)}
-}
-.plus{
-  position:absolute;
-  top:-10px;
-  right:-10px;
-  font-size:14px;
-  color:#22d3ee;
-  animation:plus 1s forwards;
-}
-@keyframes plus{
-  0%{opacity:1;transform:translateY(0)}
-  100%{opacity:0;transform:translateY(-18px)}
-}
-
-/* FLOATING HEARTS */
+/* HEART FLOAT */
 .heart{
-  position:absolute;
-  right:90px;
-  bottom:120px;
-  font-size:18px;
-  color:#ff4d6d;
-  animation:float 2s linear forwards;
-  pointer-events:none;
+ position:absolute;right:90px;bottom:120px;
+ font-size:18px;color:#ff4d6d;
+ animation:float 2s forwards;pointer-events:none
 }
 @keyframes float{
-  0%{opacity:1;transform:translateY(0) scale(1)}
-  100%{opacity:0;transform:translateY(-160px) scale(1.6)}
+ from{opacity:1;transform:translateY(0) scale(1)}
+ to{opacity:0;transform:translateY(-160px) scale(1.6)}
 }
 
-/* POP+ OVERLAY */
+/* POP+ */
 #pop{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.95);
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  z-index:99;
+ position:fixed;inset:0;
+ background:rgba(0,0,0,.96);
+ display:none;flex-direction:column;
+ z-index:99;padding:16px
 }
-#close{
-  position:absolute;
-  top:15px;
-  right:15px;
-  font-size:22px;
-  cursor:pointer;
-}
+#close{align-self:flex-end;font-size:22px;cursor:pointer}
 
-/* BAR */
-.bar{
-  width:85%;
-  max-width:380px;
-  height:16px;
-  border:2px solid #22d3ee;
-  border-radius:10px;
-  overflow:hidden;
-  margin-bottom:6px;
+/* TABS */
+.tabs{display:flex;gap:10px;margin:10px 0}
+.tabs button{
+ flex:1;background:#020617;color:#fff;
+ border:none;padding:8px;border-radius:6px
 }
-.energy{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#22d3ee,#3b82f6);
-  transition:width .4s;
-}
-#percent{margin-bottom:8px;font-weight:bold}
+.tabs button.active{background:#22d3ee;color:#000}
 
-/* GRAPH */
-canvas{
-  width:85%;
-  max-width:380px;
-  height:160px;
-  background:#020617;
-  border-radius:8px;
+/* LIST */
+.list{
+ flex:1;overflow-y:auto;
+ background:#020617;border-radius:8px;padding:8px
 }
-.legend{
-  display:flex;
-  gap:12px;
-  font-size:12px;
-  margin-top:6px;
+.user{
+ display:flex;justify-content:space-between;
+ padding:6px;border-bottom:1px solid #111;font-size:14px
 }
-.legend div{
-  display:flex;
-  gap:4px;
-  align-items:center;
-}
-.legend span{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-}
+.user span{opacity:.6}
 </style>
 </head>
 
@@ -160,141 +85,122 @@ canvas{
 
 <!-- POP+ -->
 <div id="pop">
-  <div id="close" onclick="togglePop(false)">✖</div>
-  <div class="bar"><div class="energy" id="energy"></div></div>
-  <div id="percent">0%</div>
-  <canvas id="graph" width="360" height="160"></canvas>
-  <div class="legend">
-    <div><span style="background:#22d3ee"></span>Likes</div>
-    <div><span style="background:#f87171"></span>Dislikes</div>
-    <div><span style="background:#a3e635"></span>Commentaires</div>
-  </div>
+ <div id="close" onclick="togglePop(false)">✖</div>
+ <div id="status"></div>
+
+ <div class="tabs">
+  <button id="tabLike" class="active" onclick="showTab('like')">❤️ Likers</button>
+  <button id="tabNo" onclick="showTab('no')">👤 Pas liké</button>
+ </div>
+
+ <div id="likeList" class="list"></div>
+ <div id="noList" class="list" style="display:none"></div>
 </div>
 
 <script>
+// USER LOCAL
+const user="User"+Math.floor(Math.random()*999);
+
+// POSTS
 const posts=[
- {media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",type:"video",likes:5,dis:1,com:2},
- {media:"https://picsum.photos/1080/1920?1",type:"image",likes:3,dis:0,com:1}
+ {media:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",type:"video",likes:5,likers:[]},
 ];
 
+// FEED
 const feed=document.getElementById("feed");
 
 posts.forEach(p=>{
  const post=document.createElement("div");
  post.className="post";
 
- const media=p.type==="video"?document.createElement("video"):document.createElement("img");
- media.src=p.media;
- if(p.type==="video"){media.autoplay=true;media.loop=true;media.muted=true;}
- post.appendChild(media);
+ const m=p.type==="video"?document.createElement("video"):document.createElement("img");
+ m.src=p.media;
+ if(p.type==="video"){m.autoplay=true;m.loop=true;m.muted=true}
+ post.appendChild(m);
 
  const actions=document.createElement("div");
  actions.className="actions";
 
- function likeBtn(){
-  const b=document.createElement("button");
-  b.innerHTML="❤️";
-  const s=document.createElement("span");
-  s.innerText=p.likes;
-  b.appendChild(s);
+ // LIKE
+ const like=document.createElement("button");
+ like.innerHTML="❤️";
+ const count=document.createElement("span");
+ count.innerText=p.likes;
+ like.appendChild(count);
 
-  b.onclick=()=>{
-    p.likes++;
-    s.innerText=p.likes;
-    b.classList.add("pulse");
-    setTimeout(()=>b.classList.remove("pulse"),200);
+ like.onclick=()=>{
+  if(!p.likers.includes(user)){
+   p.likes++;
+   p.likers.push(user);
+   count.innerText=p.likes;
+   spawnHeart(post);
+   checkInfluencer(like,p);
+  }
+ };
 
-    const plus=document.createElement("div");
-    plus.className="plus";
-    plus.innerText="+1 ❤️";
-    b.appendChild(plus);
-    setTimeout(()=>plus.remove(),900);
+ actions.appendChild(like);
 
-    spawnHeart(post);
-  };
-  return b;
- }
-
- actions.appendChild(likeBtn());
- actions.appendChild(simpleBtn("👎",p.dis,()=>p.dis++));
- actions.appendChild(simpleBtn("💬",p.com,()=>p.com++));
- actions.appendChild(popBtn(p));
+ // POP+
+ const popBtn=document.createElement("button");
+ popBtn.innerHTML="⚡";
+ popBtn.onclick=()=>openPop(p);
+ actions.appendChild(popBtn);
 
  post.appendChild(actions);
  feed.appendChild(post);
 });
 
-function simpleBtn(icon,val,cb){
- const b=document.createElement("button");
- b.innerHTML=icon;
- const s=document.createElement("span");
- s.innerText=val;
- b.appendChild(s);
- b.onclick=()=>{cb();s.innerText=val};
- return b;
-}
-
-function popBtn(p){
- const b=document.createElement("button");
- b.innerHTML="⚡";
- b.onclick=()=>openPop(p);
- return b;
-}
-
-/* FLOAT HEART */
+// HEART
 function spawnHeart(post){
  const h=document.createElement("div");
- h.className="heart";
- h.innerText="❤️";
- h.style.left=(Math.random()*40+40)+"%";
+ h.className="heart";h.innerText="❤️";
  post.appendChild(h);
  setTimeout(()=>h.remove(),2000);
 }
 
-/* POP+ */
-const pop=document.getElementById("pop");
-const energy=document.getElementById("energy");
-const percent=document.getElementById("percent");
-const ctx=document.getElementById("graph").getContext("2d");
-let timer;
-
-function togglePop(v){
- pop.style.display=v?"flex":"none";
- if(!v) clearInterval(timer);
+// BADGE
+function checkInfluencer(btn,p){
+ if(p.likes>=100 && !btn.querySelector(".badge")){
+  const b=document.createElement("div");
+  b.className="badge";
+  b.innerText="Influenceur";
+  btn.appendChild(b);
+ }
 }
+
+// POP+
+const pop=document.getElementById("pop");
+const likeList=document.getElementById("likeList");
+const noList=document.getElementById("noList");
+const status=document.getElementById("status");
+
+function togglePop(v){pop.style.display=v?"flex":"none"}
 
 function openPop(p){
  togglePop(true);
- const total=p.likes+p.dis+p.com;
- const score=Math.min(100,Math.round((p.likes/Math.max(1,total))*100));
- energy.style.width=score+"%";
- percent.innerText=score+"% énergie";
+ status.innerText=p.likes>=100?"🏅 Influenceur":"👤 Normal";
 
- const l=[20],d=[14],c=[10];
- timer=setInterval(()=>{
-  push(l);push(d);push(c);
-  draw(l,d,c);
- },700);
-}
+ likeList.innerHTML="";
+ noList.innerHTML="";
 
-function push(a){
- a.push(Math.max(5,a[a.length-1]+(Math.random()*6-3)));
- if(a.length>30)a.shift();
-}
-function draw(a,b,c){
- ctx.clearRect(0,0,360,160);
- line(a,"#22d3ee");line(b,"#f87171");line(c,"#a3e635");
-}
-function line(d,col){
- ctx.strokeStyle=col;
- ctx.beginPath();
- d.forEach((v,i)=>{
-  const x=i*(360/30),y=160-v*2;
-  i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+ const exposed=[...Array(20)].map((_,i)=>"User"+(i+1));
+
+ exposed.forEach(u=>{
+  const div=document.createElement("div");
+  div.className="user";
+  div.innerHTML=u+" <span>"+(p.likers.includes(u)?"❤️":"—")+"</span>";
+  (p.likers.includes(u)?likeList:noList).appendChild(div);
  });
- ctx.stroke();
+}
+
+// TABS
+function showTab(t){
+ document.getElementById("tabLike").classList.toggle("active",t==="like");
+ document.getElementById("tabNo").classList.toggle("active",t==="no");
+ likeList.style.display=t==="like"?"block":"none";
+ noList.style.display=t==="no"?"block":"none";
 }
 </script>
 
 </body>
-  </html>
+</html>
